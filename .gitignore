@@ -1,6 +1,21 @@
-# Jupyter Notebooks
-.ipynb_checkpoints
-*/.ipynb_checkpoints/*
+# OS & Environment
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+.env
+.env.local
+
+# Virtual Environments
+.venv/
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
 
 # Python
 __pycache__/
@@ -25,27 +40,37 @@ share/python-wheels/
 .installed.cfg
 *.egg
 MANIFEST
+*.log
 
-# Virtual Environments
-.env
-.venv
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
+# Jupyter Notebooks
+.ipynb_checkpoints
+*/.ipynb_checkpoints/*
 
-# IDEs och Editors
+# IDEs, Editors & Local Configs
 .vscode/
 .idea/
 *.swp
 *.swo
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
 
-# Operativsystem
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
+# Machine Learning Binaries & Large Data
+models_bin/*.pkl
+models_bin/*.pt
+models_bin/*.onnx
+models_bin/*.h5
+models_bin/*.bin
+data/
+*.csv
+*.parquet
+
+# Frontend (Node / React / Vite)
+frontend/node_modules/
+frontend/dist/
+frontend/build/
+frontend/.vite/
+frontend/.env.local
+frontend/.env.*.local
