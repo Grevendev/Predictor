@@ -1,4 +1,7 @@
 # cybersecurity_attacks
+Skriva om denna till vårt nya coola projekt. 
+Vi ska titta på elpriser gentemot väder. 
+
 Consists of 25 varied metrics and 40,000 records
 
 Timestamp
