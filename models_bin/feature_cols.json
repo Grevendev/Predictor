@@ -1,0 +1,16 @@
+[
+    "temperature_c",
+    "wind_speed_kmh",
+    "rain_mm",
+    "hour",
+    "day_of_week",
+    "month",
+    "is_weekend",
+    "price_lag_24",
+    "price_lag_48",
+    "price_lag_168",
+    "zone_SE1",
+    "zone_SE2",
+    "zone_SE3",
+    "zone_SE4"
+]
