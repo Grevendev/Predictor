@@ -33,3 +33,4 @@ git push origin react_settings
 
 ````
 När du sedan tar fram dina nästa två modeller är det bara att spara dem i `models_bin/`- mappen. Eftersom Git LFS redan är konfigurerat via `gitattributes` behöver du bara göra vanliga `git add`, `git commit`och `git push`för de nya modellerna också. 
+---
