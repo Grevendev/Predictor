@@ -17,7 +17,7 @@ function LandingPage() {
       <Header />
 
       <main>
-        <section>
+        <section className="hero-section">
           <h1>
             Vill du veta när det är som billigast
             att använda elen i ditt elområde?
