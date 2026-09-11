@@ -18,26 +18,51 @@ function SearchResults({
   );
 
   return (
-    <section aria-label="Sökresultat">
-      <h2>{prediction.city}</h2>
+    <section
+      className="search-results"
+      aria-label="Sökresultat"
+    >
+      <div className="results-header">
+        <div>
+          <span className="results-label">
+            ELPROGNOS
+          </span>
 
-      <details>
-        <summary>
-          Visa information om elområdet
-        </summary>
+          <h2>{prediction.city}</h2>
+        </div>
 
         {energyArea && (
-          <EnergyAreaInfo
-            energyArea={energyArea}
-          />
+          <div className="energy-area-badge">
+            <span>
+              Elområde
+            </span>
+
+            <strong>
+              {energyArea.code}
+            </strong>
+          </div>
+        )}
+      </div>
+
+      <div className="results-grid">
+        {energyArea && (
+          <div className="result-card energy-area-card">
+            <EnergyAreaInfo
+              energyArea={energyArea}
+            />
+          </div>
         )}
 
-        <PriceChart
-          predictions={prediction.predictions}
-        />
+        <div className="result-card chart-card">
+          <PriceChart
+            predictions={prediction.predictions}
+          />
+        </div>
 
-        <CostSavingTips />
-      </details>
+        <div className="result-card tips-card">
+          <CostSavingTips />
+        </div>
+      </div>
     </section>
   );
 }
