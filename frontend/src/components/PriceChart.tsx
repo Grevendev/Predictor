@@ -21,22 +21,82 @@ function PriceChart({
     );
   }
 
-  const maxPrice = Math.max(
-    ...predictions.map(
-      (prediction) => prediction.predictedPrice
-    )
+  const chartWidth = 800;
+  const chartHeight = 280;
+
+  const paddingLeft = 20;
+  const paddingRight = 20;
+  const paddingTop = 30;
+  const paddingBottom = 45;
+
+  const chartInnerWidth =
+    chartWidth -
+    paddingLeft -
+    paddingRight;
+
+  const chartInnerHeight =
+    chartHeight -
+    paddingTop -
+    paddingBottom;
+
+  const prices = predictions.map(
+    (prediction) =>
+      prediction.predictedPrice
   );
 
-  const minPrice = Math.min(
-    ...predictions.map(
-      (prediction) => prediction.predictedPrice
-    )
-  );
+  const minPrice = Math.min(...prices);
+  const maxPrice = Math.max(...prices);
 
   const priceRange = Math.max(
     maxPrice - minPrice,
     1
   );
+
+  const points = predictions.map(
+    (prediction, index) => {
+      const x =
+        paddingLeft +
+        (index /
+          Math.max(
+            predictions.length - 1,
+            1
+          )) *
+        chartInnerWidth;
+
+      const normalizedPrice =
+        (prediction.predictedPrice -
+          minPrice) /
+        priceRange;
+
+      const y =
+        paddingTop +
+        chartInnerHeight -
+        normalizedPrice *
+        chartInnerHeight;
+
+      return {
+        x,
+        y,
+        prediction
+      };
+    }
+  );
+
+  const linePath = points
+    .map(
+      (point, index) =>
+        `${index === 0 ? "M" : "L"} ${point.x} ${point.y}`
+    )
+    .join(" ");
+
+  const areaPath = `
+        ${linePath}
+        L ${points[points.length - 1].x}
+          ${chartHeight - paddingBottom}
+        L ${points[0].x}
+          ${chartHeight - paddingBottom}
+        Z
+    `;
 
   return (
     <div className="price-chart-content">
@@ -56,42 +116,127 @@ function PriceChart({
         </span>
       </div>
 
+      <div className="chart-summary">
+        <strong>
+          {Math.min(
+            ...prices
+          ).toFixed(1)}
+        </strong>
+
+        <span>
+          lägsta prognostiserade pris
+        </span>
+      </div>
+
       <div
-        className="price-chart"
+        className="line-chart"
         role="img"
         aria-label="Graf över förutspådda elpriser"
       >
-        {predictions.map((prediction) => {
-          const normalizedHeight =
-            ((prediction.predictedPrice - minPrice) /
-              priceRange) *
-            70 +
-            15;
-
-          return (
-            <div
-              className="chart-column"
-              key={prediction.timestamp}
+        <svg
+          viewBox={`0 0 ${chartWidth} ${chartHeight}`}
+          preserveAspectRatio="none"
+        >
+          <defs>
+            <linearGradient
+              id="priceAreaGradient"
+              x1="0"
+              y1="0"
+              x2="0"
+              y2="1"
             >
-              <div className="chart-value">
-                {prediction.predictedPrice.toFixed(0)}
-              </div>
+              <stop
+                offset="0%"
+                stopOpacity="0.18"
+              />
 
-              <div className="chart-bar-wrapper">
-                <div
-                  className="chart-bar"
-                  style={{
-                    height: `${normalizedHeight}%`
-                  }}
+              <stop
+                offset="100%"
+                stopOpacity="0"
+              />
+            </linearGradient>
+          </defs>
+
+          <line
+            x1={paddingLeft}
+            x2={chartWidth - paddingRight}
+            y1={paddingTop}
+            y2={paddingTop}
+            className="chart-grid-line"
+          />
+
+          <line
+            x1={paddingLeft}
+            x2={chartWidth - paddingRight}
+            y1={
+              paddingTop +
+              chartInnerHeight / 2
+            }
+            y2={
+              paddingTop +
+              chartInnerHeight / 2
+            }
+            className="chart-grid-line"
+          />
+
+          <line
+            x1={paddingLeft}
+            x2={chartWidth - paddingRight}
+            y1={
+              chartHeight -
+              paddingBottom
+            }
+            y2={
+              chartHeight -
+              paddingBottom
+            }
+            className="chart-grid-line"
+          />
+
+          <path
+            d={areaPath}
+            className="chart-area"
+          />
+
+          <path
+            d={linePath}
+            className="chart-line"
+          />
+
+          {points.map(
+            (point) => (
+              <g
+                key={
+                  point.prediction
+                    .timestamp
+                }
+              >
+                <circle
+                  cx={point.x}
+                  cy={point.y}
+                  r="5"
+                  className="chart-point"
                 />
-              </div>
 
-              <span className="chart-time">
-                {prediction.timestamp}
-              </span>
-            </div>
-          );
-        })}
+                <text
+                  x={point.x}
+                  y={
+                    chartHeight -
+                    15
+                  }
+                  textAnchor="middle"
+                  className="chart-label"
+                >
+                  {
+                    point
+                      .prediction
+                      .timestamp
+                  }
+                </text>
+              </g>
+            )
+          )}
+        </svg>
       </div>
     </div>
   );
