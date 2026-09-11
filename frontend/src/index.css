@@ -811,4 +811,28 @@ footer p {
       font-size: 0.6rem;
     }
   }
+
+  .loading-message {
+    margin: 24px 0 0;
+
+    text-align: center;
+
+    color: #8a94a6;
+  }
+
+  .error-message {
+    width: min(680px, 100%);
+
+    margin: 20px auto 0;
+    padding: 14px 18px;
+
+    border: 1px solid #e5d7d7;
+    border-radius: 12px;
+
+    background: #fffafa;
+
+    color: #8b3a3a;
+
+    text-align: center;
+  }
 }
