@@ -1,28 +1,55 @@
 function CostSavingTips() {
   return (
-    <div>
-      <h3>Tips för att minska elkostnader</h3>
+    <div className="tips-content">
+      <div className="card-heading">
+        <div>
+          <span className="card-eyebrow">
+            SMART ELANVÄNDNING
+          </span>
 
-      <ul>
-        <li>
-          Kör tvättmaskin och diskmaskin när elpriset
-          förväntas vara lägre.
-        </li>
+          <h3>
+            Spara pengar
+          </h3>
+        </div>
+      </div>
 
-        <li>
-          Ladda elbilen under billigare timmar.
-        </li>
+      <div className="tips-list">
+        <div className="tip">
+          <span className="tip-number">
+            01
+          </span>
 
-        <li>
-          Undvik att använda flera stora elförbrukare
-          samtidigt under dyra timmar.
-        </li>
+          <p>
+            Kör tvättmaskin och diskmaskin
+            under timmar då elpriset förväntas
+            vara lägre.
+          </p>
+        </div>
 
-        <li>
-          Använd prediktionen för att planera din
-          elanvändning i förväg.
-        </li>
-      </ul>
+        <div className="tip">
+          <span className="tip-number">
+            02
+          </span>
+
+          <p>
+            Ladda elbilen under billigare
+            timmar istället för under
+            pristoppar.
+          </p>
+        </div>
+
+        <div className="tip">
+          <span className="tip-number">
+            03
+          </span>
+
+          <p>
+            Försök undvika flera stora
+            elförbrukare samtidigt när priset
+            är högt.
+          </p>
+        </div>
+      </div>
     </div>
   );
 }
