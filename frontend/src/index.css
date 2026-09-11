@@ -984,4 +984,163 @@ footer p {
   .tip p {
     font-size: 0.84rem;
   }
+
+  /* About page */
+
+  .about-page {
+    width: 100%;
+  }
+
+  .about-hero {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 120px 24px 100px;
+  }
+
+  .section-label {
+    margin: 0 0 16px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .about-hero h1 {
+    margin: 0;
+    font-size: clamp(2.8rem, 7vw, 5.5rem);
+    line-height: 0.98;
+  }
+
+  .about-intro {
+    max-width: 650px;
+    margin: 32px 0 0;
+    font-size: 1.2rem;
+    line-height: 1.7;
+  }
+
+  .about-section {
+    padding: 100px 24px;
+  }
+
+  .about-section-alt {
+    background: rgba(0, 0, 0, 0.025);
+  }
+
+  .about-section-content {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .about-section h2 {
+    max-width: 750px;
+    margin: 0 0 24px;
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    line-height: 1.05;
+  }
+
+  .about-section p {
+    max-width: 700px;
+    font-size: 1.05rem;
+    line-height: 1.75;
+  }
+
+  .energy-area-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    max-width: 900px;
+    margin: 48px auto 0;
+  }
+
+  .energy-area-info {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 28px;
+    border: 1px solid currentColor;
+  }
+
+  .energy-area-info strong {
+    font-size: 2rem;
+  }
+
+  .energy-area-info span {
+    font-size: 0.9rem;
+    line-height: 1.4;
+  }
+
+  .about-section-highlight {
+    background: rgba(0, 0, 0, 0.04);
+  }
+
+  .about-benefits {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-top: 48px;
+  }
+
+  .about-benefits div {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 28px;
+    border: 1px solid currentColor;
+  }
+
+  .about-benefits strong {
+    font-size: 1.3rem;
+  }
+
+  .about-benefits span {
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+
+  .about-disclaimer {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 48px 24px 80px;
+  }
+
+  .about-disclaimer p {
+    max-width: 700px;
+    margin: 0;
+    font-size: 0.85rem;
+    line-height: 1.6;
+  }
+
+  /* About page responsive */
+
+  @media (max-width: 800px) {
+    .about-hero {
+      padding: 80px 20px;
+    }
+
+    .about-section {
+      padding: 72px 20px;
+    }
+
+    .energy-area-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .about-benefits {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 500px) {
+    .energy-area-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .about-hero h1 {
+      font-size: 2.8rem;
+    }
+
+    .about-intro {
+      font-size: 1.05rem;
+    }
+  }
 }
