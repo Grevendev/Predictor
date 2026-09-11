@@ -1,11 +1,15 @@
+import type { Prediction } from "../types/Prediction";
+
 interface SearchResultsProps {
-  city: string;
+  prediction: Prediction;
 }
 
-function SearchResults({ city }: SearchResultsProps) {
+function SearchResults({
+  prediction
+}: SearchResultsProps) {
   return (
     <section aria-label="Sökresultat">
-      <h2>{city}</h2>
+      <h2>{prediction.city}</h2>
 
       <details>
         <summary>
@@ -14,23 +18,34 @@ function SearchResults({ city }: SearchResultsProps) {
 
         <div>
           <h3>Elområde</h3>
+
           <p>
-            Elområde kommer att visas här.
+            {prediction.energyArea}
           </p>
         </div>
 
         <div>
-          <h3>Elpriser</h3>
+          <h3>Billigaste tid</h3>
+
           <p>
-            Prediktioner från ML-modellen kommer
-            att visas här.
+            {prediction.predictedCheapestHour}
+          </p>
+        </div>
+
+        <div>
+          <h3>Förutspått elpris</h3>
+
+          <p>
+            {prediction.predictedPrice} öre/kWh
           </p>
         </div>
 
         <div>
           <h3>Tips för att minska elkostnader</h3>
+
           <p>
-            Rekommendationer kommer att visas här.
+            Använd större elförbrukare under
+            de timmar då elpriset förväntas vara lägre.
           </p>
         </div>
       </details>
@@ -39,4 +54,3 @@ function SearchResults({ city }: SearchResultsProps) {
 }
 
 export default SearchResults;
-;
