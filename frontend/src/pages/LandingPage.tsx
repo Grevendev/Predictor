@@ -1,17 +1,16 @@
-
-import { useState } from "react";
-
 import Header from "../components/Header";
 import SearchForm from "../components/SearchForm";
 import SearchResults from "../components/SearchResults";
 import Footer from "../components/Footer";
+import useCitySearch from "../hooks/useCitySearch";
 
 function LandingPage() {
-  const [searchedCity, setSearchedCity] = useState("");
-
-  function handleCitySearch(city: string) {
-    setSearchedCity(city);
-  }
+  const {
+    prediction,
+    isLoading,
+    error,
+    searchCity
+  } = useCitySearch();
 
   return (
     <>
@@ -24,10 +23,22 @@ function LandingPage() {
             att använda elen i ditt elområde?
           </h1>
 
-          <SearchForm onSearch={handleCitySearch} />
+          <SearchForm onSearch={searchCity} />
 
-          {searchedCity && (
-            <SearchResults city={searchedCity} />
+          {isLoading && (
+            <p>
+              Hämtar information...
+            </p>
+          )}
+
+          {error && (
+            <p role="alert">
+              {error}
+            </p>
+          )}
+
+          {prediction && (
+            <SearchResults prediction={prediction} />
           )}
         </section>
       </main>
@@ -38,4 +49,3 @@ function LandingPage() {
 }
 
 export default LandingPage;
-;
