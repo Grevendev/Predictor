@@ -21,13 +21,13 @@ test.describe("City search", () => {
     ).toBeVisible();
 
     await expect(
-      page.getByRole("strong", {
-        name: "SE4"
-      })
+      page
+        .locator(".energy-area-badge")
+        .getByText("SE4", { exact: true })
     ).toBeVisible();
 
     await expect(
-      page.getByText("ELPROGNOS")
+      page.getByText("ELPROGNOS", { exact: true })
     ).toBeVisible();
 
     await expect(
