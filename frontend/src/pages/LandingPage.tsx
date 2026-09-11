@@ -18,27 +18,51 @@ function LandingPage() {
 
       <main>
         <section className="hero-section">
-          <h1>
-            Vill du veta när det är som billigast
-            att använda elen i ditt elområde?
-          </h1>
+          <div className="hero-background-glow" />
 
-          <SearchForm onSearch={searchCity} />
+          <div className="hero-content">
+            <span className="hero-eyebrow">
+              INTELLIGENT ELPROGNOS
+            </span>
+
+            <h1>
+              Använd elen när
+              <span> priset är lägst.</span>
+            </h1>
+
+            <p className="hero-description">
+              Sök efter din stad och få en prognos
+              för när det är smartast att använda
+              elen i ditt elområde.
+            </p>
+
+            <SearchForm onSearch={searchCity} />
+
+            <p className="hero-disclaimer">
+              Prognoser baseras på data och
+              maskininlärning.
+            </p>
+          </div>
 
           {isLoading && (
-            <p>
+            <p className="loading-message">
               Hämtar information...
             </p>
           )}
 
           {error && (
-            <p role="alert">
+            <p
+              className="error-message"
+              role="alert"
+            >
               {error}
             </p>
           )}
 
           {prediction && (
-            <SearchResults prediction={prediction} />
+            <SearchResults
+              prediction={prediction}
+            />
           )}
         </section>
       </main>
