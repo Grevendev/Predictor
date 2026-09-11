@@ -1,9 +1,16 @@
+import { useState } from "react";
+
 import Header from "../components/Header";
 import SearchForm from "../components/SearchForm";
-import SearchResults from "../components/SearchResults";
 import Footer from "../components/Footer";
 
 function LandingPage() {
+  const [searchedCity, setSearchedCity] = useState("");
+
+  function handleCitySearch(city: string) {
+    setSearchedCity(city);
+  }
+
   return (
     <>
       <Header />
@@ -15,9 +22,13 @@ function LandingPage() {
             att använda elen i ditt elområde?
           </h1>
 
-          <SearchForm />
+          <SearchForm onSearch={handleCitySearch} />
 
-          <SearchResults />
+          {searchedCity && (
+            <p>
+              Du sökte efter: {searchedCity}
+            </p>
+          )}
         </section>
       </main>
 
@@ -27,3 +38,4 @@ function LandingPage() {
 }
 
 export default LandingPage;
+;
