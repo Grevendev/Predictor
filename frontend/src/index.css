@@ -316,35 +316,89 @@ details p {
 }
 
 /* ------------------------------
-   Price data
+   Responsive price chart
 -------------------------------- */
 
-details ul {
-  margin: 0;
-  padding: 0;
-
-  list-style: none;
-}
-
-details li {
+.chart-summary {
   display: flex;
-  justify-content: space-between;
-  gap: 20px;
+  align-items: baseline;
+  gap: 10px;
 
-  padding: 12px 0;
-
-  border-bottom: 1px solid #edf0f4;
-
-  color: #667085;
+  margin-top: 22px;
 }
 
-details li:last-child {
-  border-bottom: 0;
+.chart-summary strong {
+  color: #111827;
+
+  font-size: 2rem;
+  line-height: 1;
+  letter-spacing: -0.04em;
 }
 
-details li span:last-child {
-  color: #172033;
-  font-weight: 650;
+.chart-summary span {
+  color: #8a94a6;
+
+  font-size: 0.8rem;
+}
+
+.line-chart {
+  width: 100%;
+  margin-top: 18px;
+
+  overflow: hidden;
+}
+
+.line-chart svg {
+  display: block;
+
+  width: 100%;
+  height: auto;
+
+  min-height: 220px;
+}
+
+.chart-grid-line {
+  stroke: #edf0f4;
+  stroke-width: 1;
+}
+
+.chart-area {
+  fill: url(#priceAreaGradient);
+}
+
+.chart-line {
+  fill: none;
+
+  stroke: #172033;
+  stroke-width: 4;
+
+  stroke-linecap: round;
+  stroke-linejoin: round;
+
+  vector-effect: non-scaling-stroke;
+}
+
+.chart-point {
+  fill: #ffffff;
+
+  stroke: #172033;
+  stroke-width: 3;
+
+  vector-effect: non-scaling-stroke;
+
+  transition:
+    r 0.2s ease;
+}
+
+.chart-point:hover {
+  r: 7;
+}
+
+.chart-label {
+  fill: #8a94a6;
+
+  font-size: 12px;
+  font-weight: 500;
 }
 
 /* ------------------------------
