@@ -21,7 +21,9 @@ test.describe("City search", () => {
     ).toBeVisible();
 
     await expect(
-      page.getByText("SE4")
+      page.getByRole("strong", {
+        name: "SE4"
+      })
     ).toBeVisible();
 
     await expect(
