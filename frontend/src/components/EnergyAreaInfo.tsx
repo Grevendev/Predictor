@@ -8,16 +8,20 @@ function EnergyAreaInfo({
   energyArea
 }: EnergyAreaInfoProps) {
   return (
-    <div>
-      <h3>Elområde</h3>
+    <div className="energy-area-content">
+      <div className="card-heading">
+        <span className="card-eyebrow">
+          DITT ELOMRÅDE
+        </span>
 
-      <p>
-        {energyArea.code}
-      </p>
+        <span className="area-code">
+          {energyArea.code}
+        </span>
+      </div>
 
-      <p>
+      <h3>
         {energyArea.name}
-      </p>
+      </h3>
 
       <p>
         {energyArea.description}
