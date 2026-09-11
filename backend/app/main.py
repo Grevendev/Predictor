@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
+from app.api.v1.endpoints import predictions
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
@@ -20,9 +21,17 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.include_router(
+    predictions.router,
+    prefix="/api/v1/predictions",
+    tags=["predictions"],
+)
+
+
 @app.get("/")
 def read_root():
     return {"message": "Välkommen till FastAPI-backenden för din ML-applikation!"}
+
 
 @app.get("/health")
 def health_check():

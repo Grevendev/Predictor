@@ -9,7 +9,7 @@ MODEL_PATH = (
 )
 
 
-def load_model():
+def load_random_forest():
     package = joblib.load(MODEL_PATH)
 
     model = package["model"]
