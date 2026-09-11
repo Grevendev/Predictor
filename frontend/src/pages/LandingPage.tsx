@@ -1,7 +1,9 @@
+
 import { useState } from "react";
 
 import Header from "../components/Header";
 import SearchForm from "../components/SearchForm";
+import SearchResults from "../components/SearchResults";
 import Footer from "../components/Footer";
 
 function LandingPage() {
@@ -25,9 +27,7 @@ function LandingPage() {
           <SearchForm onSearch={handleCitySearch} />
 
           {searchedCity && (
-            <p>
-              Du sökte efter: {searchedCity}
-            </p>
+            <SearchResults city={searchedCity} />
           )}
         </section>
       </main>
