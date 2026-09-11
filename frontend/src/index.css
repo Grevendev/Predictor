@@ -29,6 +29,7 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
+
   background: #f6f8fb;
 }
 
@@ -46,12 +47,9 @@ a {
   text-decoration: none;
 }
 
-/* ------------------------------
-   Application layout
--------------------------------- */
-
 #root {
   min-height: 100vh;
+
   display: flex;
   flex-direction: column;
 }
@@ -61,37 +59,27 @@ main {
   width: 100%;
 }
 
-main>section {
-  width: min(1120px, calc(100% - 40px));
-  margin: 0 auto;
-  padding: 96px 0 120px;
-}
 
-/* ------------------------------
+/* --------------------------------
    Site header
 -------------------------------- */
 
 .site-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+
   width: 100%;
 
-  background: rgba(255,
-      255,
-      255,
-      0.82);
+  background: rgba(255, 255, 255, 0.82);
 
   border-bottom: 1px solid #e7ebf1;
 
   backdrop-filter: blur(18px);
-
-  position: sticky;
-  top: 0;
-  z-index: 100;
 }
 
 .header-inner {
-  width: min(1180px,
-      calc(100% - 48px));
-
+  width: min(1180px, calc(100% - 48px));
   min-height: 76px;
 
   margin: 0 auto;
@@ -106,7 +94,6 @@ main>section {
 
   font-size: 1rem;
   font-weight: 850;
-
   letter-spacing: 0.08em;
 }
 
@@ -123,8 +110,7 @@ main>section {
   font-size: 0.9rem;
   font-weight: 550;
 
-  transition:
-    color 0.2s ease;
+  transition: color 0.2s ease;
 }
 
 .site-navigation a:hover {
@@ -158,294 +144,9 @@ main>section {
   border-radius: 2px;
 }
 
-/* ------------------------------
+
+/* --------------------------------
    Hero
--------------------------------- */
-
-main>section>h1 {
-  max-width: 760px;
-  margin: 0 auto 48px;
-
-  text-align: center;
-
-  font-size: clamp(2.25rem, 5vw, 4.25rem);
-  line-height: 1.05;
-  letter-spacing: -0.045em;
-  font-weight: 800;
-
-  color: #111827;
-}
-
-/* ------------------------------
-   Search form
--------------------------------- */
-
-form {
-  width: min(680px, 100%);
-  margin: 0 auto;
-
-  display: flex;
-  align-items: flex-end;
-  gap: 12px;
-
-  padding: 10px;
-
-  background: #ffffff;
-  border: 1px solid #e1e6ee;
-  border-radius: 18px;
-
-  box-shadow:
-    0 10px 30px rgba(15, 23, 42, 0.06),
-    0 2px 8px rgba(15, 23, 42, 0.03);
-}
-
-form label {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
-}
-
-form input {
-  flex: 1;
-  min-width: 0;
-
-  height: 56px;
-  padding: 0 18px;
-
-  border: 1px solid transparent;
-  border-radius: 12px;
-
-  background: #f7f9fc;
-  color: #172033;
-
-  outline: none;
-
-  transition:
-    background 0.2s ease,
-    border-color 0.2s ease,
-    box-shadow 0.2s ease;
-}
-
-form input::placeholder {
-  color: #98a2b3;
-  font-size: 0.9rem;
-  letter-spacing: 0.08em;
-}
-
-form input:focus {
-  background: #ffffff;
-  border-color: #aeb8c8;
-  box-shadow: 0 0 0 4px rgba(23, 32, 51, 0.06);
-}
-
-form button {
-  height: 56px;
-  padding: 0 28px;
-
-  border: 0;
-  border-radius: 12px;
-
-  background: #172033;
-  color: #ffffff;
-
-  font-weight: 650;
-
-  transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease,
-    background 0.2s ease;
-}
-
-form button:hover {
-  background: #252f43;
-  transform: translateY(-1px);
-
-  box-shadow:
-    0 8px 20px rgba(23, 32, 51, 0.16);
-}
-
-form button:active {
-  transform: translateY(0);
-}
-
-/* ------------------------------
-   Search results
--------------------------------- */
-
-section[aria-label="Sökresultat"] {
-  width: min(900px, 100%);
-  margin: 64px auto 0;
-}
-
-section[aria-label="Sökresultat"]>h2 {
-  margin: 0 0 18px;
-
-  font-size: clamp(1.5rem, 3vw, 2rem);
-  letter-spacing: -0.025em;
-  text-align: center;
-}
-
-details {
-  background: #ffffff;
-
-  border: 1px solid #e2e7ef;
-  border-radius: 20px;
-
-  overflow: hidden;
-
-  box-shadow:
-    0 12px 35px rgba(15, 23, 42, 0.05),
-    0 2px 8px rgba(15, 23, 42, 0.025);
-}
-
-summary {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  min-height: 72px;
-  padding: 0 26px;
-
-  cursor: pointer;
-
-  font-weight: 650;
-  color: #172033;
-
-  list-style: none;
-}
-
-summary::-webkit-details-marker {
-  display: none;
-}
-
-summary::after {
-  content: "+";
-
-  font-size: 1.4rem;
-  font-weight: 400;
-  color: #7a8495;
-
-  transition: transform 0.2s ease;
-}
-
-details[open] summary::after {
-  transform: rotate(45deg);
-}
-
-details>div {
-  padding: 26px;
-
-  border-top: 1px solid #edf0f4;
-}
-
-details h3 {
-  margin: 0 0 12px;
-
-  font-size: 1rem;
-  color: #172033;
-}
-
-details p {
-  margin: 0 0 8px;
-
-  color: #667085;
-  line-height: 1.65;
-}
-
-/* ------------------------------
-   Responsive price chart
--------------------------------- */
-
-.chart-summary {
-  display: flex;
-  align-items: baseline;
-  gap: 10px;
-
-  margin-top: 22px;
-}
-
-.chart-summary strong {
-  color: #111827;
-
-  font-size: 2rem;
-  line-height: 1;
-  letter-spacing: -0.04em;
-}
-
-.chart-summary span {
-  color: #8a94a6;
-
-  font-size: 0.8rem;
-}
-
-.line-chart {
-  width: 100%;
-  margin-top: 18px;
-
-  overflow: hidden;
-}
-
-.line-chart svg {
-  display: block;
-
-  width: 100%;
-  height: auto;
-
-  min-height: 220px;
-}
-
-.chart-grid-line {
-  stroke: #edf0f4;
-  stroke-width: 1;
-}
-
-.chart-area {
-  fill: url(#priceAreaGradient);
-}
-
-.chart-line {
-  fill: none;
-
-  stroke: #172033;
-  stroke-width: 4;
-
-  stroke-linecap: round;
-  stroke-linejoin: round;
-
-  vector-effect: non-scaling-stroke;
-}
-
-.chart-point {
-  fill: #ffffff;
-
-  stroke: #172033;
-  stroke-width: 3;
-
-  vector-effect: non-scaling-stroke;
-
-  transition:
-    r 0.2s ease;
-}
-
-.chart-point:hover {
-  r: 7;
-}
-
-.chart-label {
-  fill: #8a94a6;
-
-  font-size: 12px;
-  font-weight: 500;
-}
-
-/* ------------------------------
-   Premium hero
 -------------------------------- */
 
 .hero-section {
@@ -453,12 +154,16 @@ details p {
 
   overflow: hidden;
 
-  padding-top: 110px;
+  padding: 110px 20px 120px;
 }
 
 .hero-content {
   position: relative;
   z-index: 1;
+
+  width: min(100%, 1000px);
+
+  margin: 0 auto;
 
   text-align: center;
 }
@@ -482,10 +187,7 @@ details p {
 
   color: #111827;
 
-  font-size: clamp(3rem,
-      8vw,
-      6.5rem);
-
+  font-size: clamp(3rem, 8vw, 6.5rem);
   line-height: 0.96;
   letter-spacing: -0.065em;
   font-weight: 850;
@@ -539,12 +241,487 @@ details p {
   pointer-events: none;
 }
 
-/* ------------------------------
+
+/* --------------------------------
+   Search form
+-------------------------------- */
+
+form {
+  width: min(680px, 100%);
+
+  margin: 0 auto;
+
+  display: flex;
+  align-items: flex-end;
+
+  gap: 12px;
+
+  padding: 10px;
+
+  background: #ffffff;
+
+  border: 1px solid #e1e6ee;
+  border-radius: 18px;
+
+  box-shadow:
+    0 10px 30px rgba(15, 23, 42, 0.06),
+    0 2px 8px rgba(15, 23, 42, 0.03);
+}
+
+form label {
+  position: absolute;
+
+  width: 1px;
+  height: 1px;
+
+  padding: 0;
+  margin: -1px;
+
+  overflow: hidden;
+
+  clip: rect(0, 0, 0, 0);
+
+  white-space: nowrap;
+
+  border: 0;
+}
+
+form input {
+  flex: 1;
+
+  min-width: 0;
+  height: 56px;
+
+  padding: 0 18px;
+
+  border: 1px solid transparent;
+  border-radius: 12px;
+
+  background: #f7f9fc;
+
+  color: #172033;
+
+  outline: none;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+form input::placeholder {
+  color: #98a2b3;
+
+  font-size: 0.9rem;
+  letter-spacing: 0.08em;
+}
+
+form input:focus {
+  background: #ffffff;
+
+  border-color: #aeb8c8;
+
+  box-shadow:
+    0 0 0 4px rgba(23, 32, 51, 0.06);
+}
+
+form button {
+  height: 56px;
+
+  padding: 0 28px;
+
+  border: 0;
+  border-radius: 12px;
+
+  background: #172033;
+
+  color: #ffffff;
+
+  font-weight: 650;
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+form button:hover {
+  background: #252f43;
+
+  transform: translateY(-1px);
+
+  box-shadow:
+    0 8px 20px rgba(23, 32, 51, 0.16);
+}
+
+form button:active {
+  transform: translateY(0);
+}
+
+
+/* --------------------------------
+   Search results
+-------------------------------- */
+
+.search-results {
+  width: min(960px, 100%);
+
+  margin: 72px auto 0;
+}
+
+.results-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+
+  gap: 24px;
+
+  margin-bottom: 24px;
+}
+
+.results-label,
+.card-eyebrow {
+  display: block;
+
+  margin-bottom: 8px;
+
+  color: #8a94a6;
+
+  font-size: 0.72rem;
+  font-weight: 750;
+  letter-spacing: 0.12em;
+}
+
+.results-header h2 {
+  margin: 0;
+
+  color: #111827;
+
+  font-size: clamp(2rem, 4vw, 2.8rem);
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+
+.energy-area-badge {
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+
+  padding: 10px 14px;
+
+  background: #ffffff;
+
+  border: 1px solid #e1e6ee;
+  border-radius: 12px;
+}
+
+.energy-area-badge span {
+  color: #8a94a6;
+
+  font-size: 0.8rem;
+}
+
+.energy-area-badge strong {
+  color: #172033;
+
+  font-size: 0.95rem;
+}
+
+.results-grid {
+  display: grid;
+
+  grid-template-columns: 1fr 1.6fr;
+
+  gap: 16px;
+}
+
+.result-card {
+  min-width: 0;
+
+  background: #ffffff;
+
+  border: 1px solid #e2e7ef;
+  border-radius: 20px;
+
+  box-shadow:
+    0 12px 35px rgba(15, 23, 42, 0.045),
+    0 2px 8px rgba(15, 23, 42, 0.025);
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.result-card:hover {
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 18px 40px rgba(15, 23, 42, 0.07),
+    0 3px 10px rgba(15, 23, 42, 0.03);
+}
+
+
+/* --------------------------------
+   Energy area
+-------------------------------- */
+
+.energy-area-card {
+  min-height: 230px;
+
+  padding: 26px;
+}
+
+.energy-area-content {
+  height: 100%;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.card-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: 20px;
+}
+
+.energy-area-content h3,
+.chart-card h3,
+.tips-card h3 {
+  margin: 0;
+
+  color: #172033;
+
+  font-size: 1.25rem;
+  letter-spacing: -0.02em;
+}
+
+.energy-area-content p {
+  max-width: 300px;
+
+  margin: 18px 0 0;
+
+  color: #667085;
+
+  line-height: 1.65;
+}
+
+.area-code {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-width: 52px;
+  height: 34px;
+
+  border-radius: 9px;
+
+  background: #f1f4f8;
+
+  color: #172033;
+
+  font-size: 0.8rem;
+  font-weight: 750;
+}
+
+
+/* --------------------------------
+   Price chart
+-------------------------------- */
+
+.chart-card {
+  padding: 26px;
+}
+
+.chart-unit {
+  color: #8a94a6;
+
+  font-size: 0.8rem;
+}
+
+.chart-summary {
+  display: flex;
+  align-items: baseline;
+
+  gap: 10px;
+
+  margin-top: 22px;
+}
+
+.chart-summary strong {
+  color: #111827;
+
+  font-size: 2rem;
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+
+.chart-summary span {
+  color: #8a94a6;
+
+  font-size: 0.8rem;
+}
+
+.line-chart {
+  width: 100%;
+
+  margin-top: 18px;
+
+  overflow: hidden;
+}
+
+.line-chart svg {
+  display: block;
+
+  width: 100%;
+  height: auto;
+
+  min-height: 220px;
+}
+
+.chart-grid-line {
+  stroke: #edf0f4;
+  stroke-width: 1;
+}
+
+.chart-area {
+  fill: url(#priceAreaGradient);
+}
+
+.chart-line {
+  fill: none;
+
+  stroke: #172033;
+  stroke-width: 4;
+
+  stroke-linecap: round;
+  stroke-linejoin: round;
+
+  vector-effect: non-scaling-stroke;
+}
+
+.chart-point {
+  fill: #ffffff;
+
+  stroke: #172033;
+  stroke-width: 3;
+
+  vector-effect: non-scaling-stroke;
+
+  transition: r 0.2s ease;
+}
+
+.chart-point:hover {
+  r: 7;
+}
+
+.chart-label {
+  fill: #8a94a6;
+
+  font-size: 12px;
+  font-weight: 500;
+}
+
+
+/* --------------------------------
+   Cost saving tips
+-------------------------------- */
+
+.tips-card {
+  padding: 26px;
+}
+
+.tips-list {
+  display: flex;
+  flex-direction: column;
+
+  margin-top: 24px;
+}
+
+.tip {
+  display: grid;
+
+  grid-template-columns: 42px 1fr;
+
+  gap: 16px;
+
+  align-items: start;
+
+  padding: 18px 0;
+
+  border-top: 1px solid #edf0f4;
+}
+
+.tip:last-child {
+  border-bottom: 1px solid #edf0f4;
+}
+
+.tip-number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 34px;
+  height: 34px;
+
+  color: #8a94a6;
+
+  font-size: 0.72rem;
+  font-weight: 800;
+
+  letter-spacing: 0.05em;
+}
+
+.tip p {
+  margin: 0;
+
+  color: #667085;
+
+  font-size: 0.88rem;
+  line-height: 1.65;
+}
+
+
+/* --------------------------------
+   Loading and error
+-------------------------------- */
+
+.loading-message {
+  margin: 24px 0 0;
+
+  color: #8a94a6;
+
+  text-align: center;
+}
+
+.error-message {
+  width: min(680px, 100%);
+
+  margin: 20px auto 0;
+
+  padding: 14px 18px;
+
+  border: 1px solid #e5d7d7;
+  border-radius: 12px;
+
+  background: #fffafa;
+
+  color: #8b3a3a;
+
+  text-align: center;
+}
+
+
+/* --------------------------------
    Footer
 -------------------------------- */
 
 footer {
   width: 100%;
+
   margin-top: auto;
 
   padding: 32px 40px;
@@ -556,70 +733,149 @@ footer {
 
 footer p {
   width: min(1120px, 100%);
+
   margin: 0 auto;
 
   color: #8a94a6;
 
   font-size: 0.875rem;
+
   text-align: center;
 }
 
-/* ------------------------------
-   Responsive
+
+/* --------------------------------
+   Dashboard responsive
 -------------------------------- */
 
-@media (max-width: 768px) {
-  header {
-    min-height: auto;
+@media (max-width: 800px) {
+  .results-grid {
+    grid-template-columns: 1fr;
+  }
 
-    padding: 20px;
-
+  .results-header {
+    align-items: flex-start;
     flex-direction: column;
-    gap: 18px;
   }
 
-  nav {
-    width: 100%;
+  .energy-area-badge {
+    align-self: flex-start;
+  }
+}
 
-    justify-content: center;
-    gap: 20px;
 
-    flex-wrap: wrap;
+/* --------------------------------
+   Mobile navigation
+-------------------------------- */
+
+@media (max-width: 700px) {
+  .header-inner {
+    width: calc(100% - 32px);
   }
 
-  main>section {
-    width: min(100% - 28px, 680px);
-
-    padding: 64px 0 80px;
+  .mobile-menu-button {
+    display: block;
   }
 
-  main>section>h1 {
-    margin-bottom: 36px;
-  }
+  .site-navigation {
+    position: absolute;
 
-  form {
-    padding: 8px;
+    top: calc(100% + 1px);
+    left: 0;
+    right: 0;
+
+    display: none;
 
     flex-direction: column;
     align-items: stretch;
+
+    gap: 0;
+
+    padding: 10px 16px 18px;
+
+    background: rgba(255, 255, 255, 0.97);
+
+    border-bottom: 1px solid #e7ebf1;
+
+    box-shadow:
+      0 14px 30px rgba(15, 23, 42, 0.08);
   }
 
-  form input,
-  form button {
-    width: 100%;
+  .site-navigation.is-open {
+    display: flex;
   }
 
-  section[aria-label="Sökresultat"] {
-    margin-top: 48px;
+  .site-navigation a {
+    padding: 15px 12px;
+
+    border-radius: 10px;
   }
 
-  details>div {
-    padding: 22px 20px;
+  .site-navigation a:hover {
+    background: #f6f8fb;
   }
 
-  details li {
-    flex-direction: column;
-    gap: 4px;
+  .hero-section {
+    padding-top: 72px;
+  }
+
+  .hero-content h1 {
+    font-size: clamp(3rem, 15vw, 4.5rem);
+  }
+
+  .hero-description {
+    font-size: 0.98rem;
+  }
+}
+
+
+/* --------------------------------
+   Tablet
+-------------------------------- */
+
+@media (max-width: 600px) {
+  .hero-section {
+    padding:
+      72px 16px 90px;
+  }
+
+  .search-results {
+    margin-top: 52px;
+  }
+
+  .results-header {
+    gap: 16px;
+  }
+
+  .energy-area-card,
+  .chart-card,
+  .tips-card {
+    padding: 20px;
+  }
+
+  .result-card {
+    border-radius: 18px;
+  }
+
+  .line-chart svg {
+    min-height: 200px;
+  }
+
+  .tip {
+    grid-template-columns: 38px 1fr;
+
+    gap: 14px;
+
+    padding: 16px 0;
+  }
+
+  .tip-number {
+    width: 32px;
+    height: 32px;
+  }
+
+  .tip p {
+    font-size: 0.86rem;
   }
 
   footer {
@@ -627,469 +883,105 @@ footer p {
   }
 }
 
+
+/* --------------------------------
+   Small mobile
+-------------------------------- */
+
 @media (max-width: 480px) {
-  main>section {
-    width: calc(100% - 24px);
-
-    padding-top: 48px;
-    padding-bottom: 64px;
+  .header-inner {
+    min-height: 68px;
   }
 
-  main>section>h1 {
-    font-size: 2.15rem;
+  .hero-section {
+    padding:
+      56px 12px 72px;
   }
 
-  nav {
-    font-size: 0.9rem;
+  .hero-eyebrow {
+    margin-bottom: 18px;
+
+    font-size: 0.65rem;
   }
 
-  nav a {
-    font-size: 0.85rem;
+  .hero-content h1 {
+    font-size: 3rem;
   }
 
-  summary {
-    min-height: 64px;
-    padding: 0 20px;
-  }
+  .hero-description {
+    margin-top: 24px;
 
-  /* ------------------------------
-       Premium results dashboard
-    -------------------------------- */
-
-  .search-results {
-    width: min(960px, 100%);
-    margin: 72px auto 0;
-  }
-
-  .results-header {
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
-
-    gap: 24px;
-    margin-bottom: 24px;
-  }
-
-  .results-label,
-  .card-eyebrow {
-    display: block;
-
-    margin-bottom: 8px;
-
-    color: #8a94a6;
-
-    font-size: 0.72rem;
-    font-weight: 750;
-    letter-spacing: 0.12em;
-  }
-
-  .results-header h2 {
-    margin: 0;
-
-    color: #111827;
-
-    font-size: clamp(2rem, 4vw, 2.8rem);
-    line-height: 1;
-    letter-spacing: -0.04em;
-  }
-
-  .energy-area-badge {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-
-    padding: 10px 14px;
-
-    background: #ffffff;
-
-    border: 1px solid #e1e6ee;
-    border-radius: 12px;
-  }
-
-  .energy-area-badge span {
-    color: #8a94a6;
-
-    font-size: 0.8rem;
-  }
-
-  .energy-area-badge strong {
-    color: #172033;
-
-    font-size: 0.95rem;
-  }
-
-  .results-grid {
-    display: grid;
-
-    grid-template-columns: 1fr 1.6fr;
-    gap: 16px;
-  }
-
-  .result-card {
-    min-width: 0;
-
-    background: #ffffff;
-
-    border: 1px solid #e2e7ef;
-    border-radius: 20px;
-
-    box-shadow:
-      0 12px 35px rgba(15, 23, 42, 0.045),
-      0 2px 8px rgba(15, 23, 42, 0.025);
-
-    transition:
-      transform 0.2s ease,
-      box-shadow 0.2s ease;
-  }
-
-  .result-card:hover {
-    transform: translateY(-2px);
-
-    box-shadow:
-      0 18px 40px rgba(15, 23, 42, 0.07),
-      0 3px 10px rgba(15, 23, 42, 0.03);
-  }
-
-  .energy-area-card {
-    min-height: 230px;
-
-    padding: 26px;
-  }
-
-  .energy-area-content {
-    height: 100%;
-
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-  }
-
-  .card-heading {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-
-    gap: 20px;
-  }
-
-  .energy-area-content h3,
-  .chart-card h3,
-  .tips-card h3 {
-    margin: 0;
-
-    color: #172033;
-
-    font-size: 1.25rem;
-    letter-spacing: -0.02em;
-  }
-
-  .energy-area-content p {
-    max-width: 300px;
-
-    margin: 18px 0 0;
-
-    color: #667085;
-
+    font-size: 0.94rem;
     line-height: 1.65;
   }
 
-  .area-code {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-
-    min-width: 52px;
-    height: 34px;
-
-    border-radius: 9px;
-
-    background: #f1f4f8;
-
-    color: #172033;
-
-    font-size: 0.8rem;
-    font-weight: 750;
+  .hero-content form {
+    margin-top: 30px;
   }
 
-  .chart-card {
-    padding: 26px;
-  }
-
-  .chart-unit {
-    color: #8a94a6;
-
-    font-size: 0.8rem;
-  }
-
-  /* ------------------------------
-       Price chart
-    -------------------------------- */
-
-  .price-chart {
-    height: 260px;
-
-    display: flex;
+  form {
+    flex-direction: column;
     align-items: stretch;
 
-    gap: 10px;
-
-    margin-top: 28px;
-    padding-top: 20px;
-
-    border-top: 1px solid #edf0f4;
+    padding: 8px;
   }
 
-  .chart-column {
-    flex: 1;
-    min-width: 0;
-
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .chart-value {
-    margin-bottom: 7px;
-
-    color: #667085;
-
-    font-size: 0.7rem;
-    font-weight: 650;
-  }
-
-  .chart-bar-wrapper {
+  form input,
+  form button {
     width: 100%;
-    max-width: 34px;
-
-    flex: 1;
-
-    display: flex;
-    align-items: flex-end;
-
-    border-radius: 7px 7px 3px 3px;
-
-    background: #f3f5f8;
-
-    overflow: hidden;
   }
 
-  .chart-bar {
-    width: 100%;
-
-    min-height: 8px;
-
-    border-radius: 7px 7px 3px 3px;
-
-    background: #172033;
-
-    transition:
-      height 0.4s ease,
-      opacity 0.2s ease;
+  form input,
+  form button {
+    height: 52px;
   }
 
-  .chart-column:hover .chart-bar {
-    opacity: 0.75;
+  form button {
+    padding: 0 20px;
   }
 
-  .chart-time {
-    margin-top: 9px;
-
-    color: #8a94a6;
-
-    font-size: 0.7rem;
-
-    white-space: nowrap;
+  .search-results {
+    margin-top: 44px;
   }
 
-  /* ------------------------------
-       Tips
-    -------------------------------- */
-
-  .tips-card {
-    grid-column: 1 / -1;
-
-    padding: 26px;
+  .results-header h2 {
+    font-size: 2rem;
   }
 
-  .tips-list {
-    display: grid;
+  .chart-summary {
+    gap: 8px;
+  }
 
-    grid-template-columns: repeat(3, 1fr);
+  .chart-summary strong {
+    font-size: 1.8rem;
+  }
 
-    gap: 12px;
+  .chart-summary span {
+    font-size: 0.72rem;
+  }
 
-    margin-top: 24px;
+  .line-chart svg {
+    min-height: 180px;
+  }
+
+  .chart-label {
+    font-size: 10px;
   }
 
   .tip {
-    padding: 18px;
+    grid-template-columns: 36px 1fr;
 
-    background: #f7f9fc;
-
-    border: 1px solid #edf0f4;
-    border-radius: 14px;
+    gap: 12px;
   }
 
   .tip-number {
-    display: block;
+    width: 30px;
+    height: 30px;
 
-    margin-bottom: 12px;
-
-    color: #a0a9b7;
-
-    font-size: 0.7rem;
-    font-weight: 750;
-    letter-spacing: 0.08em;
+    font-size: 0.68rem;
   }
 
   .tip p {
-    margin: 0;
-
-    color: #667085;
-
-    font-size: 0.9rem;
-    line-height: 1.6;
-  }
-
-  /* ------------------------------
-       Dashboard responsive
-    -------------------------------- */
-
-  @media (max-width: 800px) {
-    .results-grid {
-      grid-template-columns: 1fr;
-    }
-
-    .tips-card {
-      grid-column: auto;
-    }
-
-    .tips-list {
-      grid-template-columns: 1fr;
-    }
-  }
-
-  @media (max-width: 600px) {
-    .search-results {
-      margin-top: 52px;
-    }
-
-    .results-header {
-      align-items: flex-start;
-
-      flex-direction: column;
-    }
-
-    .energy-area-badge {
-      align-self: flex-start;
-    }
-
-    .energy-area-card,
-    .chart-card,
-    .tips-card {
-      padding: 20px;
-    }
-
-    .price-chart {
-      gap: 5px;
-      height: 220px;
-    }
-
-    .chart-value {
-      font-size: 0.6rem;
-    }
-
-    .chart-time {
-      font-size: 0.6rem;
-    }
-  }
-
-  .loading-message {
-    margin: 24px 0 0;
-
-    text-align: center;
-
-    color: #8a94a6;
-  }
-
-  .error-message {
-    width: min(680px, 100%);
-
-    margin: 20px auto 0;
-    padding: 14px 18px;
-
-    border: 1px solid #e5d7d7;
-    border-radius: 12px;
-
-    background: #fffafa;
-
-    color: #8b3a3a;
-
-    text-align: center;
-  }
-
-  @media (max-width: 700px) {
-    .header-inner {
-      width: calc(100% - 32px);
-    }
-
-    .mobile-menu-button {
-      display: block;
-    }
-
-    .site-navigation {
-      position: absolute;
-
-      top: calc(100% + 1px);
-      left: 0;
-      right: 0;
-
-      display: none;
-
-      flex-direction: column;
-      align-items: stretch;
-
-      gap: 0;
-
-      padding: 10px 16px 18px;
-
-      background: rgba(255,
-          255,
-          255,
-          0.97);
-
-      border-bottom: 1px solid #e7ebf1;
-
-      box-shadow:
-        0 14px 30px rgba(15, 23, 42, 0.08);
-    }
-
-    .site-navigation.is-open {
-      display: flex;
-    }
-
-    .site-navigation a {
-      padding: 15px 12px;
-
-      border-radius: 10px;
-    }
-
-    .site-navigation a:hover {
-      background: #f6f8fb;
-    }
-
-    .hero-section {
-      padding-top: 72px;
-    }
-
-    .hero-content h1 {
-      font-size: clamp(3rem,
-          15vw,
-          4.5rem);
-    }
-
-    .hero-description {
-      font-size: 0.98rem;
-    }
+    font-size: 0.84rem;
   }
 }
