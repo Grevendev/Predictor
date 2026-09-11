@@ -1,5 +1,11 @@
 import type { Prediction } from "../types/Prediction";
 
+import { getEnergyArea } from "../utils/energyAreaUtils";
+
+import EnergyAreaInfo from "./EnergyAreaInfo";
+import PriceChart from "./PriceChart";
+import CostSavingTips from "./CostSavingTips";
+
 interface SearchResultsProps {
   prediction: Prediction;
 }
@@ -7,6 +13,10 @@ interface SearchResultsProps {
 function SearchResults({
   prediction
 }: SearchResultsProps) {
+  const energyArea = getEnergyArea(
+    prediction.energyArea
+  );
+
   return (
     <section aria-label="Sökresultat">
       <h2>{prediction.city}</h2>
@@ -16,38 +26,17 @@ function SearchResults({
           Visa information om elområdet
         </summary>
 
-        <div>
-          <h3>Elområde</h3>
+        {energyArea && (
+          <EnergyAreaInfo
+            energyArea={energyArea}
+          />
+        )}
 
-          <p>
-            {prediction.energyArea}
-          </p>
-        </div>
+        <PriceChart
+          predictions={prediction.predictions}
+        />
 
-        <div>
-          <h3>Billigaste tid</h3>
-
-          <p>
-            {prediction.predictedCheapestHour}
-          </p>
-        </div>
-
-        <div>
-          <h3>Förutspått elpris</h3>
-
-          <p>
-            {prediction.predictedPrice} öre/kWh
-          </p>
-        </div>
-
-        <div>
-          <h3>Tips för att minska elkostnader</h3>
-
-          <p>
-            Använd större elförbrukare under
-            de timmar då elpriset förväntas vara lägre.
-          </p>
-        </div>
+        <CostSavingTips />
       </details>
     </section>
   );
