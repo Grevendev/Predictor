@@ -1,71 +1,36 @@
-
 import { useEffect, useMemo, useState } from "react";
 import "./EnergyAreaMap.css";
-
-type Position = [number, number];
-
-interface PolygonGeometry {
-  type: "Polygon";
-  coordinates: Position[][];
-}
-
-interface MultiPolygonGeometry {
-  type: "MultiPolygon";
-  coordinates: Position[][][];
-}
-
-type GeoJsonGeometry =
-  | PolygonGeometry
-  | MultiPolygonGeometry;
-
-interface GeoJsonFeature {
-  type: "Feature";
-  properties: Record<string, unknown>;
-  geometry: GeoJsonGeometry;
-}
-
-interface GeoJsonResponse {
-  type: "FeatureCollection";
-  features: GeoJsonFeature[];
-}
+import {
+  getEnergyAreas,
+  type EnergyAreaFeature,
+  type EnergyAreaGeometry,
+  type Position
+} from "../services/energyAreaService";
 
 interface MapFeature {
   area: string;
-  geometry: GeoJsonGeometry;
+  geometry: EnergyAreaGeometry;
 }
 
 const MAP_WIDTH = 500;
 const MAP_HEIGHT = 720;
 const PADDING = 20;
 
-const AREA_ORDER = ["SE1", "SE2", "SE3", "SE4"];
+const AREA_ORDER = [
+  "SE1",
+  "SE2",
+  "SE3",
+  "SE4"
+];
 
-function findEnergyArea(
-  properties: Record<string, unknown>
-): string | null {
-  for (const value of Object.values(properties)) {
-    if (typeof value !== "string") {
-      continue;
-    }
-
-    const match = value.match(/\bSE[1-4]\b/i);
-
-    if (match) {
-      return match[0].toUpperCase();
-    }
-  }
-
-  return null;
-}
-
-function getCoordinates(
-  geometry: GeoJsonGeometry
+function getAllCoordinates(
+  geometry: EnergyAreaGeometry
 ): Position[] {
   if (geometry.type === "Polygon") {
-    return geometry.coordinates[0];
+    return geometry.coordinates.flat();
   }
 
-  return geometry.coordinates[0][0];
+  return geometry.coordinates.flat(2);
 }
 
 function createProjection(
@@ -73,7 +38,7 @@ function createProjection(
 ) {
   const allCoordinates = features.flatMap(
     (feature) =>
-      getCoordinates(feature.geometry)
+      getAllCoordinates(feature.geometry)
   );
 
   const longitudes = allCoordinates.map(
@@ -132,8 +97,11 @@ function createProjection(
   return (
     coordinate: Position
   ): Position => {
-    const longitude = coordinate[0];
-    const latitude = coordinate[1];
+    const longitude =
+      coordinate[0];
+
+    const latitude =
+      coordinate[1];
 
     const x =
       offsetX +
@@ -150,8 +118,10 @@ function createProjection(
 }
 
 function geometryToPath(
-  geometry: GeoJsonGeometry,
-  project: (coordinate: Position) => Position
+  geometry: EnergyAreaGeometry,
+  project: (
+    coordinate: Position
+  ) => Position
 ): string {
   let rings: Position[][];
 
@@ -192,6 +162,17 @@ function geometryToPath(
     .join(" ");
 }
 
+function convertFeature(
+  feature: EnergyAreaFeature
+): MapFeature {
+  return {
+    area:
+      feature.properties.energy_area,
+    geometry:
+      feature.geometry
+  };
+}
+
 function EnergyAreaMap() {
   const [features, setFeatures] =
     useState<MapFeature[]>([]);
@@ -208,39 +189,12 @@ function EnergyAreaMap() {
   useEffect(() => {
     async function loadMap() {
       try {
-        const response =
-          await fetch(
-            "https://services2.arcgis.com/L8WLzcxhwLqd80Jx/ArcGIS/rest/services/Natomraden_250526/FeatureServer/0/query?where=1%3D1&outFields=*&returnGeometry=true&outSR=4326&f=geojson"
-          );
-
-        if (!response.ok) {
-          throw new Error(
-            "Kunde inte hämta kartdata."
-          );
-        }
-
         const data =
-          (await response.json()) as GeoJsonResponse;
+          await getEnergyAreas();
 
         const mapFeatures =
           data.features
-            .map((feature) => {
-              return {
-                area:
-                  findEnergyArea(
-                    feature.properties
-                  ),
-                geometry:
-                  feature.geometry
-              };
-            })
-            .filter(
-              (
-                feature
-              ): feature is MapFeature =>
-                feature.area !==
-                null
-            )
+            .map(convertFeature)
             .sort(
               (a, b) =>
                 AREA_ORDER.indexOf(
@@ -350,14 +304,10 @@ function EnergyAreaMap() {
                       feature.area
                     )
                   }
-                  onKeyDown={(
-                    event
-                  ) => {
+                  onKeyDown={(event) => {
                     if (
-                      event.key ===
-                      "Enter" ||
-                      event.key ===
-                      " "
+                      event.key === "Enter" ||
+                      event.key === " "
                     ) {
                       event.preventDefault();
 
@@ -434,4 +384,3 @@ function EnergyAreaMap() {
 }
 
 export default EnergyAreaMap;
-;
