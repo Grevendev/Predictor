@@ -1,8 +1,20 @@
+import { useState } from "react";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import EnergyAreaMap from "../components/EnergyAreaMap";
+import EnergyAreaInfo from "../components/EnergyAreaInfo";
+import { energyAreaInfo } from "../constants/energyAreaInfo";
+import type { EnergyArea } from "../types/EnergyArea";
 
 function AboutPage() {
+  const [selectedArea, setSelectedArea] =
+    useState<EnergyArea["code"] | null>(null);
+
+  const selectedAreaInfo =
+    selectedArea
+      ? energyAreaInfo[selectedArea]
+      : null;
+
   return (
     <>
       <Header />
@@ -43,7 +55,44 @@ function AboutPage() {
               av Sverige.
             </p>
 
-            <EnergyAreaMap />
+            <div className="energy-area-layout">
+              <div className="energy-area-map-column">
+                <EnergyAreaMap
+                  selectedArea={selectedArea}
+                  onSelectArea={setSelectedArea}
+                />
+              </div>
+
+              <div className="energy-area-info-column">
+                {selectedAreaInfo ? (
+                  <EnergyAreaInfo
+                    energyArea={
+                      selectedAreaInfo
+                    }
+                  />
+                ) : (
+                  <div className="energy-area-placeholder">
+                    <span className="card-eyebrow">
+                      VÄLJ ELOMRÅDE
+                    </span>
+
+                    <h3>
+                      Utforska Sveriges
+                      elområden
+                    </h3>
+
+                    <p>
+                      Klicka på ett elområde
+                      på kartan för att se
+                      information om området
+                      och vilka kraftslag som
+                      har störst installerad
+                      effekt.
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
         </section>
 
@@ -119,6 +168,7 @@ function AboutPage() {
             <div className="about-benefits">
               <div>
                 <strong>Planera</strong>
+
                 <span>
                   Se när priserna förväntas vara
                   lägre.
@@ -127,6 +177,7 @@ function AboutPage() {
 
               <div>
                 <strong>Förstå</strong>
+
                 <span>
                   Få en tydligare bild av
                   elpriset i ditt område.
@@ -135,6 +186,7 @@ function AboutPage() {
 
               <div>
                 <strong>Agera</strong>
+
                 <span>
                   Anpassa din elanvändning efter
                   prognosen.
@@ -160,4 +212,3 @@ function AboutPage() {
 }
 
 export default AboutPage;
-;
