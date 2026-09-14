@@ -6,9 +6,17 @@ import {
   type EnergyAreaGeometry,
   type Position
 } from "../services/energyAreaService";
+import type { EnergyArea } from "../types/EnergyArea";
+
+interface EnergyAreaMapProps {
+  selectedArea: EnergyArea["code"] | null;
+  onSelectArea: (
+    area: EnergyArea["code"]
+  ) => void;
+}
 
 interface MapFeature {
-  area: string;
+  area: EnergyArea["code"];
   geometry: EnergyAreaGeometry;
 }
 
@@ -16,7 +24,7 @@ const MAP_WIDTH = 620;
 const MAP_HEIGHT = 760;
 const PADDING = 20;
 
-const AREA_ORDER = [
+const AREA_ORDER: EnergyArea["code"][] = [
   "SE1",
   "SE2",
   "SE3",
@@ -155,31 +163,33 @@ function geometryToPath(
 
   return rings
     .map((ring) => {
-      return ring
-        .map((coordinate, index) => {
-          const projected =
-            project(coordinate);
+      return (
+        ring
+          .map((coordinate, index) => {
+            const projected =
+              project(coordinate);
 
-          const x =
-            projected[0].toFixed(2);
+            const x =
+              projected[0].toFixed(2);
 
-          const y =
-            projected[1].toFixed(2);
+            const y =
+              projected[1].toFixed(2);
 
-          const command =
-            index === 0
-              ? "M"
-              : "L";
+            const command =
+              index === 0
+                ? "M"
+                : "L";
 
-          return (
-            command +
-            " " +
-            x +
-            " " +
-            y
-          );
-        })
-        .join(" ") + " Z";
+            return (
+              command +
+              " " +
+              x +
+              " " +
+              y
+            );
+          })
+          .join(" ") + " Z"
+      );
     })
     .join(" ");
 }
@@ -189,18 +199,18 @@ function convertFeature(
 ): MapFeature {
   return {
     area:
-      feature.properties.energy_area,
+      feature.properties.energy_area as EnergyArea["code"],
     geometry:
       feature.geometry
   };
 }
 
-function EnergyAreaMap() {
+function EnergyAreaMap({
+  selectedArea,
+  onSelectArea
+}: EnergyAreaMapProps) {
   const [features, setFeatures] =
     useState<MapFeature[]>([]);
-
-  const [selectedArea, setSelectedArea] =
-    useState<string | null>(null);
 
   const [loading, setLoading] =
     useState(true);
@@ -322,7 +332,7 @@ function EnergyAreaMap() {
                     feature.area
                   }
                   onClick={() =>
-                    setSelectedArea(
+                    onSelectArea(
                       feature.area
                     )
                   }
@@ -333,7 +343,7 @@ function EnergyAreaMap() {
                     ) {
                       event.preventDefault();
 
-                      setSelectedArea(
+                      onSelectArea(
                         feature.area
                       );
                     }
@@ -361,7 +371,7 @@ function EnergyAreaMap() {
                       : ""
                   }
                   onClick={() =>
-                    setSelectedArea(
+                    onSelectArea(
                       area
                     )
                   }
