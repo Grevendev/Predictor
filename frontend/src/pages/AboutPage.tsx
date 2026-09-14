@@ -1,9 +1,12 @@
 import { useState } from "react";
+
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import EnergyAreaMap from "../components/EnergyAreaMap";
 import EnergyAreaInfo from "../components/EnergyAreaInfo";
+
 import { energyAreaInfo } from "../constants/energyAreaInfo";
+
 import type { EnergyArea } from "../types/EnergyArea";
 
 function AboutPage() {
@@ -40,9 +43,9 @@ function AboutPage() {
 
         <section className="about-section">
           <div className="about-section-content">
-            <span className="section-label">
+            <p className="section-label">
               ELOMRÅDEN
-            </span>
+            </p>
 
             <h2>
               Sverige är indelat i fyra elområden
@@ -66,9 +69,7 @@ function AboutPage() {
               <div className="energy-area-info-column">
                 {selectedAreaInfo ? (
                   <EnergyAreaInfo
-                    energyArea={
-                      selectedAreaInfo
-                    }
+                    energyArea={selectedAreaInfo}
                   />
                 ) : (
                   <div className="energy-area-placeholder">
@@ -115,10 +116,70 @@ function AboutPage() {
               priset.
             </p>
 
-            <p>
-              Därför kan priset variera både över
-              tid och mellan olika delar av Sverige.
-            </p>
+            <div className="about-price-factors">
+              <article className="about-price-factor">
+                <span>
+                  01
+                </span>
+
+                <h3>
+                  Tillgång
+                </h3>
+
+                <p>
+                  När mycket el produceras kan
+                  tillgången öka och priserna
+                  pressas ned.
+                </p>
+              </article>
+
+              <article className="about-price-factor">
+                <span>
+                  02
+                </span>
+
+                <h3>
+                  Efterfrågan
+                </h3>
+
+                <p>
+                  Hög elanvändning ökar efterfrågan
+                  och kan bidra till högre priser.
+                </p>
+              </article>
+
+              <article className="about-price-factor">
+                <span>
+                  03
+                </span>
+
+                <h3>
+                  Väder
+                </h3>
+
+                <p>
+                  Temperatur, vind och nederbörd
+                  påverkar både elanvändning och
+                  produktion.
+                </p>
+              </article>
+
+              <article className="about-price-factor">
+                <span>
+                  04
+                </span>
+
+                <h3>
+                  Överföring
+                </h3>
+
+                <p>
+                  Begränsningar i elnätet påverkar
+                  hur mycket el som kan överföras
+                  mellan olika områden.
+                </p>
+              </article>
+            </div>
           </div>
         </section>
 
@@ -145,6 +206,38 @@ function AboutPage() {
               data och skapa prognoser för framtida
               elpriser.
             </p>
+
+            <div className="about-forecast-process">
+              <article className="about-forecast-step">
+                <span>
+                  01
+                </span>
+
+                <h3>
+                  DATA
+                </h3>
+              </article>
+
+              <article className="about-forecast-step">
+                <span>
+                  02
+                </span>
+
+                <h3>
+                  MÖNSTER
+                </h3>
+              </article>
+
+              <article className="about-forecast-step">
+                <span>
+                  03
+                </span>
+
+                <h3>
+                  PROGNOS
+                </h3>
+              </article>
+            </div>
           </div>
         </section>
 
@@ -167,29 +260,50 @@ function AboutPage() {
 
             <div className="about-benefits">
               <div>
-                <strong>Planera</strong>
+                <span>
+                  01
+                </span>
+
+                <strong>
+                  Planera
+                </strong>
 
                 <span>
                   Se när priserna förväntas vara
-                  lägre.
+                  lägre och planera elanvändningen
+                  därefter.
                 </span>
               </div>
 
               <div>
-                <strong>Förstå</strong>
+                <span>
+                  02
+                </span>
+
+                <strong>
+                  Förstå
+                </strong>
 
                 <span>
-                  Få en tydligare bild av
-                  elpriset i ditt område.
+                  Få en tydligare bild av elpriset
+                  och vad som påverkar utvecklingen
+                  i ditt område.
                 </span>
               </div>
 
               <div>
-                <strong>Agera</strong>
+                <span>
+                  03
+                </span>
+
+                <strong>
+                  Agera
+                </strong>
 
                 <span>
-                  Anpassa din elanvändning efter
-                  prognosen.
+                  Anpassa elanvändningen när
+                  prognosen visar bättre
+                  förutsättningar.
                 </span>
               </div>
             </div>
