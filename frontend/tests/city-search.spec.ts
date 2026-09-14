@@ -16,7 +16,8 @@ test.describe("City search", () => {
 
     await expect(
       page.getByRole("heading", {
-        name: "Malmö"
+        name: "Malmö",
+        level: 2
       })
     ).toBeVisible();
 
