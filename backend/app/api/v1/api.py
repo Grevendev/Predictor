@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from backend.app.api.v1.endpoints import main_endpoint, predictions
+from app.api.v1.endpoints import main_endpoint, predictions
 
 # Variabeln MÅSTE heta exakt 'app' om du kör :app
 app = FastAPI(
