@@ -2,6 +2,8 @@ from fastapi import APIRouter, HTTPException, Query
 from pydantic import BaseModel
 import requests
 
+from app.api.v1.endpoints.predictions import run_prediction
+
 router = APIRouter()
 
 
@@ -62,7 +64,7 @@ def get_zone_from_coordinates(lat: float, lon: float) -> dict[str, str]:
     return ZONE_METADATA[zone_code]
 
 
-@router.get("/zone", response_model=LocationZoneResponse)
+@router.get("/spot-check", response_model=LocationZoneResponse)
 def lookup_zone(
     location: str = Query(..., description="Ortsnamn, t.ex. 'Malmö' eller 'Lund'")
 ):
@@ -105,6 +107,27 @@ def lookup_zone(
     except ValueError as err:
         raise HTTPException(status_code=400, detail=str(err))
 
+    # Dummy features för att testa anropet till ML-modellen
+    features = {
+        "zone": zone_data["code"],
+        "temperature_c": 12.5,
+        "wind_speed_kmh": 18.0,
+        "rain_mm": 0.0,
+        "hour": 14,
+        "day_of_week": 0,
+        "month": 9,
+        "is_weekend": 0,
+        "price_lag_24": 35.0,
+        "price_lag_48": 38.0,
+        "price_lag_168": 32.0,
+        "spot_price_eur_mwh": 34.0,
+    }
+
+    # Kör inferens
+    prediction_result = run_prediction(features)
+    print("Inference result:", prediction_result)
+
+    # Returnera ren respons enligt LocationZoneResponse
     return LocationZoneResponse(
         name=official_name,
         country=country,
