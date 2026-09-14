@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException, Query
 from pydantic import BaseModel
 import requests
+from app.api.v1.endpoints.predictions import run_prediction
 
 router = APIRouter()
 
@@ -25,7 +26,7 @@ def get_zone_from_coordinates(lat: float, lon: float) -> tuple[str, str]:
         return "SE4", "Malmö / Södra Götaland"
 
 
-@router.get("/zone", response_model=LocationZoneResponse)
+@router.get("/spot-check", response_model=LocationZoneResponse)
 def lookup_zone(
     location: str = Query(..., description="Ortsnamn, t.ex. 'Malmö' eller 'Lund'")
 ):
@@ -59,8 +60,34 @@ def lookup_zone(
     lon = best_match["longitude"]
     official_name = best_match.get("name", location)
     country = best_match.get("country", "Sverige")
-
+    country_code = best_match.get("country_code", "").upper()
+    if country_code != "SE":
+        raise HTTPException(
+            status_code=400,
+            detail=f"'{location}' ligger inte i Sverige. Denna tjänst stödjer endast svenska elområden (SE1–SE4).",
+    )
     zone, desc = get_zone_from_coordinates(lat, lon)
+
+# Dummy data for calling function.
+    features = {
+        "zone": zone,
+        "temperature_c": 12.5,
+        "wind_speed_kmh": 18.0,
+        "rain_mm": 0.0,
+        "hour": 14,
+        "day_of_week": 0,
+        "month": 9,
+        "is_weekend": 0,
+        "price_lag_24": 35.0,
+        "price_lag_48": 38.0,
+        "price_lag_168": 32.0,
+        "spot_price_eur_mwh": 34.0,
+    }
+
+    # Körs direkt i minnet
+    prediction_result = run_prediction(features)
+    print(prediction_result)
+    # Frågan är om vi ska ha denna som en main endpoint för att hantera all data och sedan skickar detta till andra endpoints /f funktioner
 
     return LocationZoneResponse(
         name=official_name,
@@ -68,5 +95,5 @@ def lookup_zone(
         latitude=lat,
         longitude=lon,
         zone=zone,
-        zone_description=desc,
+        zone_description=desc
     )
