@@ -34,7 +34,8 @@ test.describe("Prediction results", () => {
 
     await expect(
       results.getByRole("heading", {
-        name: "Södra Sverige"
+        name: "Malmö",
+        level: 3
       })
     ).toBeVisible();
 

@@ -985,3 +985,627 @@ footer p {
     font-size: 0.84rem;
   }
 }
+
+/* --------------------------------
+   About page
+-------------------------------- */
+
+.about-page {
+  width: 100%;
+}
+
+.about-hero {
+  max-width: 1200px;
+
+  margin: 0 auto;
+
+  padding:
+    140px 40px 120px;
+}
+
+.section-label {
+  margin: 0 0 18px;
+
+  font-size: 0.72rem;
+  font-weight: 700;
+
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+
+  color: #5f6875;
+}
+
+.about-hero h1 {
+  max-width: 900px;
+
+  margin: 0;
+
+  font-size:
+    clamp(3.5rem, 7vw, 7rem);
+
+  line-height: 0.94;
+
+  letter-spacing: -0.055em;
+}
+
+.about-intro {
+  max-width: 680px;
+
+  margin:
+    36px 0 0;
+
+  font-size: 1.2rem;
+
+  line-height: 1.7;
+
+  color: #505966;
+}
+
+
+/* --------------------------------
+   About sections
+-------------------------------- */
+
+.about-section {
+  padding:
+    120px 40px;
+}
+
+.about-section-alt {
+  background:
+    rgba(0, 0, 0, 0.025);
+}
+
+.about-section-highlight {
+  background:
+    rgba(0, 0, 0, 0.045);
+}
+
+.about-section-content {
+  width: 100%;
+  max-width: 1200px;
+
+  margin: 0 auto;
+}
+
+.about-section h2 {
+  max-width: 850px;
+
+  margin:
+    0 0 28px;
+
+  font-size:
+    clamp(2.5rem, 5vw, 4.8rem);
+
+  line-height: 0.98;
+
+  letter-spacing: -0.045em;
+}
+
+.about-section p {
+  max-width: 720px;
+
+  margin:
+    0 0 20px;
+
+  font-size: 1.05rem;
+
+  line-height: 1.75;
+
+  color: #505966;
+}
+
+
+/* --------------------------------
+   Energy areas
+-------------------------------- */
+
+.energy-area-layout {
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 1.05fr) minmax(360px, 0.95fr);
+
+  gap: 80px;
+
+  align-items: center;
+
+  margin-top: 72px;
+}
+
+.energy-area-map-column {
+  min-width: 0;
+}
+
+.energy-area-info-column {
+  min-width: 0;
+}
+
+.energy-area-placeholder,
+.energy-area-content {
+  padding:
+    36px;
+
+  border:
+    1px solid #dfe4ea;
+
+  border-radius: 18px;
+
+  background: #ffffff;
+}
+
+.energy-area-placeholder {
+  min-height: 360px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  justify-content: center;
+}
+
+.energy-area-placeholder h3,
+.energy-area-content h3 {
+  margin:
+    8px 0 10px;
+
+  font-size: 2.4rem;
+
+  line-height: 1;
+
+  letter-spacing: -0.04em;
+}
+
+.energy-area-placeholder p,
+.energy-area-content p {
+  max-width: none;
+
+  margin:
+    0 0 20px;
+
+  font-size: 0.98rem;
+
+  line-height: 1.7;
+}
+
+.card-eyebrow {
+  font-size: 0.68rem;
+
+  font-weight: 700;
+
+  letter-spacing: 0.14em;
+
+  color: #69727e;
+}
+
+.card-heading {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 20px;
+}
+
+.area-code {
+  display: inline-flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  min-width: 58px;
+
+  padding:
+    8px 12px;
+
+  border:
+    1px solid #d8dde4;
+
+  border-radius: 999px;
+
+  font-size: 0.75rem;
+
+  font-weight: 700;
+
+  letter-spacing: 0.08em;
+}
+
+.energy-area-region {
+  display: block;
+
+  margin-bottom: 28px;
+
+  font-size: 0.85rem;
+
+  color: #69727e;
+}
+
+.energy-area-sources {
+  margin-top: 32px;
+
+  padding-top: 24px;
+
+  border-top:
+    1px solid #e4e8ed;
+}
+
+.energy-area-source-list {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 12px;
+
+  margin-top: 14px;
+}
+
+.energy-area-source {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 20px;
+
+  padding:
+    14px 0;
+
+  border-bottom:
+    1px solid #edf0f3;
+}
+
+.energy-area-source:last-child {
+  border-bottom: 0;
+}
+
+.energy-area-source span {
+  font-size: 0.9rem;
+}
+
+.energy-area-source strong {
+  font-size: 0.9rem;
+}
+
+
+/* --------------------------------
+   Electricity price
+-------------------------------- */
+
+.about-price-factors {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 16px;
+
+  margin-top: 56px;
+}
+
+.about-price-factor {
+  min-height: 220px;
+
+  padding: 28px;
+
+  border:
+    1px solid #dfe4ea;
+
+  border-radius: 16px;
+
+  background: #ffffff;
+}
+
+.about-price-factor span {
+  display: block;
+
+  margin-bottom: 56px;
+
+  font-size: 0.68rem;
+
+  font-weight: 700;
+
+  letter-spacing: 0.14em;
+
+  color: #69727e;
+}
+
+.about-price-factor h3 {
+  margin: 0 0 12px;
+
+  font-size: 1.6rem;
+
+  letter-spacing: -0.025em;
+}
+
+.about-price-factor p {
+  margin: 0;
+
+  font-size: 0.92rem;
+
+  line-height: 1.6;
+}
+
+
+/* --------------------------------
+   Forecast process
+-------------------------------- */
+
+.about-forecast-process {
+  display: grid;
+
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+
+  margin-top: 64px;
+
+  border-top:
+    1px solid #dfe4ea;
+
+  border-bottom:
+    1px solid #dfe4ea;
+}
+
+.about-forecast-step {
+  position: relative;
+
+  min-height: 190px;
+
+  padding:
+    36px 32px;
+}
+
+.about-forecast-step+.about-forecast-step {
+  border-left:
+    1px solid #dfe4ea;
+}
+
+.about-forecast-step span {
+  display: block;
+
+  margin-bottom: 48px;
+
+  font-size: 0.68rem;
+
+  font-weight: 700;
+
+  letter-spacing: 0.14em;
+
+  color: #69727e;
+}
+
+.about-forecast-step h3 {
+  margin: 0;
+
+  font-size: 2rem;
+
+  letter-spacing: -0.035em;
+}
+
+.about-forecast-step::after {
+  content: "→";
+
+  position: absolute;
+
+  top: 50%;
+
+  right: -11px;
+
+  transform:
+    translateY(-50%);
+
+  z-index: 2;
+
+  font-size: 1rem;
+
+  color: #69727e;
+}
+
+
+/* --------------------------------
+   Benefits
+-------------------------------- */
+
+.about-benefits {
+  display: grid;
+
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+
+  gap: 16px;
+
+  margin-top: 56px;
+}
+
+.about-benefits div {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 16px;
+
+  min-height: 220px;
+
+  padding: 28px;
+
+  border:
+    1px solid #dfe4ea;
+
+  border-radius: 16px;
+
+  background: #ffffff;
+}
+
+.about-benefits strong {
+  font-size: 1.5rem;
+
+  letter-spacing: -0.025em;
+}
+
+.about-benefits span {
+  font-size: 0.92rem;
+
+  line-height: 1.6;
+
+  color: #505966;
+}
+
+
+/* --------------------------------
+   Disclaimer
+-------------------------------- */
+
+.about-disclaimer {
+  max-width: 1200px;
+
+  margin: 0 auto;
+
+  padding:
+    48px 40px 80px;
+}
+
+.about-disclaimer p {
+  max-width: 700px;
+
+  margin: 0;
+
+  font-size: 0.8rem;
+
+  line-height: 1.6;
+
+  color: #7a828d;
+}
+
+
+/* --------------------------------
+   About responsive
+-------------------------------- */
+
+@media (max-width: 900px) {
+  .about-hero {
+    padding:
+      100px 28px 90px;
+  }
+
+  .about-section {
+    padding:
+      90px 28px;
+  }
+
+  .energy-area-layout {
+    grid-template-columns: 1fr;
+
+    gap: 48px;
+  }
+
+  .about-forecast-process {
+    grid-template-columns: 1fr;
+  }
+
+  .about-forecast-step+.about-forecast-step {
+    border-left: 0;
+
+    border-top:
+      1px solid #dfe4ea;
+  }
+
+  .about-forecast-step::after {
+    display: none;
+  }
+
+  .about-benefits {
+    grid-template-columns: 1fr;
+  }
+
+  .about-disclaimer {
+    padding:
+      40px 28px 64px;
+  }
+}
+
+
+@media (max-width: 600px) {
+  .about-hero {
+    padding:
+      80px 20px 72px;
+  }
+
+  .about-section {
+    padding:
+      72px 20px;
+  }
+
+  .about-hero h1 {
+    font-size: 3.2rem;
+  }
+
+  .about-intro {
+    margin-top: 28px;
+
+    font-size: 1.05rem;
+  }
+
+  .about-section h2 {
+    font-size: 2.5rem;
+  }
+
+  .energy-area-layout {
+    margin-top: 48px;
+  }
+
+  .energy-area-placeholder,
+  .energy-area-content {
+    padding:
+      28px 22px;
+  }
+
+  .energy-area-placeholder {
+    min-height: 300px;
+  }
+
+  .about-price-factors {
+    grid-template-columns: 1fr;
+
+    margin-top: 40px;
+  }
+
+  .about-price-factor {
+    min-height: auto;
+  }
+
+  .about-price-factor span {
+    margin-bottom: 32px;
+  }
+
+  .about-forecast-process {
+    margin-top: 44px;
+  }
+
+  .about-forecast-step {
+    min-height: auto;
+
+    padding:
+      28px 22px;
+  }
+
+  .about-forecast-step span {
+    margin-bottom: 28px;
+  }
+
+  .about-benefits {
+    margin-top: 40px;
+  }
+
+  .about-benefits div {
+    min-height: auto;
+
+    padding: 24px 22px;
+  }
+
+  .about-disclaimer {
+    padding:
+      36px 20px 56px;
+  }
+}
