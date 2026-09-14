@@ -2,7 +2,7 @@ import { useState } from "react";
 
 import { getMockPrediction } from "../services/mockPredictionService";
 import type { Prediction } from "../types/Prediction";
-
+import { fetchSpotCheck } from "../utils/datafetch";
 interface UseCitySearchResult {
   prediction: Prediction | null;
   isLoading: boolean;
@@ -28,6 +28,9 @@ function useCitySearch(): UseCitySearchResult {
 
     try {
       const result = getMockPrediction(city);
+      console.log(result)
+      const result1 = await fetchSpotCheck(city);
+      // console.log(result1, result)
 
       setPrediction(result);
     } catch {
