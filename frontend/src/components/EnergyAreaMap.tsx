@@ -1,10 +1,22 @@
+
 import { useEffect, useMemo, useState } from "react";
 import "./EnergyAreaMap.css";
 
-interface GeoJsonGeometry {
-  type: "Polygon" | "MultiPolygon";
-  coordinates: number[][][] | number[][][][];
+type Position = [number, number];
+
+interface PolygonGeometry {
+  type: "Polygon";
+  coordinates: Position[][];
 }
+
+interface MultiPolygonGeometry {
+  type: "MultiPolygon";
+  coordinates: Position[][][];
+}
+
+type GeoJsonGeometry =
+  | PolygonGeometry
+  | MultiPolygonGeometry;
 
 interface GeoJsonFeature {
   type: "Feature";
@@ -48,7 +60,7 @@ function findEnergyArea(
 
 function getCoordinates(
   geometry: GeoJsonGeometry
-): number[][] {
+): Position[] {
   if (geometry.type === "Polygon") {
     return geometry.coordinates[0];
   }
@@ -56,9 +68,12 @@ function getCoordinates(
   return geometry.coordinates[0][0];
 }
 
-function createProjection(features: MapFeature[]) {
-  const allCoordinates = features.flatMap((feature) =>
-    getCoordinates(feature.geometry)
+function createProjection(
+  features: MapFeature[]
+) {
+  const allCoordinates = features.flatMap(
+    (feature) =>
+      getCoordinates(feature.geometry)
   );
 
   const longitudes = allCoordinates.map(
@@ -69,24 +84,44 @@ function createProjection(features: MapFeature[]) {
     ([, latitude]) => latitude
   );
 
-  const minLongitude = Math.min(...longitudes);
-  const maxLongitude = Math.max(...longitudes);
-  const minLatitude = Math.min(...latitudes);
-  const maxLatitude = Math.max(...latitudes);
+  const minLongitude = Math.min(
+    ...longitudes
+  );
 
-  const longitudeRange = maxLongitude - minLongitude;
-  const latitudeRange = maxLatitude - minLatitude;
+  const maxLongitude = Math.max(
+    ...longitudes
+  );
 
-  const availableWidth = MAP_WIDTH - PADDING * 2;
-  const availableHeight = MAP_HEIGHT - PADDING * 2;
+  const minLatitude = Math.min(
+    ...latitudes
+  );
+
+  const maxLatitude = Math.max(
+    ...latitudes
+  );
+
+  const longitudeRange =
+    maxLongitude - minLongitude;
+
+  const latitudeRange =
+    maxLatitude - minLatitude;
+
+  const availableWidth =
+    MAP_WIDTH - PADDING * 2;
+
+  const availableHeight =
+    MAP_HEIGHT - PADDING * 2;
 
   const scale = Math.min(
     availableWidth / longitudeRange,
     availableHeight / latitudeRange
   );
 
-  const mapWidth = longitudeRange * scale;
-  const mapHeight = latitudeRange * scale;
+  const mapWidth =
+    longitudeRange * scale;
+
+  const mapHeight =
+    latitudeRange * scale;
 
   const offsetX =
     (MAP_WIDTH - mapWidth) / 2;
@@ -94,14 +129,21 @@ function createProjection(features: MapFeature[]) {
   const offsetY =
     (MAP_HEIGHT - mapHeight) / 2;
 
-  return ([longitude, latitude]: number[]) => {
+  return (
+    coordinate: Position
+  ): Position => {
+    const longitude = coordinate[0];
+    const latitude = coordinate[1];
+
     const x =
       offsetX +
-      (longitude - minLongitude) * scale;
+      (longitude - minLongitude) *
+      scale;
 
     const y =
       offsetY +
-      (maxLatitude - latitude) * scale;
+      (maxLatitude - latitude) *
+      scale;
 
     return [x, y];
   };
@@ -109,23 +151,41 @@ function createProjection(features: MapFeature[]) {
 
 function geometryToPath(
   geometry: GeoJsonGeometry,
-  project: (coordinate: number[]) => number[]
+  project: (coordinate: Position) => Position
 ): string {
-  const rings =
-    geometry.type === "Polygon"
-      ? geometry.coordinates
-      : geometry.coordinates.flat();
+  let rings: Position[][];
+
+  if (geometry.type === "Polygon") {
+    rings = geometry.coordinates;
+  } else {
+    rings = geometry.coordinates.flat();
+  }
 
   return rings
     .map((ring) => {
       return ring
         .map((coordinate, index) => {
-          const [x, y] =
+          const projected =
             project(coordinate);
 
-          return `${index === 0 ? "M" : "L"} ${x.toFixed(
-            2
-          )} ${y.toFixed(2)}`;
+          const x =
+            projected[0].toFixed(2);
+
+          const y =
+            projected[1].toFixed(2);
+
+          const command =
+            index === 0
+              ? "M"
+              : "L";
+
+          return (
+            command +
+            " " +
+            x +
+            " " +
+            y
+          );
         })
         .join(" ") + " Z";
     })
@@ -133,20 +193,25 @@ function geometryToPath(
 }
 
 function EnergyAreaMap() {
-  const [features, setFeatures] = useState<MapFeature[]>([]);
+  const [features, setFeatures] =
+    useState<MapFeature[]>([]);
+
   const [selectedArea, setSelectedArea] =
     useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(
-    null
-  );
+
+  const [loading, setLoading] =
+    useState(true);
+
+  const [error, setError] =
+    useState<string | null>(null);
 
   useEffect(() => {
     async function loadMap() {
       try {
-        const response = await fetch(
-          "https://services2.arcgis.com/L8WLzcxhwLqd80Jx/ArcGIS/rest/services/Natomraden_250526/FeatureServer/0/query?where=1%3D1&outFields=*&returnGeometry=true&outSR=4326&f=geojson"
-        );
+        const response =
+          await fetch(
+            "https://services2.arcgis.com/L8WLzcxhwLqd80Jx/ArcGIS/rest/services/Natomraden_250526/FeatureServer/0/query?where=1%3D1&outFields=*&returnGeometry=true&outSR=4326&f=geojson"
+          );
 
         if (!response.ok) {
           throw new Error(
@@ -157,24 +222,34 @@ function EnergyAreaMap() {
         const data =
           (await response.json()) as GeoJsonResponse;
 
-        const mapFeatures = data.features
-          .map((feature) => ({
-            area: findEnergyArea(
-              feature.properties
-            ),
-            geometry: feature.geometry
-          }))
-          .filter(
-            (
-              feature
-            ): feature is MapFeature =>
-              feature.area !== null
-          )
-          .sort(
-            (a, b) =>
-              AREA_ORDER.indexOf(a.area) -
-              AREA_ORDER.indexOf(b.area)
-          );
+        const mapFeatures =
+          data.features
+            .map((feature) => {
+              return {
+                area:
+                  findEnergyArea(
+                    feature.properties
+                  ),
+                geometry:
+                  feature.geometry
+              };
+            })
+            .filter(
+              (
+                feature
+              ): feature is MapFeature =>
+                feature.area !==
+                null
+            )
+            .sort(
+              (a, b) =>
+                AREA_ORDER.indexOf(
+                  a.area
+                ) -
+                AREA_ORDER.indexOf(
+                  b.area
+                )
+            );
 
         setFeatures(mapFeatures);
       } catch {
@@ -225,13 +300,15 @@ function EnergyAreaMap() {
 
   return (
     <div className="energy-area-map-wrapper">
-      <div
-        className="energy-area-map-container"
-        aria-label="Karta över Sveriges elområden"
-      >
+      <div className="energy-area-map-container">
         <svg
           className="energy-area-map"
-          viewBox={`0 0 ${MAP_WIDTH} ${MAP_HEIGHT}`}
+          viewBox={
+            "0 0 " +
+            MAP_WIDTH +
+            " " +
+            MAP_HEIGHT
+          }
           role="img"
           aria-labelledby="energy-area-map-title"
         >
@@ -239,63 +316,89 @@ function EnergyAreaMap() {
             Sveriges fyra elområden
           </title>
 
-          {features.map((feature) => {
-            const isSelected =
-              selectedArea ===
-              feature.area;
+          {features.map(
+            (feature) => {
+              const isSelected =
+                selectedArea ===
+                feature.area;
 
-            return (
-              <path
-                key={feature.area}
-                className={`energy-area-path ${isSelected
-                  ? "is-selected"
-                  : ""
-                  }`}
-                d={geometryToPath(
-                  feature.geometry,
-                  project
-                )}
-                tabIndex={0}
-                aria-label={`Elområde ${feature.area}`}
-                onClick={() =>
-                  setSelectedArea(
+              const className =
+                "energy-area-path" +
+                (isSelected
+                  ? " is-selected"
+                  : "");
+
+              return (
+                <path
+                  key={
                     feature.area
-                  )
-                }
-                onKeyDown={(event) => {
-                  if (
-                    event.key ===
-                    "Enter" ||
-                    event.key ===
-                    " "
-                  ) {
+                  }
+                  className={
+                    className
+                  }
+                  d={geometryToPath(
+                    feature.geometry,
+                    project
+                  )}
+                  tabIndex={0}
+                  aria-label={
+                    "Elområde " +
+                    feature.area
+                  }
+                  onClick={() =>
                     setSelectedArea(
                       feature.area
-                    );
+                    )
                   }
-                }}
-              />
-            );
-          })}
+                  onKeyDown={(
+                    event
+                  ) => {
+                    if (
+                      event.key ===
+                      "Enter" ||
+                      event.key ===
+                      " "
+                    ) {
+                      event.preventDefault();
+
+                      setSelectedArea(
+                        feature.area
+                      );
+                    }
+                  }}
+                />
+              );
+            }
+          )}
         </svg>
 
         <div className="energy-area-map-labels">
-          {AREA_ORDER.map((area) => (
-            <button
-              key={area}
-              type="button"
-              className={
-                selectedArea === area
-                  ? "is-selected"
-                  : ""
-              }
-              onClick={() =>
-                setSelectedArea(area)
-              }
-            >
-              {area}
-            </button>
-          ))}
+          {AREA_ORDER.map(
+            (area) => {
+              const isSelected =
+                selectedArea ===
+                area;
+
+              return (
+                <button
+                  key={area}
+                  type="button"
+                  className={
+                    isSelected
+                      ? "is-selected"
+                      : ""
+                  }
+                  onClick={() =>
+                    setSelectedArea(
+                      area
+                    )
+                  }
+                >
+                  {area}
+                </button>
+              );
+            }
+          )}
         </div>
       </div>
 
@@ -331,3 +434,4 @@ function EnergyAreaMap() {
 }
 
 export default EnergyAreaMap;
+;

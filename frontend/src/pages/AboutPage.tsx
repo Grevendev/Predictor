@@ -1,6 +1,6 @@
-
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import EnergyAreaMap from "../components/EnergyAreaMap";
 
 function AboutPage() {
   return (
@@ -28,43 +28,22 @@ function AboutPage() {
 
         <section className="about-section">
           <div className="about-section-content">
-            <p className="section-label">
+            <span className="section-label">
               ELOMRÅDEN
-            </p>
+            </span>
 
             <h2>
               Sverige är indelat i fyra elområden
             </h2>
 
             <p>
-              Sverige är indelat i fyra elområden:
-              SE1, SE2, SE3 och SE4. Elpriset kan
-              skilja sig mellan områdena beroende
-              på bland annat tillgång, efterfrågan
-              och överföringskapacitet.
+              Elområdena SE1, SE2, SE3 och SE4
+              används för att hantera begränsningar
+              i överföringen av el mellan olika delar
+              av Sverige.
             </p>
-          </div>
 
-          <div className="energy-area-grid">
-            <div className="energy-area-info">
-              <strong>SE1</strong>
-              <span>Norra Sverige</span>
-            </div>
-
-            <div className="energy-area-info">
-              <strong>SE2</strong>
-              <span>Norra och mellersta Sverige</span>
-            </div>
-
-            <div className="energy-area-info">
-              <strong>SE3</strong>
-              <span>Mellersta Sverige</span>
-            </div>
-
-            <div className="energy-area-info">
-              <strong>SE4</strong>
-              <span>Södra Sverige</span>
-            </div>
+            <EnergyAreaMap />
           </div>
         </section>
 
