@@ -3,6 +3,8 @@ from pathlib import Path
 
 import shapefile
 from pyproj import Transformer
+from shapely.geometry import Polygon, MultiPolygon, shape
+from shapely.ops import unary_union
 
 
 BASE_DIR = Path(__file__).resolve().parents[1]
@@ -24,28 +26,45 @@ transformer = Transformer.from_crs(
 )
 
 
-def transform_ring(points):
-    transformed = []
-
-    for x, y in points:
-        longitude, latitude = transformer.transform(
-            x,
-            y,
-        )
-
-        transformed.append(
+def transform_geometry(geometry):
+    return geometry.__class__(
+        [
             [
-                longitude,
-                latitude,
+                transformer.transform(x, y)
+                for x, y in ring.coords
+            ]
+            for ring in geometry.geoms
+        ]
+    )
+
+
+def transform_polygon(polygon):
+    exterior = [
+        transformer.transform(x, y)
+        for x, y, *_ in polygon.exterior.coords
+    ]
+
+    interiors = []
+
+    for interior in polygon.interiors:
+        interiors.append(
+            [
+                transformer.transform(x, y)
+                for x, y, *_ in interior.coords
             ]
         )
 
-    return transformed
+    return Polygon(
+        exterior,
+        interiors,
+    )
 
 
-def shape_to_geometry(shape):
-    parts = list(shape.parts)
+def shape_to_geometry(shape_record):
+    shape = shape_record.shape
+
     points = shape.points
+    parts = list(shape.parts)
 
     rings = []
 
@@ -57,14 +76,33 @@ def shape_to_geometry(shape):
 
         ring = points[start:end]
 
-        rings.append(
-            transform_ring(ring)
-        )
+        transformed_ring = [
+            transformer.transform(x, y)
+            for x, y, *_ in ring
+        ]
 
-    return {
-        "type": "Polygon",
-        "coordinates": rings,
-    }
+        rings.append(transformed_ring)
+
+    polygons = []
+
+    for ring in rings:
+        if len(ring) < 4:
+            continue
+
+        polygon = Polygon(ring)
+
+        if not polygon.is_valid:
+            polygon = polygon.buffer(0)
+
+        if polygon.is_empty:
+            continue
+
+        polygons.append(polygon)
+
+    if not polygons:
+        return None
+
+    return unary_union(polygons)
 
 
 def convert():
@@ -77,31 +115,54 @@ def convert():
             str(shapefile_path)
         )
 
+        geometries = []
+
         for shape_record in reader.iterShapeRecords():
             geometry = shape_to_geometry(
-                shape_record.shape
+                shape_record
             )
 
-            properties = {
-                "energy_area": area,
-                "network_area": shape_record.record[
-                    "Natomrade"
-                ],
-                "name": shape_record.record[
-                    "Namn"
-                ],
-                "owner": shape_record.record[
-                    "Agare"
-                ],
+            if geometry is not None:
+                geometries.append(geometry)
+
+        print(
+            f"  Network areas: {len(geometries)}"
+        )
+
+        print(
+            f"  Dissolving {area}..."
+        )
+
+        dissolved = unary_union(geometries)
+
+        if not dissolved.is_valid:
+            dissolved = dissolved.buffer(0)
+
+        if dissolved.is_empty:
+            raise RuntimeError(
+                f"{area} produced empty geometry."
+            )
+
+        geometry_mapping = {
+            "type": dissolved.geom_type,
+            "coordinates": (
+                list(dissolved.__geo_interface__["coordinates"])
+            ),
+        }
+
+        features.append(
+            {
+                "type": "Feature",
+                "properties": {
+                    "energy_area": area,
+                },
+                "geometry": geometry_mapping,
             }
+        )
 
-            features.append(
-                {
-                    "type": "Feature",
-                    "properties": properties,
-                    "geometry": geometry,
-                }
-            )
+        print(
+            f"  Result geometry: {dissolved.geom_type}"
+        )
 
     geojson = {
         "type": "FeatureCollection",
