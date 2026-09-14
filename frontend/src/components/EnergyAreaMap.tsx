@@ -12,8 +12,8 @@ interface MapFeature {
   geometry: EnergyAreaGeometry;
 }
 
-const MAP_WIDTH = 500;
-const MAP_HEIGHT = 720;
+const MAP_WIDTH = 620;
+const MAP_HEIGHT = 760;
 const PADDING = 20;
 
 const AREA_ORDER = [
@@ -71,6 +71,25 @@ function createProjection(
   const latitudeRange =
     maxLatitude - minLatitude;
 
+  /*
+   * Longitude degrees represent a shorter
+   * physical distance at Sweden's latitude
+   * than latitude degrees do.
+   *
+   * Adjust the horizontal scale so that
+   * Sweden keeps a more natural aspect ratio.
+   */
+  const latitudeCenter =
+    (minLatitude + maxLatitude) / 2;
+
+  const latitudeScale =
+    Math.cos(
+      (latitudeCenter * Math.PI) / 180
+    );
+
+  const adjustedLongitudeRange =
+    longitudeRange * latitudeScale;
+
   const availableWidth =
     MAP_WIDTH - PADDING * 2;
 
@@ -78,12 +97,14 @@ function createProjection(
     MAP_HEIGHT - PADDING * 2;
 
   const scale = Math.min(
-    availableWidth / longitudeRange,
-    availableHeight / latitudeRange
+    availableWidth /
+    adjustedLongitudeRange,
+    availableHeight /
+    latitudeRange
   );
 
   const mapWidth =
-    longitudeRange * scale;
+    adjustedLongitudeRange * scale;
 
   const mapHeight =
     latitudeRange * scale;
@@ -106,6 +127,7 @@ function createProjection(
     const x =
       offsetX +
       (longitude - minLongitude) *
+      latitudeScale *
       scale;
 
     const y =
