@@ -7,12 +7,12 @@ export type Position = [
 
 export interface PolygonGeometry {
   type: "Polygon";
-  coordinates: Position[][][];
+  coordinates: Position[][];
 }
 
 export interface MultiPolygonGeometry {
   type: "MultiPolygon";
-  coordinates: Position[][][][];
+  coordinates: Position[][][];
 }
 
 export type EnergyAreaGeometry =
