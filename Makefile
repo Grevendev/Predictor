@@ -1,11 +1,4 @@
-dev-logs)
-    docker compose logs -f
-    ;;
-  clean)
-    docker compose down -v --remove-orphans
-    docker compose -f compose.prod.yaml down -v --remove-orphans
-    find . -type d -name "__pycache__" -exec rm -r {} +
-    ;;
+.PHONY: help dev dev-backend dev-frontend prod-up prod-down prod-logs down clean
 
 help:
 	@echo "Tillgängliga kommandon:"
