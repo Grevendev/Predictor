@@ -74,7 +74,12 @@ def get_zone_from_coordinates(lat: float, lon: float) -> dict[str, str]:
 
 @router.get("/spot-check", response_model=LocationZoneResponse)
 def lookup_zone(
-    location: str = Query(..., description="Ortsnamn, t.ex. 'Malmö' eller 'Lund'")
+    # Begränsa söktexten innan den skickas vidare till den externa tjänsten.
+    location: str = Query(
+        ...,
+        max_length=200,
+        description="Ortsnamn, t.ex. 'Malmö' eller 'Lund'",
+    )
 ):
     geo_url = "https://geocoding-api.open-meteo.com/v1/search"
     params = {
@@ -89,23 +94,30 @@ def lookup_zone(
         res = requests.get(geo_url, params=params, timeout=5)
         res.raise_for_status()
         data = res.json()
-    except Exception as e:
-        raise HTTPException(
-            status_code=502, detail=f"Fel vid anrop till geokodningstjänst: {e}"
-        )
+    except Exception as error:
+        # Externa fel ska inte läcka tokens, URL:er eller intern felinformation.
+        raise HTTPException(status_code=502, detail="Geocoding service unavailable.") from error
 
-    results = data.get("results", [])
+    # Kontrollera svarsformatet innan resultatfält används.
+    if not isinstance(data, dict) or not isinstance(data.get("results", []), list):
+        raise HTTPException(status_code=502, detail="Invalid geocoding response.")
+
+    results = data["results"]
     se_matches = [r for r in results if r.get("country_code", "").upper() == "SE"]
 
     if not se_matches:
         raise HTTPException(
             status_code=404,
-            detail=f"Kunde inte hitta någon svensk ort med namnet '{location}'.",
+            detail="No Swedish location found.",
         )
 
     best_match = se_matches[0]
-    lat = best_match["latitude"]
-    lon = best_match["longitude"]
+    try:
+        lat = best_match["latitude"]
+        lon = best_match["longitude"]
+    except (KeyError, TypeError) as error:
+        # Saknade koordinater i upstream-svaret ska ge ett kontrollerat fel.
+        raise HTTPException(status_code=502, detail="Invalid geocoding response.") from error
     official_name = best_match.get("name", location)
     country = best_match.get("country", "Sverige")
     country_code = best_match.get("country_code", "SE").upper()
