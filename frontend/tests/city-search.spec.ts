@@ -1,7 +1,10 @@
 import { test, expect } from "@playwright/test";
+import { mockSpotCheck } from "./helpers/mockApi";
 
 test.describe("City search", () => {
   test("should display prediction results for Malmö", async ({ page }) => {
+    await mockSpotCheck(page);
+
     await page.goto("/");
 
     const cityInput = page.getByRole("textbox", {
