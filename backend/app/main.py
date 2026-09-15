@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
 from app.api.v1.endpoints import predictions
 from app.api.v1.endpoints import energy_areas
+from app.api.v1.endpoints import main_endpoint
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
@@ -30,6 +31,12 @@ app.include_router(
 
 app.include_router(
     energy_areas.router,
+    prefix="/api/v1",
+)
+
+# Registrera zonuppslagets router så att /spot-check blir åtkomlig.
+app.include_router(
+    main_endpoint.router,
     prefix="/api/v1",
 )
 
