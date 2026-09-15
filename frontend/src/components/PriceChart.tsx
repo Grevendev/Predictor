@@ -4,17 +4,30 @@ interface PriceChartProps {
   predictions: PricePrediction[];
 }
 
-function PriceChart({
-  predictions
-}: PriceChartProps) {
+function PriceChart({ predictions }: PriceChartProps) {
   if (predictions.length === 0) {
     return (
       <div>
-        <span className="card-eyebrow">
+        <span
+          className="
+            card-eyebrow
+            text-[0.68rem]
+            font-bold
+            tracking-[0.14em]
+            text-[var(--text-subtle)]
+          "
+        >
           PRISPROGNOS
         </span>
 
-        <p>
+        <p
+          className="
+            mt-4
+            text-[0.95rem]
+            leading-[1.65]
+            text-[var(--text-muted)]
+          "
+        >
           Ingen prisprognos tillgänglig.
         </p>
       </div>
@@ -40,8 +53,7 @@ function PriceChart({
     paddingBottom;
 
   const prices = predictions.map(
-    (prediction) =>
-      prediction.predictedPrice
+    (prediction) => prediction.predictedPrice
   );
 
   const minPrice = Math.min(...prices);
@@ -90,40 +102,88 @@ function PriceChart({
     .join(" ");
 
   const areaPath = `
-        ${linePath}
-        L ${points[points.length - 1].x}
-          ${chartHeight - paddingBottom}
-        L ${points[0].x}
-          ${chartHeight - paddingBottom}
-        Z
-    `;
+    ${linePath}
+    L ${points[points.length - 1].x}
+      ${chartHeight - paddingBottom}
+    L ${points[0].x}
+      ${chartHeight - paddingBottom}
+    Z
+  `;
 
   return (
     <div className="price-chart-content">
-      <div className="card-heading">
+      <div
+        className="
+          card-heading
+          flex
+          items-start
+          justify-between
+          gap-5
+        "
+      >
         <div>
-          <span className="card-eyebrow">
+          <span
+            className="
+              card-eyebrow
+              text-[0.68rem]
+              font-bold
+              tracking-[0.14em]
+              text-[var(--text-subtle)]
+            "
+          >
             PRISPROGNOS
           </span>
 
-          <h3>
+          <h3
+            className="
+              m-0
+              mt-2
+              text-[1.25rem]
+              tracking-[-0.02em]
+              text-[var(--text)]
+            "
+          >
             Förväntat elpris
           </h3>
         </div>
 
-        <span className="chart-unit">
+        <span
+          className="
+            chart-unit
+            text-[0.8rem]
+            text-[var(--text-subtle)]
+          "
+        >
           öre/kWh
         </span>
       </div>
 
-      <div className="chart-summary">
-        <strong>
-          {Math.min(
-            ...prices
-          ).toFixed(1)}
+      <div
+        className="
+          chart-summary
+          mt-[22px]
+          flex
+          items-baseline
+          gap-2.5
+        "
+      >
+        <strong
+          className="
+            text-[2rem]
+            leading-none
+            tracking-[-0.04em]
+            text-[var(--text-strong)]
+          "
+        >
+          {Math.min(...prices).toFixed(1)}
         </strong>
 
-        <span>
+        <span
+          className="
+            text-[0.8rem]
+            text-[var(--text-subtle)]
+          "
+        >
           lägsta prognostiserade pris
         </span>
       </div>
@@ -203,39 +263,27 @@ function PriceChart({
             className="chart-line"
           />
 
-          {points.map(
-            (point) => (
-              <g
-                key={
-                  point.prediction
-                    .timestamp
-                }
-              >
-                <circle
-                  cx={point.x}
-                  cy={point.y}
-                  r="5"
-                  className="chart-point"
-                />
+          {points.map((point) => (
+            <g
+              key={point.prediction.timestamp}
+            >
+              <circle
+                cx={point.x}
+                cy={point.y}
+                r="5"
+                className="chart-point"
+              />
 
-                <text
-                  x={point.x}
-                  y={
-                    chartHeight -
-                    15
-                  }
-                  textAnchor="middle"
-                  className="chart-label"
-                >
-                  {
-                    point
-                      .prediction
-                      .timestamp
-                  }
-                </text>
-              </g>
-            )
-          )}
+              <text
+                x={point.x}
+                y={chartHeight - 15}
+                textAnchor="middle"
+                className="chart-label"
+              >
+                {point.prediction.timestamp}
+              </text>
+            </g>
+          ))}
         </svg>
       </div>
     </div>
