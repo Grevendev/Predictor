@@ -1,9 +1,12 @@
 import { test, expect } from "@playwright/test";
+import { mockSpotCheck } from "./helpers/mockApi";
 
 test.describe("Prediction results", () => {
   test("should display prediction results after searching for Malmö", async ({
     page
   }) => {
+    await mockSpotCheck(page);
+
     await page.goto("/");
 
     await page.getByRole("textbox", {
@@ -34,7 +37,8 @@ test.describe("Prediction results", () => {
 
     await expect(
       results.getByRole("heading", {
-        name: "Södra Sverige"
+        name: "Malmö",
+        level: 3
       })
     ).toBeVisible();
 
@@ -83,9 +87,7 @@ test.describe("Prediction results", () => {
     await expect(
       results.getByText(
         "Försök undvika flera stora elförbrukare samtidigt",
-        {
-          exact: false
-        }
+        { exact: false }
       )
     ).toBeVisible();
   });

@@ -51,7 +51,7 @@ test.describe("Mobile navigation", () => {
 
     await expect(
       navigation.getByRole("link", {
-        name: "Om projektet"
+        name: "Om"
       })
     ).toBeVisible();
 

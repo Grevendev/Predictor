@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
 from app.api.v1.endpoints import predictions
+from app.api.v1.endpoints import energy_areas
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
@@ -25,6 +26,11 @@ app.include_router(
     predictions.router,
     prefix="/api/v1/predictions",
     tags=["predictions"],
+)
+
+app.include_router(
+    energy_areas.router,
+    prefix="/api/v1",
 )
 
 

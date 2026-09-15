@@ -1,7 +1,10 @@
 import { test, expect } from "@playwright/test";
+import { mockSpotCheck } from "./helpers/mockApi";
 
 test.describe("City search", () => {
   test("should display prediction results for Malmö", async ({ page }) => {
+    await mockSpotCheck(page);
+
     await page.goto("/");
 
     const cityInput = page.getByRole("textbox", {
@@ -16,7 +19,8 @@ test.describe("City search", () => {
 
     await expect(
       page.getByRole("heading", {
-        name: "Malmö"
+        name: "Malmö",
+        level: 2
       })
     ).toBeVisible();
 

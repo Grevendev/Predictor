@@ -23,9 +23,45 @@ function EnergyAreaInfo({
         {energyArea.name}
       </h3>
 
+      <span className="energy-area-region">
+        {energyArea.region}
+      </span>
+
       <p>
         {energyArea.description}
       </p>
+
+      <p>
+        {energyArea.balanceDescription}
+      </p>
+
+      <div className="energy-area-sources">
+        <span className="card-eyebrow">
+          INSTALLERAD EFFEKT
+        </span>
+
+        <div className="energy-area-source-list">
+          {energyArea.dominantSources.map(
+            (source) => (
+              <div
+                className="energy-area-source"
+                key={source.name}
+              >
+                <span>
+                  {source.name}
+                </span>
+
+                <strong>
+                  {source.installedCapacityMw.toLocaleString(
+                    "sv-SE"
+                  )}{" "}
+                  MW
+                </strong>
+              </div>
+            )
+          )}
+        </div>
+      </div>
     </div>
   );
 }

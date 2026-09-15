@@ -4,7 +4,59 @@ This application is under progress...
 
 Star ⭐ it and find out our way to fully function application
 
+## Snabbstart & CLI-kommandon
 
+Projektet kan köras antingen direkt på värdmaskinen (snabbast vid aktiv kodning) eller containeriserat via Docker. 
+
+Kommando-strukturen är identisk oavsett om du använder GNU Make (`make <kommando>`) eller det medföljande bash-skriptet (`./run.sh <kommando>`).
+
+> **Tips:** Om du använder bash-skriptet första gången, se till att det är körbart: `chmod +x run.sh`.
+
+---
+
+### 1. Lokal utveckling (Native / Utan Docker)
+
+Körs direkt i din lokala terminalmiljö för snabbast möjliga reload och debugging.
+
+| Åtgärd | Via Make | Via Bash-skript |
+|---|---|---|
+| **Starta Båda samtidigt** (Uvicorn + Vite) | `make dev-local` | `./run.sh dev-local` |
+| **Starta enbart Backend** (FastAPI / Uvicorn) | `make dev-backend` | `./run.sh dev-backend` |
+| **Starta enbart Frontend** (React / Vite) | `make dev-frontend` | `./run.sh dev-frontend` |
+
+---
+
+### 2. Utvecklingsmiljö (Docker Compose Dev)
+
+Kör hela stacken isolerat i containrar med hot-reload och volymmappning.
+
+| Åtgärd | Via Make | Via Bash-skript |
+|---|---|---|
+| **Starta och bygg om** | `make dev` | `./run.sh dev-up` |
+| **Stoppa containrar** | `make down` | `./run.sh dev-down` |
+| **Följ live-loggar** | `docker compose logs -f` | `./run.sh dev-logs` |
+
+---
+
+### 3. Produktionsmiljö (Docker Compose Prod)
+
+Bygger optimerade multi-stage bundles, servar via Nginx och kopplar på Traefik-regler under subpathen `/predictor/`.
+
+| Åtgärd | Via Make | Via Bash-skript |
+|---|---|---|
+| **Bygg & starta i bakgrunden** | `make prod-up` | `./run.sh prod-up` |
+| **Stoppa produktionsstacken** | `make prod-down` | `./run.sh prod-down` |
+| **Följ live-loggar** | `make prod-logs` | `./run.sh prod-logs` |
+
+---
+
+### 4. Underhåll & Rensa cache
+
+Stoppar aktiva containrar, tar bort anonyma volymer och rensar Python `__pycache__`.
+
+| Åtgärd | Via Make | Via Bash-skript |
+|---|---|---|
+| **Rensa miljö och cache** | `make clean` | `./run.sh clean` |
 
 ## Om man vill köra Git LFS för att hantera modell-filerna.
 
