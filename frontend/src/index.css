@@ -123,14 +123,6 @@ main {
 }
 
 /* --------------------------------
-   Energy area
--------------------------------- */
-
-.energy-area-card {
-  min-height: 230px;
-}
-
-/* --------------------------------
    Price chart
 -------------------------------- */
 
@@ -198,10 +190,6 @@ main {
 -------------------------------- */
 
 @media (max-width: 600px) {
-  .energy-area-card {
-    padding: 20px;
-  }
-
   .line-chart svg {
     min-height: 200px;
   }
