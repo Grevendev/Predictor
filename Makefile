@@ -2,18 +2,26 @@
 
 help:
 	@echo "Tillgängliga kommandon:"
-	@echo "  make dev           - Starta hela stacken lokalt med Docker Compose"
-	@echo "  make dev-backend   - Starta enbart backend lokalt utan Docker (uvicorn)"
-	@echo "  make dev-frontend  - Starta enbart frontend lokalt utan Docker (vite)"
-	@echo "  make prod-up       - Bygg och starta produktionsstacken i bakgrunden"
-	@echo "  make prod-down     - Stoppa produktionsstacken"
-	@echo "  make prod-logs     - Visa live-loggar från produktionsstacken"
-	@echo "  make down          - Stoppa utvecklingsstacken"
-	@echo "  make clean         - Rensa gamla containrar, volymer och pycache"
-
+	@echo "  make dev-local      - Starta både backend och frontend lokalt (parallellt utan Docker)"
+	@echo "  make dev-backend    - Starta enbart backend lokalt utan Docker (uvicorn)"
+	@echo "  make dev-frontend   - Starta enbart frontend lokalt utan Docker (vite)"
+	@echo "  make dev            - Starta hela stacken lokalt med Docker Compose"
+	@echo "  make down           - Stoppa utvecklingsstacken"
+	@echo "  make prod-up        - Bygg och starta produktionsstacken i bakgrunden"
+	@echo "  make prod-down      - Stoppa produktionsstacken"
+	@echo "  make prod-logs      - Visa live-loggar från produktionsstacken"
+	@echo "  make clean          - Rensa gamla containrar, volymer och pycache"
+	
 # --- Lokal Utveckling (utanför Docker för snabbaste reload) ---
 dev-backend:
 	cd backend && PYTHONPATH=. uv run uvicorn app.api.v1.api:app --reload --port 8000
+
+# Starta både backend och frontend parallellt lokalt
+dev-local:
+	@trap 'kill 0' SIGINT SIGTERM EXIT; \
+	(cd backend && PYTHONPATH=. uv run uvicorn app.api.v1.api:app --reload --port 8000) & \
+	(cd frontend && npm run dev) & \
+	wait
 
 dev-frontend:
 	cd frontend && npm run dev
