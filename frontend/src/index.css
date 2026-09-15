@@ -127,97 +127,7 @@ main {
 }
 
 
-/* --------------------------------
-   Site header
--------------------------------- */
 
-.site-header {
-  position: sticky;
-  top: 0;
-  z-index: 100;
-
-  width: 100%;
-
-  background: color-mix(in srgb,
-      var(--surface) 82%,
-      transparent);
-
-  border-bottom: 1px solid var(--border-subtle);
-
-  backdrop-filter: blur(18px);
-
-  transition:
-    background-color 0.25s ease,
-    border-color 0.25s ease;
-}
-
-.header-inner {
-  width: min(1180px, calc(100% - 48px));
-  min-height: 76px;
-
-  margin: 0 auto;
-
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.logo {
-  color: var(--text-strong);
-
-  font-size: 1rem;
-  font-weight: 850;
-  letter-spacing: 0.08em;
-
-  transition: color 0.25s ease;
-}
-
-.site-navigation {
-  display: flex;
-  align-items: center;
-
-  gap: 32px;
-}
-
-.site-navigation a {
-  color: var(--text-muted);
-
-  font-size: 0.9rem;
-  font-weight: 550;
-
-  transition: color 0.2s ease;
-}
-
-.site-navigation a:hover {
-  color: var(--text-strong);
-}
-
-.mobile-menu-button {
-  display: none;
-
-  width: 44px;
-  height: 44px;
-
-  padding: 10px;
-
-  border: 1px solid var(--border);
-  border-radius: 10px;
-
-  background: var(--surface);
-}
-
-.mobile-menu-button span {
-  display: block;
-
-  width: 100%;
-  height: 2px;
-
-  margin: 5px 0;
-
-  background: var(--text);
-
-  border-radius: 2px;
-}
 
 
 /* --------------------------------
@@ -871,49 +781,7 @@ footer p {
     width: calc(100% - 32px);
   }
 
-  .mobile-menu-button {
-    display: block;
-  }
 
-  .site-navigation {
-    position: absolute;
-
-    top: calc(100% + 1px);
-    left: 0;
-    right: 0;
-
-    display: none;
-
-    flex-direction: column;
-    align-items: stretch;
-
-    gap: 0;
-
-    padding: 10px 16px 18px;
-
-    background: color-mix(in srgb,
-        var(--surface) 97%,
-        transparent);
-
-    border-bottom: 1px solid var(--border-subtle);
-
-    box-shadow:
-      0 14px 30px rgba(15, 23, 42, 0.08);
-  }
-
-  .site-navigation.is-open {
-    display: flex;
-  }
-
-  .site-navigation a {
-    padding: 15px 12px;
-
-    border-radius: 10px;
-  }
-
-  .site-navigation a:hover {
-    background: var(--surface-soft);
-  }
 
   .hero-section {
     padding-top: 72px;
@@ -989,9 +857,7 @@ footer p {
 -------------------------------- */
 
 @media (max-width: 480px) {
-  .header-inner {
-    min-height: 68px;
-  }
+
 
   .hero-section {
     padding:
