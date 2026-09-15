@@ -128,16 +128,11 @@ main {
 
 .energy-area-card {
   min-height: 230px;
-  padding: 26px;
 }
 
 /* --------------------------------
    Price chart
 -------------------------------- */
-
-.chart-card {
-  padding: 26px;
-}
 
 .line-chart {
   width: 100%;
@@ -189,33 +184,6 @@ main {
 }
 
 /* --------------------------------
-   Loading and error
--------------------------------- */
-
-.loading-message {
-  margin: 24px 0 0;
-  color: var(--text-subtle);
-  text-align: center;
-}
-
-.error-message {
-  width: min(680px, 100%);
-  margin: 20px auto 0;
-  padding: 14px 18px;
-  border: 1px solid #e5d7d7;
-  border-radius: 12px;
-  background: #fffafa;
-  color: #8b3a3a;
-  text-align: center;
-}
-
-html.dark-mode .error-message {
-  border-color: #563b3b;
-  background: #211618;
-  color: #e5a8a8;
-}
-
-/* --------------------------------
    Mobile navigation
 -------------------------------- */
 
@@ -230,18 +198,12 @@ html.dark-mode .error-message {
 -------------------------------- */
 
 @media (max-width: 600px) {
-
-  .energy-area-card,
-  .chart-card {
+  .energy-area-card {
     padding: 20px;
   }
 
   .line-chart svg {
     min-height: 200px;
-  }
-
-  footer {
-    padding: 28px 20px;
   }
 }
 
