@@ -1,10 +1,9 @@
 from fastapi import APIRouter, HTTPException, Query
 from pydantic import BaseModel
 import requests
-from typing import Any, Dict
+from typing import List
 
-from app.api.v1.endpoints.predictions import run_prediction
-from app.ml.features import get_features_for_zone
+from app.ml.features import get_dynamic_forecast
 
 router = APIRouter()
 
@@ -14,23 +13,40 @@ class ZoneInfo(BaseModel):
     name: str
     description: str
 
-class PredictionResult(BaseModel):
-    predicted_price_eur_mwh: float
-    is_optimal_hour: bool
-    cluster: Any
+
+class HourlyPricePoint(BaseModel):
+    timestamp: str
+    raw_timestamp: str
+    predictedPrice: float
+    isHistorical: bool
+    isCurrentHour: bool
+    isOptimal: bool
+    day: str  # "today" eller "tomorrow"
 
 
 class LocationZoneResponse(BaseModel):
+    # Geografisk data
     name: str
+    city: str
     country: str
     country_code: str
     latitude: float
     longitude: float
+    energyArea: str
     zone: ZoneInfo
-    prediction: PredictionResult
+
+    # Sammanfattning för Hero-kortet
+    unit: str
+    has_tomorrow_data: bool
+    current_price: float
+    is_now_optimal: bool
+    lowest_price: float
+    lowest_price_time: str
+
+    # Dynamisk tidsserie för grafen
+    predictions: List[HourlyPricePoint]
 
 
-# Gemensam uppslagsdata för zonerna
 ZONE_METADATA: dict[str, dict[str, str]] = {
     "SE1": {
         "code": "SE1",
@@ -56,7 +72,6 @@ ZONE_METADATA: dict[str, dict[str, str]] = {
 
 
 def get_zone_from_coordinates(lat: float, lon: float) -> dict[str, str]:
-    # Kontrollera att koordinaterna befinner sig inom Sveriges territorium
     if not (55.0 <= lat <= 69.5 and 10.5 <= lon <= 24.5):
         raise ValueError("Koordinaterna ligger utanför Sveriges gränser.")
 
@@ -115,19 +130,28 @@ def lookup_zone(
     except ValueError as err:
         raise HTTPException(status_code=400, detail=str(err))
 
-    # Hämta riktiga features från datasetet för zonen
-    features = get_features_for_zone(zone_data["code"])
+    # Hämta dynamisk prognos från features.py
+    forecast_data = get_dynamic_forecast(zone_data["code"])
 
-    # Kör inferensen mot era tränade modeller
-    prediction_result = run_prediction(features)
-
-    # Skicka tillbaka ort, zon OCH prediktion i ett och samma svar
+    # Returnera synkat svar där nycklarna mappar mot LocationZoneResponse
     return LocationZoneResponse(
         name=official_name,
+        city=official_name,
         country=country,
         country_code=country_code,
         latitude=lat,
         longitude=lon,
+        energyArea=zone_data["code"],
         zone=ZoneInfo(**zone_data),
-        prediction=PredictionResult(**prediction_result),
+        unit=forecast_data["unit"],
+        has_tomorrow_data=forecast_data["has_tomorrow_data"],
+        current_price=forecast_data["current_price"],
+        is_now_optimal=forecast_data["is_now_optimal"],
+        lowest_price=forecast_data[
+            "lowest_future_price"
+        ],  # Mappat mot lowest_future_price
+        lowest_price_time=forecast_data[
+            "lowest_future_time"
+        ],  # Mappat mot lowest_future_time
+        predictions=forecast_data["predictions"],
     )
