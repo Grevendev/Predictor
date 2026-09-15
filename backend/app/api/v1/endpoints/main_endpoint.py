@@ -1,8 +1,10 @@
 from fastapi import APIRouter, HTTPException, Query
 from pydantic import BaseModel
 import requests
+from typing import Any, Dict
 
 from app.api.v1.endpoints.predictions import run_prediction
+from app.ml.features import get_features_for_zone
 
 router = APIRouter()
 
@@ -12,6 +14,11 @@ class ZoneInfo(BaseModel):
     name: str
     description: str
 
+class PredictionResult(BaseModel):
+    predicted_price_eur_mwh: float
+    is_optimal_hour: bool
+    cluster: Any
+
 
 class LocationZoneResponse(BaseModel):
     name: str
@@ -20,6 +27,7 @@ class LocationZoneResponse(BaseModel):
     latitude: float
     longitude: float
     zone: ZoneInfo
+    prediction: PredictionResult
 
 
 # Gemensam uppslagsdata för zonerna
@@ -107,27 +115,13 @@ def lookup_zone(
     except ValueError as err:
         raise HTTPException(status_code=400, detail=str(err))
 
-    # Dummy features för att testa anropet till ML-modellen
-    features = {
-        "zone": zone_data["code"],
-        "temperature_c": 12.5,
-        "wind_speed_kmh": 18.0,
-        "rain_mm": 0.0,
-        "hour": 14,
-        "day_of_week": 0,
-        "month": 9,
-        "is_weekend": 0,
-        "price_lag_24": 35.0,
-        "price_lag_48": 38.0,
-        "price_lag_168": 32.0,
-        "spot_price_eur_mwh": 34.0,
-    }
+    # Hämta riktiga features från datasetet för zonen
+    features = get_features_for_zone(zone_data["code"])
 
-    # Kör inferens
+    # Kör inferensen mot era tränade modeller
     prediction_result = run_prediction(features)
-    print("Inference result:", prediction_result)
 
-    # Returnera ren respons enligt LocationZoneResponse
+    # Skicka tillbaka ort, zon OCH prediktion i ett och samma svar
     return LocationZoneResponse(
         name=official_name,
         country=country,
@@ -135,4 +129,5 @@ def lookup_zone(
         latitude=lat,
         longitude=lon,
         zone=ZoneInfo(**zone_data),
+        prediction=PredictionResult(**prediction_result),
     )
