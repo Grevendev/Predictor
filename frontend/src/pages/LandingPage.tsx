@@ -147,14 +147,36 @@ function LandingPage() {
           </div>
 
           {isLoading && (
-            <p className="loading-message">
+            <p
+              className="
+      mt-6
+      text-center
+      text-[var(--text-subtle)]
+    "
+            >
               Hämtar information...
             </p>
           )}
 
           {error && (
             <p
-              className="error-message"
+              className="
+      mx-auto
+      mt-5
+      w-full
+      max-w-[680px]
+      rounded-xl
+      border
+      border-[#e5d7d7]
+      bg-[#fffafa]
+      px-[18px]
+      py-[14px]
+      text-center
+      text-[#8b3a3a]
+      dark:border-[#563b3b]
+      dark:bg-[#211618]
+      dark:text-[#e5a8a8]
+    "
               role="alert"
             >
               {error}
