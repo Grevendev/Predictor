@@ -56,7 +56,7 @@ function Header() {
             href="/about"
             onClick={closeMenu}
           >
-            Om projektet
+            Om
           </a>
 
           <a
