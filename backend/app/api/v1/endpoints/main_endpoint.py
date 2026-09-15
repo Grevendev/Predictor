@@ -3,7 +3,7 @@ from pydantic import BaseModel
 import requests
 from typing import List
 
-from app.ml.features import get_day_forecast_24h
+from app.ml.features import get_dynamic_forecast
 
 router = APIRouter()
 
@@ -16,10 +16,12 @@ class ZoneInfo(BaseModel):
 
 class HourlyPricePoint(BaseModel):
     timestamp: str
+    raw_timestamp: str
     predictedPrice: float
     isHistorical: bool
     isCurrentHour: bool
     isOptimal: bool
+    day: str  # "today" eller "tomorrow"
 
 
 class LocationZoneResponse(BaseModel):
@@ -35,16 +37,16 @@ class LocationZoneResponse(BaseModel):
 
     # Sammanfattning för Hero-kortet
     unit: str
+    has_tomorrow_data: bool
     current_price: float
     is_now_optimal: bool
     lowest_price: float
     lowest_price_time: str
 
-    # 24h tidsserie för grafen
+    # Dynamisk tidsserie för grafen
     predictions: List[HourlyPricePoint]
 
 
-# Gemensam uppslagsdata för zonerna
 ZONE_METADATA: dict[str, dict[str, str]] = {
     "SE1": {
         "code": "SE1",
@@ -128,10 +130,10 @@ def lookup_zone(
     except ValueError as err:
         raise HTTPException(status_code=400, detail=str(err))
 
-    # 1. Hämta 24-timmars prognos (historik + ML-inferens för resten av dygnet)
-    forecast_data = get_day_forecast_24h(zone_data["code"])
+    # Hämta dynamisk prognos från features.py
+    forecast_data = get_dynamic_forecast(zone_data["code"])
 
-    # 2. Returnera responsen anpassad direkt för React
+    # Returnera synkat svar där nycklarna mappar mot LocationZoneResponse
     return LocationZoneResponse(
         name=official_name,
         city=official_name,
@@ -142,9 +144,14 @@ def lookup_zone(
         energyArea=zone_data["code"],
         zone=ZoneInfo(**zone_data),
         unit=forecast_data["unit"],
+        has_tomorrow_data=forecast_data["has_tomorrow_data"],
         current_price=forecast_data["current_price"],
         is_now_optimal=forecast_data["is_now_optimal"],
-        lowest_price=forecast_data["lowest_price"],
-        lowest_price_time=forecast_data["lowest_price_time"],
+        lowest_price=forecast_data[
+            "lowest_future_price"
+        ],  # Mappat mot lowest_future_price
+        lowest_price_time=forecast_data[
+            "lowest_future_time"
+        ],  # Mappat mot lowest_future_time
         predictions=forecast_data["predictions"],
     )
