@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+/* --------------------------------
+   Theme
+-------------------------------- */
+
 :root {
   font-family:
     Inter,
@@ -34,12 +38,10 @@
 
   color: var(--text);
   background: var(--background);
-
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
 }
-
 
 /* --------------------------------
    Dark mode
@@ -69,7 +71,6 @@ html.dark-mode {
     0 2px 8px rgba(0, 0, 0, 0.18);
 }
 
-
 /* --------------------------------
    Global
 -------------------------------- */
@@ -81,7 +82,6 @@ html.dark-mode {
 html {
   min-width: 320px;
   scroll-behavior: smooth;
-
   background: var(--background);
 }
 
@@ -89,7 +89,6 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
-
   background: var(--background);
   color: var(--text);
 
@@ -114,10 +113,8 @@ a {
 
 #root {
   min-height: 100vh;
-
   display: flex;
   flex-direction: column;
-
   background: var(--background);
 }
 
@@ -126,129 +123,21 @@ main {
   width: 100%;
 }
 
-
-
-
-
-/* --------------------------------
-   Hero
--------------------------------- */
-
-.hero-section {
-  position: relative;
-
-  overflow: hidden;
-
-  padding: 110px 20px 120px;
-
-  background: var(--background);
-
-  transition: background-color 0.25s ease;
-}
-
-.hero-content {
-  position: relative;
-  z-index: 1;
-
-  width: min(100%, 1000px);
-
-  margin: 0 auto;
-
-  text-align: center;
-}
-
-.hero-eyebrow {
-  display: inline-flex;
-
-  margin-bottom: 22px;
-
-  color: var(--text-subtle);
-
-  font-size: 0.72rem;
-  font-weight: 800;
-  letter-spacing: 0.16em;
-}
-
-.hero-content h1 {
-  max-width: 850px;
-
-  margin: 0 auto;
-
-  color: var(--text-strong);
-
-  font-size: clamp(3rem, 8vw, 6.5rem);
-  line-height: 0.96;
-  letter-spacing: -0.065em;
-  font-weight: 850;
-}
-
-.hero-content h1 span {
-  display: block;
-
-  color: var(--text-muted);
-}
-
-.hero-description {
-  max-width: 620px;
-
-  margin: 32px auto 0;
-
-  color: var(--text-muted);
-
-  font-size: 1.08rem;
-  line-height: 1.7;
-}
-
-.hero-content form {
-  margin-top: 40px;
-}
-
-.hero-disclaimer {
-  margin: 16px 0 0;
-
-  color: var(--text-faint);
-
-  font-size: 0.75rem;
-}
-
-.hero-background-glow {
-  position: absolute;
-
-  top: -180px;
-  left: 50%;
-
-  width: 700px;
-  height: 500px;
-
-  transform: translateX(-50%);
-
-  background:
-    radial-gradient(circle,
-      rgba(148, 163, 184, 0.14),
-      rgba(148, 163, 184, 0) 70%);
-
-  pointer-events: none;
-}
-
-
 /* --------------------------------
    Search form
 -------------------------------- */
 
 form {
   width: min(680px, 100%);
-
   margin: 0 auto;
 
   display: flex;
   align-items: flex-end;
-
   gap: 12px;
 
   padding: 10px;
 
   background: var(--surface);
-
   border: 1px solid var(--border);
   border-radius: 18px;
 
@@ -272,7 +161,6 @@ form label {
   overflow: hidden;
 
   clip: rect(0, 0, 0, 0);
-
   white-space: nowrap;
 
   border: 0;
@@ -280,8 +168,8 @@ form label {
 
 form input {
   flex: 1;
-
   min-width: 0;
+
   height: 56px;
 
   padding: 0 18px;
@@ -290,7 +178,6 @@ form input {
   border-radius: 12px;
 
   background: var(--input-background);
-
   color: var(--text);
 
   outline: none;
@@ -304,14 +191,12 @@ form input {
 
 form input::placeholder {
   color: var(--text-muted);
-
   font-size: 0.9rem;
   letter-spacing: 0.08em;
 }
 
 form input:focus {
   background: var(--surface);
-
   border-color: var(--text-muted);
 
   box-shadow:
@@ -320,14 +205,12 @@ form input:focus {
 
 form button {
   height: 56px;
-
   padding: 0 28px;
 
   border: 0;
   border-radius: 12px;
 
   background: var(--button);
-
   color: var(--background);
 
   font-weight: 650;
@@ -352,14 +235,12 @@ form button:active {
   transform: translateY(0);
 }
 
-
 /* --------------------------------
    Search results
 -------------------------------- */
 
 .search-results {
   width: min(960px, 100%);
-
   margin: 72px auto 0;
 }
 
@@ -367,7 +248,6 @@ form button:active {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-
   gap: 24px;
 
   margin-bottom: 24px;
@@ -399,13 +279,11 @@ form button:active {
 .energy-area-badge {
   display: flex;
   align-items: center;
-
   gap: 12px;
 
   padding: 10px 14px;
 
   background: var(--surface);
-
   border: 1px solid var(--border);
   border-radius: 12px;
 
@@ -416,21 +294,17 @@ form button:active {
 
 .energy-area-badge span {
   color: var(--text-subtle);
-
   font-size: 0.8rem;
 }
 
 .energy-area-badge strong {
   color: var(--text);
-
   font-size: 0.95rem;
 }
 
 .results-grid {
   display: grid;
-
   grid-template-columns: 1fr 1.6fr;
-
   gap: 16px;
 }
 
@@ -438,7 +312,6 @@ form button:active {
   min-width: 0;
 
   background: var(--surface);
-
   border: 1px solid var(--border);
   border-radius: 20px;
 
@@ -459,14 +332,12 @@ form button:active {
     0 3px 10px rgba(15, 23, 42, 0.03);
 }
 
-
 /* --------------------------------
    Energy area
 -------------------------------- */
 
 .energy-area-card {
   min-height: 230px;
-
   padding: 26px;
 }
 
@@ -482,7 +353,6 @@ form button:active {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-
   gap: 20px;
 }
 
@@ -503,7 +373,6 @@ form button:active {
   margin: 18px 0 0;
 
   color: var(--text-muted);
-
   line-height: 1.65;
 }
 
@@ -518,13 +387,11 @@ form button:active {
   border-radius: 9px;
 
   background: var(--surface-soft);
-
   color: var(--text);
 
   font-size: 0.8rem;
   font-weight: 750;
 }
-
 
 /* --------------------------------
    Price chart
@@ -536,14 +403,12 @@ form button:active {
 
 .chart-unit {
   color: var(--text-subtle);
-
   font-size: 0.8rem;
 }
 
 .chart-summary {
   display: flex;
   align-items: baseline;
-
   gap: 10px;
 
   margin-top: 22px;
@@ -559,7 +424,6 @@ form button:active {
 
 .chart-summary span {
   color: var(--text-subtle);
-
   font-size: 0.8rem;
 }
 
@@ -603,7 +467,6 @@ form button:active {
 
 .chart-point {
   fill: var(--surface);
-
   stroke: var(--text);
   stroke-width: 3;
 
@@ -623,7 +486,6 @@ form button:active {
   font-weight: 500;
 }
 
-
 /* --------------------------------
    Cost saving tips
 -------------------------------- */
@@ -641,11 +503,8 @@ form button:active {
 
 .tip {
   display: grid;
-
   grid-template-columns: 42px 1fr;
-
   gap: 16px;
-
   align-items: start;
 
   padding: 18px 0;
@@ -669,7 +528,6 @@ form button:active {
 
   font-size: 0.72rem;
   font-weight: 800;
-
   letter-spacing: 0.05em;
 }
 
@@ -681,7 +539,6 @@ form button:active {
   font-size: 0.88rem;
   line-height: 1.65;
 }
-
 
 /* --------------------------------
    Loading and error
@@ -699,14 +556,12 @@ form button:active {
   width: min(680px, 100%);
 
   margin: 20px auto 0;
-
   padding: 14px 18px;
 
   border: 1px solid #e5d7d7;
   border-radius: 12px;
 
   background: #fffafa;
-
   color: #8b3a3a;
 
   text-align: center;
@@ -718,7 +573,6 @@ html.dark-mode .error-message {
   color: #e5a8a8;
 }
 
-
 /* --------------------------------
    Footer
 -------------------------------- */
@@ -727,7 +581,6 @@ footer {
   width: 100%;
 
   margin-top: auto;
-
   padding: 32px 40px;
 
   border-top: 1px solid var(--border);
@@ -747,10 +600,8 @@ footer p {
   color: var(--text-subtle);
 
   font-size: 0.875rem;
-
   text-align: center;
 }
-
 
 /* --------------------------------
    Dashboard responsive
@@ -771,7 +622,6 @@ footer p {
   }
 }
 
-
 /* --------------------------------
    Mobile navigation
 -------------------------------- */
@@ -780,33 +630,13 @@ footer p {
   .header-inner {
     width: calc(100% - 32px);
   }
-
-
-
-  .hero-section {
-    padding-top: 72px;
-  }
-
-  .hero-content h1 {
-    font-size: clamp(3rem, 15vw, 4.5rem);
-  }
-
-  .hero-description {
-    font-size: 0.98rem;
-  }
 }
-
 
 /* --------------------------------
    Tablet
 -------------------------------- */
 
 @media (max-width: 600px) {
-  .hero-section {
-    padding:
-      72px 16px 90px;
-  }
-
   .search-results {
     margin-top: 52px;
   }
@@ -831,7 +661,6 @@ footer p {
 
   .tip {
     grid-template-columns: 38px 1fr;
-
     gap: 14px;
 
     padding: 16px 0;
@@ -851,40 +680,11 @@ footer p {
   }
 }
 
-
 /* --------------------------------
    Small mobile
 -------------------------------- */
 
 @media (max-width: 480px) {
-
-
-  .hero-section {
-    padding:
-      56px 12px 72px;
-  }
-
-  .hero-eyebrow {
-    margin-bottom: 18px;
-
-    font-size: 0.65rem;
-  }
-
-  .hero-content h1 {
-    font-size: 3rem;
-  }
-
-  .hero-description {
-    margin-top: 24px;
-
-    font-size: 0.94rem;
-    line-height: 1.65;
-  }
-
-  .hero-content form {
-    margin-top: 30px;
-  }
-
   form {
     flex-direction: column;
     align-items: stretch;
@@ -895,10 +695,6 @@ footer p {
   form input,
   form button {
     width: 100%;
-  }
-
-  form input,
-  form button {
     height: 52px;
   }
 
@@ -936,7 +732,6 @@ footer p {
 
   .tip {
     grid-template-columns: 36px 1fr;
-
     gap: 12px;
   }
 
@@ -952,7 +747,6 @@ footer p {
   }
 }
 
-
 /* --------------------------------
    About page
 -------------------------------- */
@@ -965,9 +759,7 @@ footer p {
   max-width: 1200px;
 
   margin: 0 auto;
-
-  padding:
-    140px 40px 120px;
+  padding: 140px 40px 120px;
 }
 
 .section-label {
@@ -975,7 +767,6 @@ footer p {
 
   font-size: 0.72rem;
   font-weight: 700;
-
   letter-spacing: 0.14em;
   text-transform: uppercase;
 
@@ -989,35 +780,28 @@ footer p {
 
   color: var(--text-strong);
 
-  font-size:
-    clamp(3.5rem, 7vw, 7rem);
-
+  font-size: clamp(3.5rem, 7vw, 7rem);
   line-height: 0.94;
-
   letter-spacing: -0.055em;
 }
 
 .about-intro {
   max-width: 680px;
 
-  margin:
-    36px 0 0;
+  margin: 36px 0 0;
 
   font-size: 1.2rem;
-
   line-height: 1.7;
 
   color: var(--text-muted);
 }
-
 
 /* --------------------------------
    About sections
 -------------------------------- */
 
 .about-section {
-  padding:
-    120px 40px;
+  padding: 120px 40px;
 }
 
 .about-section-alt {
@@ -1044,32 +828,25 @@ footer p {
 .about-section h2 {
   max-width: 850px;
 
-  margin:
-    0 0 28px;
+  margin: 0 0 28px;
 
   color: var(--text-strong);
 
-  font-size:
-    clamp(2.5rem, 5vw, 4.8rem);
-
+  font-size: clamp(2.5rem, 5vw, 4.8rem);
   line-height: 0.98;
-
   letter-spacing: -0.045em;
 }
 
 .about-section p {
   max-width: 720px;
 
-  margin:
-    0 0 20px;
+  margin: 0 0 20px;
 
   font-size: 1.05rem;
-
   line-height: 1.75;
 
   color: var(--text-muted);
 }
-
 
 /* --------------------------------
    Energy areas
@@ -1088,22 +865,16 @@ footer p {
   margin-top: 72px;
 }
 
-.energy-area-map-column {
-  min-width: 0;
-}
-
+.energy-area-map-column,
 .energy-area-info-column {
   min-width: 0;
 }
 
 .energy-area-placeholder,
 .energy-area-content {
-  padding:
-    36px;
+  padding: 36px;
 
-  border:
-    1px solid var(--border);
-
+  border: 1px solid var(--border);
   border-radius: 18px;
 
   background: var(--surface);
@@ -1113,23 +884,18 @@ footer p {
   min-height: 360px;
 
   display: flex;
-
   flex-direction: column;
-
   justify-content: center;
 }
 
 .energy-area-placeholder h3,
 .energy-area-content h3 {
-  margin:
-    8px 0 10px;
+  margin: 8px 0 10px;
 
   color: var(--text-strong);
 
   font-size: 2.4rem;
-
   line-height: 1;
-
   letter-spacing: -0.04em;
 }
 
@@ -1137,11 +903,9 @@ footer p {
 .energy-area-content p {
   max-width: none;
 
-  margin:
-    0 0 20px;
+  margin: 0 0 20px;
 
   font-size: 0.98rem;
-
   line-height: 1.7;
 
   color: var(--text-muted);
@@ -1149,9 +913,7 @@ footer p {
 
 .card-eyebrow {
   font-size: 0.68rem;
-
   font-weight: 700;
-
   letter-spacing: 0.14em;
 
   color: var(--text-subtle);
@@ -1159,9 +921,7 @@ footer p {
 
 .card-heading {
   display: flex;
-
   align-items: center;
-
   justify-content: space-between;
 
   gap: 20px;
@@ -1169,27 +929,20 @@ footer p {
 
 .area-code {
   display: inline-flex;
-
   align-items: center;
-
   justify-content: center;
 
   min-width: 58px;
 
-  padding:
-    8px 12px;
+  padding: 8px 12px;
 
-  border:
-    1px solid var(--border);
-
+  border: 1px solid var(--border);
   border-radius: 999px;
 
   color: var(--text);
 
   font-size: 0.75rem;
-
   font-weight: 700;
-
   letter-spacing: 0.08em;
 }
 
@@ -1199,24 +952,19 @@ footer p {
   margin-bottom: 28px;
 
   font-size: 0.85rem;
-
   color: var(--text-muted);
 }
 
 .energy-area-sources {
   margin-top: 32px;
-
   padding-top: 24px;
 
-  border-top:
-    1px solid var(--border);
+  border-top: 1px solid var(--border);
 }
 
 .energy-area-source-list {
   display: flex;
-
   flex-direction: column;
-
   gap: 12px;
 
   margin-top: 14px;
@@ -1224,18 +972,14 @@ footer p {
 
 .energy-area-source {
   display: flex;
-
   align-items: center;
-
   justify-content: space-between;
 
   gap: 20px;
 
-  padding:
-    14px 0;
+  padding: 14px 0;
 
-  border-bottom:
-    1px solid var(--border);
+  border-bottom: 1px solid var(--border);
 }
 
 .energy-area-source:last-child {
@@ -1244,16 +988,13 @@ footer p {
 
 .energy-area-source span {
   font-size: 0.9rem;
-
   color: var(--text-muted);
 }
 
 .energy-area-source strong {
   font-size: 0.9rem;
-
   color: var(--text);
 }
-
 
 /* --------------------------------
    Electricity price
@@ -1275,9 +1016,7 @@ footer p {
 
   padding: 28px;
 
-  border:
-    1px solid var(--border);
-
+  border: 1px solid var(--border);
   border-radius: 16px;
 
   background: var(--surface);
@@ -1289,9 +1028,7 @@ footer p {
   margin-bottom: 56px;
 
   font-size: 0.68rem;
-
   font-weight: 700;
-
   letter-spacing: 0.14em;
 
   color: var(--text-subtle);
@@ -1303,7 +1040,6 @@ footer p {
   color: var(--text-strong);
 
   font-size: 1.6rem;
-
   letter-spacing: -0.025em;
 }
 
@@ -1311,12 +1047,10 @@ footer p {
   margin: 0;
 
   font-size: 0.92rem;
-
   line-height: 1.6;
 
   color: var(--text-muted);
 }
-
 
 /* --------------------------------
    Forecast process
@@ -1330,11 +1064,8 @@ footer p {
 
   margin-top: 64px;
 
-  border-top:
-    1px solid var(--border);
-
-  border-bottom:
-    1px solid var(--border);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
 }
 
 .about-forecast-step {
@@ -1342,13 +1073,11 @@ footer p {
 
   min-height: 190px;
 
-  padding:
-    36px 32px;
+  padding: 36px 32px;
 }
 
 .about-forecast-step+.about-forecast-step {
-  border-left:
-    1px solid var(--border);
+  border-left: 1px solid var(--border);
 }
 
 .about-forecast-step span {
@@ -1357,9 +1086,7 @@ footer p {
   margin-bottom: 48px;
 
   font-size: 0.68rem;
-
   font-weight: 700;
-
   letter-spacing: 0.14em;
 
   color: var(--text-subtle);
@@ -1371,7 +1098,6 @@ footer p {
   color: var(--text-strong);
 
   font-size: 2rem;
-
   letter-spacing: -0.035em;
 }
 
@@ -1381,11 +1107,9 @@ footer p {
   position: absolute;
 
   top: 50%;
-
   right: -11px;
 
-  transform:
-    translateY(-50%);
+  transform: translateY(-50%);
 
   z-index: 2;
 
@@ -1393,7 +1117,6 @@ footer p {
 
   color: var(--text-muted);
 }
-
 
 /* --------------------------------
    Benefits
@@ -1412,18 +1135,14 @@ footer p {
 
 .about-benefits div {
   display: flex;
-
   flex-direction: column;
-
   gap: 16px;
 
   min-height: 220px;
 
   padding: 28px;
 
-  border:
-    1px solid var(--border);
-
+  border: 1px solid var(--border);
   border-radius: 16px;
 
   background: var(--surface);
@@ -1433,18 +1152,15 @@ footer p {
   color: var(--text-strong);
 
   font-size: 1.5rem;
-
   letter-spacing: -0.025em;
 }
 
 .about-benefits span {
   font-size: 0.92rem;
-
   line-height: 1.6;
 
   color: var(--text-muted);
 }
-
 
 /* --------------------------------
    Disclaimer
@@ -1455,8 +1171,7 @@ footer p {
 
   margin: 0 auto;
 
-  padding:
-    48px 40px 80px;
+  padding: 48px 40px 80px;
 }
 
 .about-disclaimer p {
@@ -1465,12 +1180,10 @@ footer p {
   margin: 0;
 
   font-size: 0.8rem;
-
   line-height: 1.6;
 
   color: var(--text-subtle);
 }
-
 
 /* --------------------------------
    About responsive
@@ -1478,18 +1191,15 @@ footer p {
 
 @media (max-width: 900px) {
   .about-hero {
-    padding:
-      100px 28px 90px;
+    padding: 100px 28px 90px;
   }
 
   .about-section {
-    padding:
-      90px 28px;
+    padding: 90px 28px;
   }
 
   .energy-area-layout {
     grid-template-columns: 1fr;
-
     gap: 48px;
   }
 
@@ -1499,9 +1209,7 @@ footer p {
 
   .about-forecast-step+.about-forecast-step {
     border-left: 0;
-
-    border-top:
-      1px solid var(--border);
+    border-top: 1px solid var(--border);
   }
 
   .about-forecast-step::after {
@@ -1513,21 +1221,17 @@ footer p {
   }
 
   .about-disclaimer {
-    padding:
-      40px 28px 64px;
+    padding: 40px 28px 64px;
   }
 }
 
-
 @media (max-width: 600px) {
   .about-hero {
-    padding:
-      80px 20px 72px;
+    padding: 80px 20px 72px;
   }
 
   .about-section {
-    padding:
-      72px 20px;
+    padding: 72px 20px;
   }
 
   .about-hero h1 {
@@ -1550,8 +1254,7 @@ footer p {
 
   .energy-area-placeholder,
   .energy-area-content {
-    padding:
-      28px 22px;
+    padding: 28px 22px;
   }
 
   .energy-area-placeholder {
@@ -1579,8 +1282,7 @@ footer p {
   .about-forecast-step {
     min-height: auto;
 
-    padding:
-      28px 22px;
+    padding: 28px 22px;
   }
 
   .about-forecast-step span {
@@ -1598,7 +1300,6 @@ footer p {
   }
 
   .about-disclaimer {
-    padding:
-      36px 20px 56px;
+    padding: 36px 20px 56px;
   }
 }
