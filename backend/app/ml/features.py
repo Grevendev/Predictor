@@ -4,11 +4,11 @@ from pathlib import Path
 
 # Sökvägen till datasetet
 BASE_DIR = Path(__file__).resolve().parents[3]
-DATA_PATH = BASE_DIR / "dataset" / "all_zones_complete.csv"
+DATA_PATH = BASE_DIR / "dataset" / "all_zones_complete_2025.csv"
 
 # Fallback för Docker-container (om mappen mountas in direkt som /dataset)
 if not DATA_PATH.is_file():
-    CONTAINER_PATH = Path("/dataset/all_zones_complete.csv")
+    CONTAINER_PATH = Path("/dataset/all_zones_complete_2025.csv")
     if CONTAINER_PATH.is_file():
         DATA_PATH = CONTAINER_PATH
     else:
