@@ -3,7 +3,9 @@ import type { Prediction } from "../types/Prediction";
 import { getEnergyArea } from "../utils/energyAreaUtils";
 
 import EnergyAreaInfo from "./EnergyAreaInfo";
+
 import PriceChart from "./PriceChart";
+
 import CostSavingTips from "./CostSavingTips";
 
 interface SearchResultsProps {
@@ -121,6 +123,7 @@ function SearchResults({ prediction }: SearchResultsProps) {
             className="
               result-card
               energy-area-card
+              min-h-[230px]
               min-w-0
               rounded-[20px]
               border
