@@ -1,11 +1,14 @@
 import { useEffect, useMemo, useState } from "react";
+
 import "./EnergyAreaMap.css";
+
 import {
   getEnergyAreas,
   type EnergyAreaFeature,
   type EnergyAreaGeometry,
   type Position
 } from "../services/energyAreaService";
+
 import type { EnergyArea } from "../types/EnergyArea";
 
 interface EnergyAreaMapProps {
@@ -87,6 +90,7 @@ function createProjection(
    * Adjust the horizontal scale so that
    * Sweden keeps a more natural aspect ratio.
    */
+
   const latitudeCenter =
     (minLatitude + maxLatitude) / 2;
 
@@ -261,7 +265,15 @@ function EnergyAreaMap({
   if (loading) {
     return (
       <div
-        className="energy-area-map-state"
+        className="
+          flex
+          min-h-[200px]
+          items-center
+          justify-center
+          text-center
+          text-[0.9rem]
+          text-[var(--text-subtle)]
+        "
         role="status"
       >
         Laddar karta...
@@ -272,7 +284,15 @@ function EnergyAreaMap({
   if (error) {
     return (
       <div
-        className="energy-area-map-state"
+        className="
+          flex
+          min-h-[200px]
+          items-center
+          justify-center
+          text-center
+          text-[0.9rem]
+          text-[var(--text-subtle)]
+        "
         role="alert"
       >
         {error}
@@ -285,8 +305,22 @@ function EnergyAreaMap({
   }
 
   return (
-    <div className="energy-area-map-wrapper">
-      <div className="energy-area-map-container">
+    <div
+      className="
+        flex
+        w-full
+        flex-col
+        items-center
+      "
+    >
+      <div
+        className="
+          relative
+          w-full
+          max-w-[620px]
+          overflow-hidden
+        "
+      >
         <svg
           className="energy-area-map"
           viewBox={
@@ -302,85 +336,74 @@ function EnergyAreaMap({
             Sveriges fyra elområden
           </title>
 
-          {features.map(
-            (feature) => {
-              const isSelected =
-                selectedArea ===
-                feature.area;
+          {features.map((feature) => {
+            const isSelected =
+              selectedArea ===
+              feature.area;
 
-              const className =
-                "energy-area-path" +
-                (isSelected
-                  ? " is-selected"
-                  : "");
+            const className =
+              "energy-area-path" +
+              (isSelected
+                ? " is-selected"
+                : "");
 
-              return (
-                <path
-                  key={
+            return (
+              <path
+                key={feature.area}
+                className={className}
+                d={geometryToPath(
+                  feature.geometry,
+                  project
+                )}
+                tabIndex={0}
+                aria-label={
+                  "Elområde " +
+                  feature.area
+                }
+                onClick={() =>
+                  onSelectArea(
                     feature.area
-                  }
-                  className={
-                    className
-                  }
-                  d={geometryToPath(
-                    feature.geometry,
-                    project
-                  )}
-                  tabIndex={0}
-                  aria-label={
-                    "Elområde " +
-                    feature.area
-                  }
-                  onClick={() =>
+                  )
+                }
+                onKeyDown={(event) => {
+                  if (
+                    event.key === "Enter" ||
+                    event.key === " "
+                  ) {
+                    event.preventDefault();
+
                     onSelectArea(
                       feature.area
-                    )
+                    );
                   }
-                  onKeyDown={(event) => {
-                    if (
-                      event.key === "Enter" ||
-                      event.key === " "
-                    ) {
-                      event.preventDefault();
-
-                      onSelectArea(
-                        feature.area
-                      );
-                    }
-                  }}
-                />
-              );
-            }
-          )}
+                }}
+              />
+            );
+          })}
         </svg>
 
         <div className="energy-area-map-labels">
-          {AREA_ORDER.map(
-            (area) => {
-              const isSelected =
-                selectedArea ===
-                area;
+          {AREA_ORDER.map((area) => {
+            const isSelected =
+              selectedArea === area;
 
-              return (
-                <button
-                  key={area}
-                  type="button"
-                  className={
-                    isSelected
-                      ? "is-selected"
-                      : ""
-                  }
-                  onClick={() =>
-                    onSelectArea(
-                      area
-                    )
-                  }
-                >
-                  {area}
-                </button>
-              );
-            }
-          )}
+            return (
+              <button
+                key={area}
+                type="button"
+                className={
+                  isSelected
+                    ? "is-selected"
+                    : ""
+                }
+                onClick={() =>
+                  onSelectArea(area)
+                }
+              >
+                {area}
+              </button>
+            );
+          })}
         </div>
       </div>
 
