@@ -1,0 +1,53 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: predictor_api_prod
+    restart: always
+    environment:
+      - FASTAPI_ENV=production
+      - PYTHONPATH=/app
+    volumes:
+      - ./models_bin:/models_bin:ro
+    networks:
+      - internal-net
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        - VITE_BASE_PATH=/predictor/
+    container_name: predictor_ui_prod
+    restart: always
+    # Ta bort publika port-mappningar (t.ex. 80:80) – Traefik sköter all extern trafik
+    expose:
+      - "80"
+    labels:
+      - "traefik.enable=true"
+
+      # --- HTTP Router (Redirect till HTTPS) ---
+      - "traefik.http.routers.predictor-http.rule=Host(`din-doman.se`) && PathPrefix(`/predictor`)"
+      - "traefik.http.routers.predictor-http.entrypoints=web"
+      - "traefik.http.routers.predictor-http.middlewares=redirect-to-https"
+
+      # --- HTTPS Router ---
+      - "traefik.http.routers.predictor-https.rule=Host(`din-doman.se`) && PathPrefix(`/predictor`)"
+      - "traefik.http.routers.predictor-https.entrypoints=websecure"
+      - "traefik.http.routers.predictor-https.tls=true"
+      - "traefik.http.routers.predictor-https.tls.certresolver=letsencrypt"
+
+      # --- Koppling till Nginx inuti containern ---
+      - "traefik.http.services.predictor.loadbalancer.server.port=80"
+    depends_on:
+      - backend
+    networks:
+      - internal-net
+      - traefik-net # Traefiks delade nätverk
+
+networks:
+  internal-net:
+    driver: bridge
+  traefik-net:
+    external: true # Förutsätter att  Traefik-nätverk redan existerar

@@ -1,0 +1,70 @@
+# services:
+#   backend:
+#     build:
+#       context: ./backend
+#       dockerfile: Dockerfile
+#     container_name: predictor_api
+#     restart: unless-stopped
+#     ports:
+#       - "8000:8000"
+#     environment:
+#       - FASTAPI_ENV=development
+#       - PYTHONPATH=/app
+#     volumes:
+#       # Montera models_bin från projektroten direkt till /models_bin i containern
+#       - ./models_bin:/models_bin:ro
+#     healthcheck:
+#       test:
+#         [
+#           "CMD",
+#           "python",
+#           "-c",
+#           "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')",
+#         ]
+#       interval: 15s
+#       timeout: 3s
+#       retries: 3
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: predictor_api
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - FASTAPI_ENV=development
+      - PYTHONPATH=/app
+    volumes:
+      - ./backend/app:/app/app:ro
+      - ./models_bin:/models_bin:ro
+    networks:
+      - predictor-net
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: predictor_ui
+    restart: unless-stopped
+    ports:
+      - "5173:5173"
+    environment:
+      # Här pekar vi på containern/servicen "backend" i Dockers interna DNS
+      - VITE_BACKEND_URL=http://backend:8000
+    volumes:
+      # Mounta frontend-koden för HMR (Hot Module Replacement)
+      - ./frontend/src:/app/src
+      - ./frontend/public:/app/public
+      # Skydda containerns node_modules från att skrivas över av hostens
+      - /app/node_modules
+    depends_on:
+      - backend
+    networks:
+      - predictor-net
+
+networks:
+  predictor-net:
+    driver: bridge
