@@ -8,13 +8,69 @@
     "Segoe UI",
     sans-serif;
 
-  color: #172033;
-  background: #f6f8fb;
+  --background: #f6f8fb;
+  --surface: #ffffff;
+  --surface-soft: #f7f9fc;
+
+  --text: #172033;
+  --text-strong: #111827;
+  --text-muted: #667085;
+  --text-subtle: #8a94a6;
+  --text-faint: #a0a9b7;
+
+  --border: #e1e6ee;
+  --border-subtle: #e7ebf1;
+
+  --button: #172033;
+  --button-hover: #252f43;
+
+  --input-background: #f7f9fc;
+
+  --shadow:
+    0 10px 30px rgba(15, 23, 42, 0.06),
+    0 2px 8px rgba(15, 23, 42, 0.03);
+
+  color: var(--text);
+  background: var(--background);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
 }
+
+
+/* --------------------------------
+   Dark mode
+-------------------------------- */
+
+html.dark-mode {
+  --background: #0d1117;
+  --surface: #161b22;
+  --surface-soft: #1c2330;
+
+  --text: #e6edf3;
+  --text-strong: #ffffff;
+  --text-muted: #9da7b5;
+  --text-subtle: #8b96a5;
+  --text-faint: #6f7b8b;
+
+  --border: #303846;
+  --border-subtle: #242c38;
+
+  --button: #e6edf3;
+  --button-hover: #ffffff;
+
+  --input-background: #161b22;
+
+  --shadow:
+    0 10px 30px rgba(0, 0, 0, 0.28),
+    0 2px 8px rgba(0, 0, 0, 0.18);
+}
+
+
+/* --------------------------------
+   Global
+-------------------------------- */
 
 * {
   box-sizing: border-box;
@@ -23,6 +79,8 @@
 html {
   min-width: 320px;
   scroll-behavior: smooth;
+
+  background: var(--background);
 }
 
 body {
@@ -30,7 +88,12 @@ body {
   min-width: 320px;
   min-height: 100vh;
 
-  background: #f6f8fb;
+  background: var(--background);
+  color: var(--text);
+
+  transition:
+    background-color 0.25s ease,
+    color 0.25s ease;
 }
 
 button,
@@ -52,6 +115,8 @@ a {
 
   display: flex;
   flex-direction: column;
+
+  background: var(--background);
 }
 
 main {
@@ -71,11 +136,17 @@ main {
 
   width: 100%;
 
-  background: rgba(255, 255, 255, 0.82);
+  background: color-mix(in srgb,
+      var(--surface) 82%,
+      transparent);
 
-  border-bottom: 1px solid #e7ebf1;
+  border-bottom: 1px solid var(--border-subtle);
 
   backdrop-filter: blur(18px);
+
+  transition:
+    background-color 0.25s ease,
+    border-color 0.25s ease;
 }
 
 .header-inner {
@@ -90,11 +161,13 @@ main {
 }
 
 .logo {
-  color: #111827;
+  color: var(--text-strong);
 
   font-size: 1rem;
   font-weight: 850;
   letter-spacing: 0.08em;
+
+  transition: color 0.25s ease;
 }
 
 .site-navigation {
@@ -105,7 +178,7 @@ main {
 }
 
 .site-navigation a {
-  color: #667085;
+  color: var(--text-muted);
 
   font-size: 0.9rem;
   font-weight: 550;
@@ -114,7 +187,7 @@ main {
 }
 
 .site-navigation a:hover {
-  color: #111827;
+  color: var(--text-strong);
 }
 
 .mobile-menu-button {
@@ -125,10 +198,10 @@ main {
 
   padding: 10px;
 
-  border: 1px solid #e2e7ef;
+  border: 1px solid var(--border);
   border-radius: 10px;
 
-  background: #ffffff;
+  background: var(--surface);
 }
 
 .mobile-menu-button span {
@@ -139,7 +212,7 @@ main {
 
   margin: 5px 0;
 
-  background: #172033;
+  background: var(--text);
 
   border-radius: 2px;
 }
@@ -155,6 +228,10 @@ main {
   overflow: hidden;
 
   padding: 110px 20px 120px;
+
+  background: var(--background);
+
+  transition: background-color 0.25s ease;
 }
 
 .hero-content {
@@ -173,7 +250,7 @@ main {
 
   margin-bottom: 22px;
 
-  color: #8a94a6;
+  color: var(--text-subtle);
 
   font-size: 0.72rem;
   font-weight: 800;
@@ -185,7 +262,7 @@ main {
 
   margin: 0 auto;
 
-  color: #111827;
+  color: var(--text-strong);
 
   font-size: clamp(3rem, 8vw, 6.5rem);
   line-height: 0.96;
@@ -196,7 +273,7 @@ main {
 .hero-content h1 span {
   display: block;
 
-  color: #7c8798;
+  color: var(--text-muted);
 }
 
 .hero-description {
@@ -204,7 +281,7 @@ main {
 
   margin: 32px auto 0;
 
-  color: #667085;
+  color: var(--text-muted);
 
   font-size: 1.08rem;
   line-height: 1.7;
@@ -217,7 +294,7 @@ main {
 .hero-disclaimer {
   margin: 16px 0 0;
 
-  color: #a0a9b7;
+  color: var(--text-faint);
 
   font-size: 0.75rem;
 }
@@ -258,14 +335,17 @@ form {
 
   padding: 10px;
 
-  background: #ffffff;
+  background: var(--surface);
 
-  border: 1px solid #e1e6ee;
+  border: 1px solid var(--border);
   border-radius: 18px;
 
-  box-shadow:
-    0 10px 30px rgba(15, 23, 42, 0.06),
-    0 2px 8px rgba(15, 23, 42, 0.03);
+  box-shadow: var(--shadow);
+
+  transition:
+    background-color 0.25s ease,
+    border-color 0.25s ease,
+    box-shadow 0.25s ease;
 }
 
 form label {
@@ -297,32 +377,33 @@ form input {
   border: 1px solid transparent;
   border-radius: 12px;
 
-  background: #f7f9fc;
+  background: var(--input-background);
 
-  color: #172033;
+  color: var(--text);
 
   outline: none;
 
   transition:
     background 0.2s ease,
     border-color 0.2s ease,
-    box-shadow 0.2s ease;
+    box-shadow 0.2s ease,
+    color 0.2s ease;
 }
 
 form input::placeholder {
-  color: #98a2b3;
+  color: var(--text-muted);
 
   font-size: 0.9rem;
   letter-spacing: 0.08em;
 }
 
 form input:focus {
-  background: #ffffff;
+  background: var(--surface);
 
-  border-color: #aeb8c8;
+  border-color: var(--text-muted);
 
   box-shadow:
-    0 0 0 4px rgba(23, 32, 51, 0.06);
+    0 0 0 4px rgba(127, 140, 160, 0.12);
 }
 
 form button {
@@ -333,20 +414,21 @@ form button {
   border: 0;
   border-radius: 12px;
 
-  background: #172033;
+  background: var(--button);
 
-  color: #ffffff;
+  color: var(--background);
 
   font-weight: 650;
 
   transition:
     transform 0.2s ease,
     box-shadow 0.2s ease,
-    background 0.2s ease;
+    background 0.2s ease,
+    color 0.2s ease;
 }
 
 form button:hover {
-  background: #252f43;
+  background: var(--button-hover);
 
   transform: translateY(-1px);
 
@@ -385,7 +467,7 @@ form button:active {
 
   margin-bottom: 8px;
 
-  color: #8a94a6;
+  color: var(--text-subtle);
 
   font-size: 0.72rem;
   font-weight: 750;
@@ -395,7 +477,7 @@ form button:active {
 .results-header h2 {
   margin: 0;
 
-  color: #111827;
+  color: var(--text-strong);
 
   font-size: clamp(2rem, 4vw, 2.8rem);
   line-height: 1;
@@ -410,20 +492,24 @@ form button:active {
 
   padding: 10px 14px;
 
-  background: #ffffff;
+  background: var(--surface);
 
-  border: 1px solid #e1e6ee;
+  border: 1px solid var(--border);
   border-radius: 12px;
+
+  transition:
+    background-color 0.25s ease,
+    border-color 0.25s ease;
 }
 
 .energy-area-badge span {
-  color: #8a94a6;
+  color: var(--text-subtle);
 
   font-size: 0.8rem;
 }
 
 .energy-area-badge strong {
-  color: #172033;
+  color: var(--text);
 
   font-size: 0.95rem;
 }
@@ -439,18 +525,18 @@ form button:active {
 .result-card {
   min-width: 0;
 
-  background: #ffffff;
+  background: var(--surface);
 
-  border: 1px solid #e2e7ef;
+  border: 1px solid var(--border);
   border-radius: 20px;
 
-  box-shadow:
-    0 12px 35px rgba(15, 23, 42, 0.045),
-    0 2px 8px rgba(15, 23, 42, 0.025);
+  box-shadow: var(--shadow);
 
   transition:
     transform 0.2s ease,
-    box-shadow 0.2s ease;
+    box-shadow 0.2s ease,
+    background-color 0.25s ease,
+    border-color 0.25s ease;
 }
 
 .result-card:hover {
@@ -493,7 +579,7 @@ form button:active {
 .tips-card h3 {
   margin: 0;
 
-  color: #172033;
+  color: var(--text);
 
   font-size: 1.25rem;
   letter-spacing: -0.02em;
@@ -504,7 +590,7 @@ form button:active {
 
   margin: 18px 0 0;
 
-  color: #667085;
+  color: var(--text-muted);
 
   line-height: 1.65;
 }
@@ -519,9 +605,9 @@ form button:active {
 
   border-radius: 9px;
 
-  background: #f1f4f8;
+  background: var(--surface-soft);
 
-  color: #172033;
+  color: var(--text);
 
   font-size: 0.8rem;
   font-weight: 750;
@@ -537,7 +623,7 @@ form button:active {
 }
 
 .chart-unit {
-  color: #8a94a6;
+  color: var(--text-subtle);
 
   font-size: 0.8rem;
 }
@@ -552,7 +638,7 @@ form button:active {
 }
 
 .chart-summary strong {
-  color: #111827;
+  color: var(--text-strong);
 
   font-size: 2rem;
   line-height: 1;
@@ -560,7 +646,7 @@ form button:active {
 }
 
 .chart-summary span {
-  color: #8a94a6;
+  color: var(--text-subtle);
 
   font-size: 0.8rem;
 }
@@ -583,7 +669,7 @@ form button:active {
 }
 
 .chart-grid-line {
-  stroke: #edf0f4;
+  stroke: var(--border);
   stroke-width: 1;
 }
 
@@ -594,7 +680,7 @@ form button:active {
 .chart-line {
   fill: none;
 
-  stroke: #172033;
+  stroke: var(--text);
   stroke-width: 4;
 
   stroke-linecap: round;
@@ -604,9 +690,9 @@ form button:active {
 }
 
 .chart-point {
-  fill: #ffffff;
+  fill: var(--surface);
 
-  stroke: #172033;
+  stroke: var(--text);
   stroke-width: 3;
 
   vector-effect: non-scaling-stroke;
@@ -619,7 +705,7 @@ form button:active {
 }
 
 .chart-label {
-  fill: #8a94a6;
+  fill: var(--text-subtle);
 
   font-size: 12px;
   font-weight: 500;
@@ -652,11 +738,11 @@ form button:active {
 
   padding: 18px 0;
 
-  border-top: 1px solid #edf0f4;
+  border-top: 1px solid var(--border);
 }
 
 .tip:last-child {
-  border-bottom: 1px solid #edf0f4;
+  border-bottom: 1px solid var(--border);
 }
 
 .tip-number {
@@ -667,7 +753,7 @@ form button:active {
   width: 34px;
   height: 34px;
 
-  color: #8a94a6;
+  color: var(--text-subtle);
 
   font-size: 0.72rem;
   font-weight: 800;
@@ -678,7 +764,7 @@ form button:active {
 .tip p {
   margin: 0;
 
-  color: #667085;
+  color: var(--text-muted);
 
   font-size: 0.88rem;
   line-height: 1.65;
@@ -692,7 +778,7 @@ form button:active {
 .loading-message {
   margin: 24px 0 0;
 
-  color: #8a94a6;
+  color: var(--text-subtle);
 
   text-align: center;
 }
@@ -714,6 +800,12 @@ form button:active {
   text-align: center;
 }
 
+html.dark-mode .error-message {
+  border-color: #563b3b;
+  background: #211618;
+  color: #e5a8a8;
+}
+
 
 /* --------------------------------
    Footer
@@ -726,9 +818,13 @@ footer {
 
   padding: 32px 40px;
 
-  border-top: 1px solid #e2e7ef;
+  border-top: 1px solid var(--border);
 
-  background: #ffffff;
+  background: var(--surface);
+
+  transition:
+    background-color 0.25s ease,
+    border-color 0.25s ease;
 }
 
 footer p {
@@ -736,7 +832,7 @@ footer p {
 
   margin: 0 auto;
 
-  color: #8a94a6;
+  color: var(--text-subtle);
 
   font-size: 0.875rem;
 
@@ -793,9 +889,11 @@ footer p {
 
     padding: 10px 16px 18px;
 
-    background: rgba(255, 255, 255, 0.97);
+    background: color-mix(in srgb,
+        var(--surface) 97%,
+        transparent);
 
-    border-bottom: 1px solid #e7ebf1;
+    border-bottom: 1px solid var(--border-subtle);
 
     box-shadow:
       0 14px 30px rgba(15, 23, 42, 0.08);
@@ -812,7 +910,7 @@ footer p {
   }
 
   .site-navigation a:hover {
-    background: #f6f8fb;
+    background: var(--surface-soft);
   }
 
   .hero-section {
@@ -986,6 +1084,7 @@ footer p {
   }
 }
 
+
 /* --------------------------------
    About page
 -------------------------------- */
@@ -1012,13 +1111,15 @@ footer p {
   letter-spacing: 0.14em;
   text-transform: uppercase;
 
-  color: #5f6875;
+  color: var(--text-subtle);
 }
 
 .about-hero h1 {
   max-width: 900px;
 
   margin: 0;
+
+  color: var(--text-strong);
 
   font-size:
     clamp(3.5rem, 7vw, 7rem);
@@ -1038,7 +1139,7 @@ footer p {
 
   line-height: 1.7;
 
-  color: #505966;
+  color: var(--text-muted);
 }
 
 
@@ -1053,12 +1154,16 @@ footer p {
 
 .about-section-alt {
   background:
-    rgba(0, 0, 0, 0.025);
+    color-mix(in srgb,
+      var(--text) 2.5%,
+      var(--background));
 }
 
 .about-section-highlight {
   background:
-    rgba(0, 0, 0, 0.045);
+    color-mix(in srgb,
+      var(--text) 4.5%,
+      var(--background));
 }
 
 .about-section-content {
@@ -1073,6 +1178,8 @@ footer p {
 
   margin:
     0 0 28px;
+
+  color: var(--text-strong);
 
   font-size:
     clamp(2.5rem, 5vw, 4.8rem);
@@ -1092,7 +1199,7 @@ footer p {
 
   line-height: 1.75;
 
-  color: #505966;
+  color: var(--text-muted);
 }
 
 
@@ -1127,11 +1234,11 @@ footer p {
     36px;
 
   border:
-    1px solid #dfe4ea;
+    1px solid var(--border);
 
   border-radius: 18px;
 
-  background: #ffffff;
+  background: var(--surface);
 }
 
 .energy-area-placeholder {
@@ -1148,6 +1255,8 @@ footer p {
 .energy-area-content h3 {
   margin:
     8px 0 10px;
+
+  color: var(--text-strong);
 
   font-size: 2.4rem;
 
@@ -1166,6 +1275,8 @@ footer p {
   font-size: 0.98rem;
 
   line-height: 1.7;
+
+  color: var(--text-muted);
 }
 
 .card-eyebrow {
@@ -1175,7 +1286,7 @@ footer p {
 
   letter-spacing: 0.14em;
 
-  color: #69727e;
+  color: var(--text-subtle);
 }
 
 .card-heading {
@@ -1201,9 +1312,11 @@ footer p {
     8px 12px;
 
   border:
-    1px solid #d8dde4;
+    1px solid var(--border);
 
   border-radius: 999px;
+
+  color: var(--text);
 
   font-size: 0.75rem;
 
@@ -1219,7 +1332,7 @@ footer p {
 
   font-size: 0.85rem;
 
-  color: #69727e;
+  color: var(--text-muted);
 }
 
 .energy-area-sources {
@@ -1228,7 +1341,7 @@ footer p {
   padding-top: 24px;
 
   border-top:
-    1px solid #e4e8ed;
+    1px solid var(--border);
 }
 
 .energy-area-source-list {
@@ -1254,7 +1367,7 @@ footer p {
     14px 0;
 
   border-bottom:
-    1px solid #edf0f3;
+    1px solid var(--border);
 }
 
 .energy-area-source:last-child {
@@ -1263,10 +1376,14 @@ footer p {
 
 .energy-area-source span {
   font-size: 0.9rem;
+
+  color: var(--text-muted);
 }
 
 .energy-area-source strong {
   font-size: 0.9rem;
+
+  color: var(--text);
 }
 
 
@@ -1291,11 +1408,11 @@ footer p {
   padding: 28px;
 
   border:
-    1px solid #dfe4ea;
+    1px solid var(--border);
 
   border-radius: 16px;
 
-  background: #ffffff;
+  background: var(--surface);
 }
 
 .about-price-factor span {
@@ -1309,11 +1426,13 @@ footer p {
 
   letter-spacing: 0.14em;
 
-  color: #69727e;
+  color: var(--text-subtle);
 }
 
 .about-price-factor h3 {
   margin: 0 0 12px;
+
+  color: var(--text-strong);
 
   font-size: 1.6rem;
 
@@ -1326,6 +1445,8 @@ footer p {
   font-size: 0.92rem;
 
   line-height: 1.6;
+
+  color: var(--text-muted);
 }
 
 
@@ -1342,10 +1463,10 @@ footer p {
   margin-top: 64px;
 
   border-top:
-    1px solid #dfe4ea;
+    1px solid var(--border);
 
   border-bottom:
-    1px solid #dfe4ea;
+    1px solid var(--border);
 }
 
 .about-forecast-step {
@@ -1359,7 +1480,7 @@ footer p {
 
 .about-forecast-step+.about-forecast-step {
   border-left:
-    1px solid #dfe4ea;
+    1px solid var(--border);
 }
 
 .about-forecast-step span {
@@ -1373,11 +1494,13 @@ footer p {
 
   letter-spacing: 0.14em;
 
-  color: #69727e;
+  color: var(--text-subtle);
 }
 
 .about-forecast-step h3 {
   margin: 0;
+
+  color: var(--text-strong);
 
   font-size: 2rem;
 
@@ -1400,7 +1523,7 @@ footer p {
 
   font-size: 1rem;
 
-  color: #69727e;
+  color: var(--text-muted);
 }
 
 
@@ -1431,14 +1554,16 @@ footer p {
   padding: 28px;
 
   border:
-    1px solid #dfe4ea;
+    1px solid var(--border);
 
   border-radius: 16px;
 
-  background: #ffffff;
+  background: var(--surface);
 }
 
 .about-benefits strong {
+  color: var(--text-strong);
+
   font-size: 1.5rem;
 
   letter-spacing: -0.025em;
@@ -1449,7 +1574,7 @@ footer p {
 
   line-height: 1.6;
 
-  color: #505966;
+  color: var(--text-muted);
 }
 
 
@@ -1475,7 +1600,7 @@ footer p {
 
   line-height: 1.6;
 
-  color: #7a828d;
+  color: var(--text-subtle);
 }
 
 
@@ -1508,7 +1633,7 @@ footer p {
     border-left: 0;
 
     border-top:
-      1px solid #dfe4ea;
+      1px solid var(--border);
   }
 
   .about-forecast-step::after {

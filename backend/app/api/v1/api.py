@@ -1,17 +1,37 @@
 from fastapi import FastAPI
-from app.api.v1.endpoints import main_endpoint, predictions
+from fastapi.middleware.cors import CORSMiddleware
+from app.api.v1.endpoints import energy_areas, main_endpoint, predictions
 
-# Variabeln MÅSTE heta exakt 'app' om du kör :app
 app = FastAPI(
     title="Energy Predictor API",
     version="1.0.0",
 )
 
-# 1. Registrera routern för ort och zon
-app.include_router(main_endpoint.router, prefix="/api/v1", tags=["Zone"])
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-# 2. Registrera routern för prediktioner (/predict, /healthffff)
-app.include_router(predictions.router, prefix="/api/v1", tags=["Prediction"])
+app.include_router(
+    main_endpoint.router,
+    prefix="/api/v1",
+    tags=["Zone"],
+)
+
+app.include_router(
+    energy_areas.router,
+    prefix="/api/v1",
+    tags=["Energy Areas"],
+)
+
+app.include_router(
+    predictions.router,
+    prefix="/api/v1",
+    tags=["Prediction"],
+)
 
 @app.get("/health")
 def prediction_health():

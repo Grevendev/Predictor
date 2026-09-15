@@ -1,5 +1,7 @@
 import { useState } from "react";
 
+import DarkModeSwitch from "./DarkModeSwitch";
+
 function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -65,6 +67,8 @@ function Header() {
           >
             Så fungerar det
           </a>
+
+          <DarkModeSwitch />
         </nav>
       </div>
     </header>
