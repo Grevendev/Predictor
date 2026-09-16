@@ -17,6 +17,7 @@ function SearchForm({ onSearch }: SearchFormProps) {
     }
 
     onSearch(trimmedCity);
+    setCity("")
   }
 
   return (

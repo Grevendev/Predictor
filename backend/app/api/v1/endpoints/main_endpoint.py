@@ -1,7 +1,7 @@
+from typing import Any, Dict
 from fastapi import APIRouter, HTTPException, Query
 from pydantic import BaseModel
 import requests
-from typing import Any, Dict
 
 from app.api.v1.endpoints.predictions import run_prediction
 from app.ml.features import get_features_for_zone
@@ -13,6 +13,7 @@ class ZoneInfo(BaseModel):
     code: str
     name: str
     description: str
+
 
 class PredictionResult(BaseModel):
     predicted_price_eur_mwh: float
@@ -30,7 +31,6 @@ class LocationZoneResponse(BaseModel):
     prediction: PredictionResult
 
 
-# Gemensam uppslagsdata för zonerna
 ZONE_METADATA: dict[str, dict[str, str]] = {
     "SE1": {
         "code": "SE1",
@@ -54,9 +54,31 @@ ZONE_METADATA: dict[str, dict[str, str]] = {
     },
 }
 
+# Snabbspärr för uppenbara lands- och regionnamn
+COUNTRIES_BLACKLIST = {
+    "england",
+    "storbritannien",
+    "uk",
+    "united kingdom",
+    "usa",
+    "united states",
+    "tyskland",
+    "germany",
+    "danmark",
+    "denmark",
+    "norge",
+    "norway",
+    "finland",
+    "frankrike",
+    "france",
+    "spanien",
+    "spain",
+    "italien",
+    "italy",
+}
+
 
 def get_zone_from_coordinates(lat: float, lon: float) -> dict[str, str]:
-    # Kontrollera att koordinaterna befinner sig inom Sveriges territorium
     if not (55.0 <= lat <= 69.5 and 10.5 <= lon <= 24.5):
         raise ValueError("Koordinaterna ligger utanför Sveriges gränser.")
 
@@ -74,15 +96,24 @@ def get_zone_from_coordinates(lat: float, lon: float) -> dict[str, str]:
 
 @router.get("/spot-check", response_model=LocationZoneResponse)
 def lookup_zone(
-    location: str = Query(..., description="Ortsnamn, t.ex. 'Malmö' eller 'Lund'")
+    location: str = Query(
+        ..., description="Svensk stad eller tätort, t.ex. 'Malmö' eller 'Lund'"
+    ),
 ):
+    query_clean = location.strip().lower()
+
+    if query_clean in COUNTRIES_BLACKLIST:
+        raise HTTPException(
+            status_code=400,
+            detail=f"'{location.strip()}' är ett land eller en region. Ange en svensk stad eller tätort (t.ex. Malmö, Sundsvall).",
+        )
+
     geo_url = "https://geocoding-api.open-meteo.com/v1/search"
     params = {
-        "name": location,
-        "count": 5,
+        "name": location.strip(),
+        "count": 10,
         "language": "sv",
         "format": "json",
-        "country_code": "SE",
     }
 
     try:
@@ -95,37 +126,52 @@ def lookup_zone(
         )
 
     results = data.get("results", [])
-    se_matches = [r for r in results if r.get("country_code", "").upper() == "SE"]
-
-    if not se_matches:
+    if not results:
         raise HTTPException(
             status_code=404,
-            detail=f"Kunde inte hitta någon svensk ort med namnet '{location}'.",
+            detail=f"Kunde inte hitta någon stad eller ort med namnet '{location}'.",
         )
 
-    best_match = se_matches[0]
-    lat = best_match["latitude"]
-    lon = best_match["longitude"]
-    official_name = best_match.get("name", location)
-    country = best_match.get("country", "Sverige")
-    country_code = best_match.get("country_code", "SE").upper()
+    # Filtrera på tätorter/städer (feature_code PPL*)
+    city_results = [
+        r
+        for r in results
+        if r.get("feature_code", "").startswith("PPL") or not r.get("feature_code")
+    ] or results
+
+    top_hit = city_results[0]
+    country_code = top_hit.get("country_code", "").upper()
+
+    if country_code != "SE":
+        country_name = top_hit.get("country") or country_code
+        admin = top_hit.get("admin1")
+        place_info = (
+            f"{admin}, {country_name}"
+            if admin and admin != country_name
+            else country_name
+        )
+        raise HTTPException(
+            status_code=400,
+            detail=f"Staden '{top_hit.get('name')}' ligger i {place_info}. Tjänsten stödjer endast svenska städer.",
+        )
+
+    lat = top_hit["latitude"]
+    lon = top_hit["longitude"]
+    official_name = top_hit.get("name", location)
+    country = top_hit.get("country", "Sverige")
 
     try:
         zone_data = get_zone_from_coordinates(lat, lon)
     except ValueError as err:
         raise HTTPException(status_code=400, detail=str(err))
 
-    # Hämta riktiga features från datasetet för zonen
     features = get_features_for_zone(zone_data["code"])
-
-    # Kör inferensen mot era tränade modeller
     prediction_result = run_prediction(features)
 
-    # Skicka tillbaka ort, zon OCH prediktion i ett och samma svar
     return LocationZoneResponse(
         name=official_name,
         country=country,
-        country_code=country_code,
+        country_code="SE",
         latitude=lat,
         longitude=lon,
         zone=ZoneInfo(**zone_data),
