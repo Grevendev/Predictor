@@ -1,9 +1,12 @@
 import { useState } from "react";
 
 import DarkModeSwitch from "./DarkModeSwitch";
+import LanguageSwitch from "./LanguageSwitch";
+import { useLanguage } from "../context/LanguageContext";
 
 function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const { translations: t } = useLanguage();
 
   function toggleMenu() {
     setMenuOpen((current) => !current);
@@ -70,8 +73,8 @@ function Header() {
           type="button"
           aria-label={
             menuOpen
-              ? "Stäng meny"
-              : "Öppna meny"
+              ? t.navigation.closeMenu
+              : t.navigation.openMenu
           }
           aria-expanded={menuOpen}
           onClick={toggleMenu}
@@ -87,7 +90,6 @@ function Header() {
             flex
             items-center
             gap-8
-
             max-[700px]:absolute
             max-[700px]:left-0
             max-[700px]:right-0
@@ -102,10 +104,10 @@ function Header() {
             max-[700px]:pb-[18px]
             max-[700px]:pt-[10px]
             max-[700px]:shadow-[0_14px_30px_rgba(15,23,42,0.08)]
-
             ${menuOpen
               ? "max-[700px]:flex"
-              : "max-[700px]:hidden"}
+              : "max-[700px]:hidden"
+            }
           `}
         >
           <a
@@ -126,7 +128,7 @@ function Header() {
             href="/"
             onClick={closeMenu}
           >
-            Hem
+            {t.navigation.home}
           </a>
 
           <a
@@ -147,7 +149,7 @@ function Header() {
             href="/about"
             onClick={closeMenu}
           >
-            Om
+            {t.navigation.about}
           </a>
 
           <a
@@ -168,8 +170,10 @@ function Header() {
             href="/how-it-works"
             onClick={closeMenu}
           >
-            Så fungerar det
+            {t.navigation.howItWorks}
           </a>
+
+          <LanguageSwitch />
 
           <DarkModeSwitch />
         </nav>

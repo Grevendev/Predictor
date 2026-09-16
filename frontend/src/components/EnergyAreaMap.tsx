@@ -6,16 +6,17 @@ import {
   getEnergyAreas,
   type EnergyAreaFeature,
   type EnergyAreaGeometry,
-  type Position
+  type Position,
 } from "../services/energyAreaService";
 
 import type { EnergyArea } from "../types/EnergyArea";
 
+import { useLanguage } from "../context/LanguageContext";
+import { translations } from "../translations/translations";
+
 interface EnergyAreaMapProps {
   selectedArea: EnergyArea["code"] | null;
-  onSelectArea: (
-    area: EnergyArea["code"]
-  ) => void;
+  onSelectArea: (area: EnergyArea["code"]) => void;
 }
 
 interface MapFeature {
@@ -31,7 +32,7 @@ const AREA_ORDER: EnergyArea["code"][] = [
   "SE1",
   "SE2",
   "SE3",
-  "SE4"
+  "SE4",
 ];
 
 function getAllCoordinates(
@@ -44,12 +45,9 @@ function getAllCoordinates(
   return geometry.coordinates.flat(2);
 }
 
-function createProjection(
-  features: MapFeature[]
-) {
-  const allCoordinates = features.flatMap(
-    (feature) =>
-      getAllCoordinates(feature.geometry)
+function createProjection(features: MapFeature[]) {
+  const allCoordinates = features.flatMap((feature) =>
+    getAllCoordinates(feature.geometry)
   );
 
   const longitudes = allCoordinates.map(
@@ -60,29 +58,15 @@ function createProjection(
     ([, latitude]) => latitude
   );
 
-  const minLongitude = Math.min(
-    ...longitudes
-  );
+  const minLongitude = Math.min(...longitudes);
+  const maxLongitude = Math.max(...longitudes);
+  const minLatitude = Math.min(...latitudes);
+  const maxLatitude = Math.max(...latitudes);
 
-  const maxLongitude = Math.max(
-    ...longitudes
-  );
+  const longitudeRange = maxLongitude - minLongitude;
+  const latitudeRange = maxLatitude - minLatitude;
 
-  const minLatitude = Math.min(
-    ...latitudes
-  );
-
-  const maxLatitude = Math.max(
-    ...latitudes
-  );
-
-  const longitudeRange =
-    maxLongitude - minLongitude;
-
-  const latitudeRange =
-    maxLatitude - minLatitude;
-
-  /*
+  /**
    * Longitude degrees represent a shorter
    * physical distance at Sweden's latitude
    * than latitude degrees do.
@@ -90,14 +74,12 @@ function createProjection(
    * Adjust the horizontal scale so that
    * Sweden keeps a more natural aspect ratio.
    */
-
   const latitudeCenter =
     (minLatitude + maxLatitude) / 2;
 
-  const latitudeScale =
-    Math.cos(
-      (latitudeCenter * Math.PI) / 180
-    );
+  const latitudeScale = Math.cos(
+    (latitudeCenter * Math.PI) / 180
+  );
 
   const adjustedLongitudeRange =
     longitudeRange * latitudeScale;
@@ -109,10 +91,8 @@ function createProjection(
     MAP_HEIGHT - PADDING * 2;
 
   const scale = Math.min(
-    availableWidth /
-    adjustedLongitudeRange,
-    availableHeight /
-    latitudeRange
+    availableWidth / adjustedLongitudeRange,
+    availableHeight / latitudeRange
   );
 
   const mapWidth =
@@ -127,14 +107,9 @@ function createProjection(
   const offsetY =
     (MAP_HEIGHT - mapHeight) / 2;
 
-  return (
-    coordinate: Position
-  ): Position => {
-    const longitude =
-      coordinate[0];
-
-    const latitude =
-      coordinate[1];
+  return (coordinate: Position): Position => {
+    const longitude = coordinate[0];
+    const latitude = coordinate[1];
 
     const x =
       offsetX +
@@ -153,9 +128,7 @@ function createProjection(
 
 function geometryToPath(
   geometry: EnergyAreaGeometry,
-  project: (
-    coordinate: Position
-  ) => Position
+  project: (coordinate: Position) => Position
 ): string {
   let rings: Position[][];
 
@@ -170,27 +143,15 @@ function geometryToPath(
       return (
         ring
           .map((coordinate, index) => {
-            const projected =
-              project(coordinate);
+            const projected = project(coordinate);
 
-            const x =
-              projected[0].toFixed(2);
-
-            const y =
-              projected[1].toFixed(2);
+            const x = projected[0].toFixed(2);
+            const y = projected[1].toFixed(2);
 
             const command =
-              index === 0
-                ? "M"
-                : "L";
+              index === 0 ? "M" : "L";
 
-            return (
-              command +
-              " " +
-              x +
-              " " +
-              y
-            );
+            return command + " " + x + " " + y;
           })
           .join(" ") + " Z"
       );
@@ -204,15 +165,17 @@ function convertFeature(
   return {
     area:
       feature.properties.energy_area as EnergyArea["code"],
-    geometry:
-      feature.geometry
+    geometry: feature.geometry,
   };
 }
 
 function EnergyAreaMap({
   selectedArea,
-  onSelectArea
+  onSelectArea,
 }: EnergyAreaMapProps) {
+  const { language } = useLanguage();
+  const t = translations[language];
+
   const [features, setFeatures] =
     useState<MapFeature[]>([]);
 
@@ -225,34 +188,26 @@ function EnergyAreaMap({
   useEffect(() => {
     async function loadMap() {
       try {
-        const data =
-          await getEnergyAreas();
+        const data = await getEnergyAreas();
 
-        const mapFeatures =
-          data.features
-            .map(convertFeature)
-            .sort(
-              (a, b) =>
-                AREA_ORDER.indexOf(
-                  a.area
-                ) -
-                AREA_ORDER.indexOf(
-                  b.area
-                )
-            );
+        const mapFeatures = data.features
+          .map(convertFeature)
+          .sort(
+            (a, b) =>
+              AREA_ORDER.indexOf(a.area) -
+              AREA_ORDER.indexOf(b.area)
+          );
 
         setFeatures(mapFeatures);
       } catch {
-        setError(
-          "Kartan kunde inte laddas."
-        );
+        setError(t.energyAreaMap.error);
       } finally {
         setLoading(false);
       }
     }
 
     loadMap();
-  }, []);
+  }, [t.energyAreaMap.error]);
 
   const project = useMemo(() => {
     if (features.length === 0) {
@@ -276,7 +231,7 @@ function EnergyAreaMap({
         "
         role="status"
       >
-        Laddar karta...
+        {t.energyAreaMap.loading}
       </div>
     );
   }
@@ -333,13 +288,12 @@ function EnergyAreaMap({
           aria-labelledby="energy-area-map-title"
         >
           <title id="energy-area-map-title">
-            Sveriges fyra elområden
+            {t.energyAreaMap.mapTitle}
           </title>
 
           {features.map((feature) => {
             const isSelected =
-              selectedArea ===
-              feature.area;
+              selectedArea === feature.area;
 
             const className =
               "energy-area-path" +
@@ -357,13 +311,12 @@ function EnergyAreaMap({
                 )}
                 tabIndex={0}
                 aria-label={
-                  "Elområde " +
+                  t.energyAreaMap.areaLabel +
+                  " " +
                   feature.area
                 }
                 onClick={() =>
-                  onSelectArea(
-                    feature.area
-                  )
+                  onSelectArea(feature.area)
                 }
                 onKeyDown={(event) => {
                   if (
@@ -411,7 +364,7 @@ function EnergyAreaMap({
         {selectedArea ? (
           <>
             <span>
-              VALT ELOMRÅDE
+              {t.energyAreaMap.selectedArea}
             </span>
 
             <strong>
@@ -421,7 +374,7 @@ function EnergyAreaMap({
         ) : (
           <>
             <span>
-              ELOMRÅDEN
+              {t.energyAreaMap.areas}
             </span>
 
             <strong>
@@ -432,7 +385,7 @@ function EnergyAreaMap({
       </div>
 
       <p className="energy-area-map-source">
-        Geografisk data: Svenska kraftnät
+        {t.energyAreaMap.source}
       </p>
     </div>
   );

@@ -1,12 +1,9 @@
 import Header from "../components/Header";
-
 import SearchForm from "../components/SearchForm";
-
 import SearchResults from "../components/SearchResults";
-
 import Footer from "../components/Footer";
-
 import useCitySearch from "../hooks/useCitySearch";
+import { useLanguage } from "../context/LanguageContext";
 
 function LandingPage() {
   const {
@@ -15,6 +12,8 @@ function LandingPage() {
     error,
     searchCity
   } = useCitySearch();
+
+  const { translations: t } = useLanguage();
 
   return (
     <>
@@ -31,12 +30,9 @@ function LandingPage() {
             pt-[110px]
             transition-colors
             duration-250
-
             max-[700px]:pt-[72px]
-
             max-[600px]:px-4
             max-[600px]:pb-[90px]
-
             max-[480px]:px-3
             max-[480px]:pb-[72px]
             max-[480px]:pt-[56px]
@@ -73,12 +69,11 @@ function LandingPage() {
                 font-[800]
                 tracking-[0.16em]
                 text-[var(--text-subtle)]
-
                 max-[480px]:mb-[18px]
                 max-[480px]:text-[0.65rem]
               "
             >
-              INTELLIGENT ELPROGNOS
+              {t.hero.label}
             </span>
 
             <h1
@@ -90,16 +85,15 @@ function LandingPage() {
                 leading-[0.96]
                 tracking-[-0.065em]
                 text-[var(--text-strong)]
-
                 max-[700px]:text-[clamp(3rem,15vw,4.5rem)]
-
                 max-[480px]:text-[3rem]
               "
             >
-              Använd elen när
+              {t.hero.title}
+
               <span className="block text-[var(--text-muted)]">
                 {" "}
-                priset är lägst.
+                {t.hero.titleAccent}
               </span>
             </h1>
 
@@ -111,23 +105,18 @@ function LandingPage() {
                 text-[1.08rem]
                 leading-[1.7]
                 text-[var(--text-muted)]
-
                 max-[700px]:text-[0.98rem]
-
                 max-[480px]:mt-6
                 max-[480px]:text-[0.94rem]
                 max-[480px]:leading-[1.65]
               "
             >
-              Sök efter din stad och få en prognos
-              för när det är smartast att använda
-              elen i ditt elområde.
+              {t.hero.description}
             </p>
 
             <div
               className="
                 mt-10
-
                 max-[480px]:mt-[30px]
               "
             >
@@ -141,42 +130,41 @@ function LandingPage() {
                 text-[var(--text-faint)]
               "
             >
-              Prognoser baseras på data och
-              maskininlärning.
+              {t.hero.predictionInfo}
             </p>
           </div>
 
           {isLoading && (
             <p
               className="
-      mt-6
-      text-center
-      text-[var(--text-subtle)]
-    "
+                mt-6
+                text-center
+                text-[var(--text-subtle)]
+              "
             >
-              Hämtar information...
+              {t.hero.loading}
             </p>
           )}
 
           {error && (
             <p
               className="
-      mx-auto
-      mt-5
-      w-full
-      max-w-[680px]
-      rounded-xl
-      border
-      border-[#e5d7d7]
-      bg-[#fffafa]
-      px-[18px]
-      py-[14px]
-      text-center
-      text-[#8b3a3a]
-      dark:border-[#563b3b]
-      dark:bg-[#211618]
-      dark:text-[#e5a8a8]
-    "
+                mx-auto
+                mt-5
+                w-full
+                max-w-[680px]
+                rounded-xl
+                border
+                border-[#e5d7d7]
+                bg-[#fffafa]
+                px-[18px]
+                py-[14px]
+                text-center
+                text-[#8b3a3a]
+                dark:border-[#563b3b]
+                dark:bg-[#211618]
+                dark:text-[#e5a8a8]
+              "
               role="alert"
             >
               {error}
