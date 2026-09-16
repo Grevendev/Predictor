@@ -1,4 +1,3 @@
-
 export const translations = {
   sv: {
     navigation: {
@@ -90,16 +89,19 @@ export const translations = {
             description:
               "När mycket el produceras kan tillgången öka och priserna pressas ned.",
           },
+
           demand: {
             title: "Efterfrågan",
             description:
               "Hög elanvändning ökar efterfrågan och kan bidra till högre priser.",
           },
+
           weather: {
             title: "Väder",
             description:
               "Temperatur, vind och nederbörd påverkar både elanvändning och produktion.",
           },
+
           transmission: {
             title: "Överföring",
             description:
@@ -135,11 +137,13 @@ export const translations = {
             description:
               "Se när priserna förväntas vara lägre och planera elanvändningen därefter.",
           },
+
           understand: {
             title: "Förstå",
             description:
               "Få en tydligare bild av elpriset och vad som påverkar utvecklingen i ditt område.",
           },
+
           act: {
             title: "Agera",
             description:
@@ -157,13 +161,10 @@ export const translations = {
       title: "Spara pengar",
       description:
         "Planera din elanvändning efter elpriset för att minska dina elkostnader.",
-
       tip1:
         "Kör tvättmaskin och diskmaskin under timmar då elpriset förväntas vara lägre.",
-
       tip2:
         "Ladda elbilen under billigare timmar istället för under pristoppar.",
-
       tip3:
         "Försök undvika flera stora elförbrukare samtidigt när priset är högt.",
     },
@@ -382,6 +383,16 @@ export const translations = {
         button: "TESTA PREDICTOR →",
       },
     },
+
+    energyAreaMap: {
+      loading: "Laddar karta...",
+      error: "Kartan kunde inte laddas.",
+      mapTitle: "Sveriges fyra elområden",
+      areaLabel: "Elområde",
+      selectedArea: "VALT ELOMRÅDE",
+      areas: "ELOMRÅDEN",
+      source: "Geografisk data: Svenska kraftnät",
+    },
   },
 
   en: {
@@ -474,16 +485,19 @@ export const translations = {
             description:
               "When a large amount of electricity is produced, supply can increase and prices may decrease.",
           },
+
           demand: {
             title: "Demand",
             description:
               "High electricity usage increases demand and can contribute to higher prices.",
           },
+
           weather: {
             title: "Weather",
             description:
               "Temperature, wind, and precipitation affect both electricity usage and production.",
           },
+
           transmission: {
             title: "Transmission",
             description:
@@ -519,11 +533,13 @@ export const translations = {
             description:
               "See when prices are expected to be lower and plan your electricity usage accordingly.",
           },
+
           understand: {
             title: "Understand",
             description:
               "Get a clearer view of electricity prices and what affects their development in your area.",
           },
+
           act: {
             title: "Act",
             description:
@@ -541,13 +557,10 @@ export const translations = {
       title: "Save money",
       description:
         "Plan your electricity usage around electricity prices to reduce your energy costs.",
-
       tip1:
         "Run your washing machine and dishwasher during hours when electricity prices are expected to be lower.",
-
       tip2:
         "Charge your electric vehicle during cheaper hours instead of during price peaks.",
-
       tip3:
         "Try to avoid using several high-consumption appliances at the same time when prices are high.",
     },
@@ -766,6 +779,15 @@ export const translations = {
         button: "TRY PREDICTOR →",
       },
     },
+
+    energyAreaMap: {
+      loading: "Loading map...",
+      error: "The map could not be loaded.",
+      mapTitle: "Sweden's four electricity areas",
+      areaLabel: "Electricity area",
+      selectedArea: "SELECTED AREA",
+      areas: "ELECTRICITY AREAS",
+      source: "Geographical data: Svenska kraftnät",
+    },
   },
 } as const;
-;
