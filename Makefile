@@ -1,39 +1,43 @@
-.PHONY: help dev dev-backend dev-frontend prod-up prod-down prod-logs down clean
+SHELL := bash.exe
+.PHONY: help dev-local dev-backend dev-frontend dev-up dev-down dev-logs prod-up prod-down prod-logs clean
 
 help:
 	@echo "Tillgängliga kommandon:"
-	@echo "  make dev-local      - Starta både backend och frontend lokalt (parallellt utan Docker)"
-	@echo "  make dev-backend    - Starta enbart backend lokalt utan Docker (uvicorn)"
-	@echo "  make dev-frontend   - Starta enbart frontend lokalt utan Docker (vite)"
-	@echo "  make dev            - Starta hela stacken lokalt med Docker Compose"
-	@echo "  make down           - Stoppa utvecklingsstacken"
-	@echo "  make prod-up        - Bygg och starta produktionsstacken i bakgrunden"
-	@echo "  make prod-down      - Stoppa produktionsstacken"
-	@echo "  make prod-logs      - Visa live-loggar från produktionsstacken"
-	@echo "  make clean          - Rensa gamla containrar, volymer och pycache"
-	
-# --- Lokal Utveckling (utanför Docker för snabbaste reload) ---
-dev-backend:
-	cd backend && PYTHONPATH=. uv run uvicorn app.api.v1.api:app --reload --port 8000
+	@echo "  make dev-local       - Starta backend och frontend lokalt utan Docker"
+	@echo "  make dev-backend     - Starta enbart backend lokalt (uvicorn)"
+	@echo "  make dev-frontend    - Starta enbart frontend lokalt (vite)"
+	@echo "  make dev-up          - Starta och bygg containrar med Docker Compose"
+	@echo "  make dev-down        - Stoppa utvecklingscontainrarna"
+	@echo "  make dev-logs        - Visa live-loggar från containrarna"
+	@echo "  make prod-up         - Bygg och starta produktionsstacken"
+	@echo "  make prod-down       - Stoppa produktionsstacken"
+	@echo "  make prod-logs       - Visa live-loggar från prod"
+	@echo "  make clean           - Rensa gamla containrar, volymer och pycache"
 
-# Starta både backend och frontend parallellt lokalt
-dev-local:
-	@trap 'kill 0' SIGINT SIGTERM EXIT; \
-	(cd backend && PYTHONPATH=. uv run uvicorn app.api.v1.api:app --reload --port 8000) & \
-	(cd frontend && npm run dev) & \
-	wait
+# --- Lokal Utveckling ---
+dev-backend:
+	cd backend && uv run uvicorn app.main:app --reload --port 8000
 
 dev-frontend:
 	cd frontend && npm run dev
 
-# --- Utveckling via Docker Compose ---
-dev:
+dev-local:
+	@trap 'kill 0' SIGINT SIGTERM EXIT; \
+	(cd backend && uv run uvicorn app.main:app --reload --port 8000) & \
+	(cd frontend && npm run dev) & \
+	wait
+
+# --- Docker Compose Dev ---
+dev-up:
 	docker compose up --build
 
-down:
+dev-down:
 	docker compose down
 
-# --- Produktion via compose.prod.yaml ---
+dev-logs:
+	docker compose logs -f
+
+# --- Docker Compose Prod ---
 prod-up:
 	docker compose -f compose.prod.yaml up --build -d
 
@@ -47,4 +51,4 @@ prod-logs:
 clean:
 	docker compose down -v --remove-orphans
 	docker compose -f compose.prod.yaml down -v --remove-orphans
-	find . -type d -name "__pycache__" -exec rm -r {} +
+	find . -type d -name "__pycache__" -exec rm -rf {} +
