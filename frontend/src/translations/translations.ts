@@ -30,6 +30,8 @@ export const translations = {
     results: {
       title: "Elprisprognos",
       area: "Elområde",
+      yourArea: "Ditt elområde",
+      installedCapacity: "Installerad effekt",
       today: "Idag",
       tomorrow: "Imorgon",
       price: "Pris",
@@ -110,6 +112,8 @@ export const translations = {
     results: {
       title: "Electricity Price Forecast",
       area: "Electricity Area",
+      yourArea: "Your electricity area",
+      installedCapacity: "Installed capacity",
       today: "Today",
       tomorrow: "Tomorrow",
       price: "Price",
