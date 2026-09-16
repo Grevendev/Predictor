@@ -2,23 +2,27 @@ from datetime import datetime, timezone
 import pandas as pd 
 from pathlib import Path
 
-# Sökvägen till datasetet
+# 1. Kolla relativt (lokalt utanför Docker)
 BASE_DIR = Path(__file__).resolve().parents[3]
 DATA_PATH = BASE_DIR / "dataset" / "all_zones_complete.csv"
 
-# Fallback för Docker-container (om mappen mountas in direkt som /dataset)
+# 2. Om inte relativ hittas, kolla i containerns sökvägar
 if not DATA_PATH.is_file():
-    CONTAINER_PATH = Path("/dataset/all_zones_complete.csv")
-    if CONTAINER_PATH.is_file():
-        DATA_PATH = CONTAINER_PATH
+    for candidate in [
+        Path("/app/dataset/all_zones_complete.csv"),
+        Path("/dataset/all_zones_complete.csv"),
+    ]:
+        if candidate.is_file():
+            DATA_PATH = candidate
+            break
     else:
-        raise FileNotFoundError(f"Kunde inte hitta datasetet på sökvägen: {DATA_PATH}")
+        raise FileNotFoundError(
+            f"Kunde inte hitta datasetet. Kontrollera volymmount i docker-compose."
+        )
 
-# Läs in datasetet vid uppstart
 _df = pd.read_csv(DATA_PATH)
 _df["timestamp"] = pd.to_datetime(_df["timestamp"])
 _df = _df.sort_values("timestamp").reset_index(drop=True)
-
 
 def get_features_for_zone(zone_code: str, dt: datetime | None = None) -> dict:
     zone = zone_code.lower()

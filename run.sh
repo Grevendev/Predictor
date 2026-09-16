@@ -3,17 +3,16 @@
 case "$1" in
   dev-local)
     trap 'kill 0' SIGINT SIGTERM EXIT
-    (cd backend && PYTHONPATH=. uv run uvicorn app.api.v1.api:app --reload --port 8000) &
+    (cd backend && uv run uvicorn app.main:app --reload --port 8000) &
     (cd frontend && npm run dev) &
     wait
     ;;
   dev-backend)
-    cd backend && PYTHONPATH=. uv run uvicorn app.api.v1.api:app --reload --port 8000
+    cd backend && uv run uvicorn app.main:app --reload --port 8000
     ;;
   dev-frontend)
     cd frontend && npm run dev
     ;;
-  # Docker commands:
   dev-up)
     docker compose up --build
     ;;
@@ -23,11 +22,6 @@ case "$1" in
   dev-logs)
     docker compose logs -f
     ;;
-  clean)
-    docker compose down -v --remove-orphans
-    docker compose -f compose.prod.yaml down -v --remove-orphans
-    find . -type d -name "__pycache__" -exec rm -r {} +
-    ;; 
   prod-up)
     docker compose -f compose.prod.yaml up --build -d
     ;;
@@ -37,9 +31,13 @@ case "$1" in
   prod-logs)
     docker compose -f compose.prod.yaml logs -f
     ;;
-  
+  clean)
+    docker compose down -v --remove-orphans
+    docker compose -f compose.prod.yaml down -v --remove-orphans
+    find . -type d -name "__pycache__" -exec rm -rf {} +
+    ;;
   *)
-    echo "Användning: ./run.sh {dev|dev-backend|dev-frontend|prod-up|prod-down|prod-logs|down}"
+    echo "Användning: ./run.sh {dev-local|dev-backend|dev-frontend|dev-up|dev-down|dev-logs|prod-up|prod-down|prod-logs|clean}"
     exit 1
     ;;
 esac
