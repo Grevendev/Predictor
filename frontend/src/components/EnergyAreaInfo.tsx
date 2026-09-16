@@ -1,10 +1,14 @@
 import type { EnergyArea } from "../types/EnergyArea";
 
+import { useLanguage } from "../context/LanguageContext";
+
 interface EnergyAreaInfoProps {
   energyArea: EnergyArea;
 }
 
 function EnergyAreaInfo({ energyArea }: EnergyAreaInfoProps) {
+  const { translations: t } = useLanguage();
+
   return (
     <div
       className="
@@ -33,7 +37,7 @@ function EnergyAreaInfo({ energyArea }: EnergyAreaInfoProps) {
             text-[var(--text-subtle)]
           "
         >
-          DITT ELOMRÅDE
+          {t.results.yourArea}
         </span>
 
         <span
@@ -122,7 +126,7 @@ function EnergyAreaInfo({ energyArea }: EnergyAreaInfoProps) {
             text-[var(--text-subtle)]
           "
         >
-          INSTALLERAD EFFEKT
+          {t.results.installedCapacity}
         </span>
 
         <div

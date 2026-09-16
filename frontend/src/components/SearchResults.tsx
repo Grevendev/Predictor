@@ -8,12 +8,16 @@ import PriceChart from "./PriceChart";
 
 import CostSavingTips from "./CostSavingTips";
 
+import { useLanguage } from "../context/LanguageContext";
+
 interface SearchResultsProps {
   prediction: Prediction;
 }
 
 function SearchResults({ prediction }: SearchResultsProps) {
   const energyArea = getEnergyArea(prediction.energyArea);
+
+  const { translations: t } = useLanguage();
 
   return (
     <section
@@ -25,7 +29,7 @@ function SearchResults({ prediction }: SearchResultsProps) {
         max-[800px]:mt-[52px]
         max-[480px]:mt-[44px]
       "
-      aria-label="Sökresultat"
+      aria-label={t.results.title}
     >
       <div
         className="
@@ -51,7 +55,7 @@ function SearchResults({ prediction }: SearchResultsProps) {
               text-[var(--text-muted)]
             "
           >
-            ELPROGNOS
+            {t.results.forecast}
           </span>
 
           <h2
@@ -92,7 +96,7 @@ function SearchResults({ prediction }: SearchResultsProps) {
                 text-[var(--text-muted)]
               "
             >
-              Elområde
+              {t.results.area}
             </span>
 
             <strong
