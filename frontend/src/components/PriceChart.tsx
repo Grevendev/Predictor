@@ -32,7 +32,7 @@ function PriceChart({ predictions }: PriceChartProps) {
   const chartHeight = 270;
   const paddingLeft = 35;
   const paddingRight = 35;
-  const paddingTop = 50; // Extra höjd för den studsande indikatorn
+  const paddingTop = 50;
   const paddingBottom = 40;
 
   const chartInnerWidth = chartWidth - paddingLeft - paddingRight;
@@ -66,20 +66,28 @@ function PriceChart({ predictions }: PriceChartProps) {
     Z
   `;
 
-  // Hitta bästa enskilda punkten för pilen (lägsta priset bland framtida optimala timmar)
-  const optimalPoints = points.filter(
-    (pt) => pt.prediction.isOptimal && !pt.prediction.isHistorical
-  );
-  const lowestOptimalPoint = optimalPoints.sort(
-    (a, b) => a.prediction.predictedPrice - b.prediction.predictedPrice
-  )[0];
+  // 1. Filtrera fram endast framtida punkter (rekommendera inte historisk laddning)
+  const futurePoints = points.filter((pt) => !pt.prediction.isHistorical);
 
-  // Fallback: om ingen framtida är flaggad optimal, peka på det absoluta lägsta priset
-  const bestPointToCharge =
-    lowestOptimalPoint ||
-    [...points].sort(
-      (a, b) => a.prediction.predictedPrice - b.prediction.predictedPrice
-    )[0];
+  // 2. Prioritera framtida optimala punkter
+  const futureOptimalPoints = futurePoints.filter((pt) => pt.prediction.isOptimal);
+  const candidates =
+    futureOptimalPoints.length > 0
+      ? futureOptimalPoints
+      : futurePoints.length > 0
+        ? futurePoints
+        : points;
+
+  // 3. Välj strikt lägsta pris, vid lika pris prioriteras den tidigare timmen
+  const bestPointToCharge = candidates.reduce<typeof points[0] | null>(
+    (best, current) => {
+      if (!best) return current;
+      return current.prediction.predictedPrice < best.prediction.predictedPrice
+        ? current
+        : best;
+    },
+    null
+  );
 
   const activePointCoord = points.find(
     (pt) => pt.prediction.raw_timestamp === selectedPoint?.raw_timestamp
@@ -87,7 +95,7 @@ function PriceChart({ predictions }: PriceChartProps) {
 
   return (
     <div className="price-chart-content select-none">
-      {/* Rubrik, teckenförklaring och vy-väljare */}
+      {/* Header, legend och tab-knappar */}
       <div className="card-heading flex flex-wrap items-center justify-between gap-3">
         <div>
           <span className="card-eyebrow text-[0.68rem] font-bold tracking-[0.14em] text-[var(--text-subtle)]">
@@ -99,7 +107,6 @@ function PriceChart({ predictions }: PriceChartProps) {
         </div>
 
         <div className="flex flex-wrap items-center gap-3">
-          {/* Legend */}
           <div className="hidden sm:flex items-center gap-3 text-[0.72rem] text-[var(--text-muted)] mr-1">
             <div className="flex items-center gap-1.5">
               <span className="inline-block h-2 w-2 rounded-full bg-[#10b981]" />
@@ -111,7 +118,6 @@ function PriceChart({ predictions }: PriceChartProps) {
             </div>
           </div>
 
-          {/* Flikar */}
           <div className="flex rounded-lg bg-[var(--surface-soft,rgba(0,0,0,0.05))] p-1 text-xs">
             <button
               type="button"
@@ -156,7 +162,7 @@ function PriceChart({ predictions }: PriceChartProps) {
         </div>
       </div>
 
-      {/* Prisöversikt / markerad punkt */}
+      {/* Prisöversikt */}
       <div className="mt-3 flex items-baseline gap-2">
         <strong className="text-[2rem] leading-none tracking-[-0.04em] text-[var(--text-strong)]">
           {selectedPoint ? selectedPoint.predictedPrice.toFixed(1) : minPrice.toFixed(1)}
@@ -180,7 +186,7 @@ function PriceChart({ predictions }: PriceChartProps) {
             </linearGradient>
           </defs>
 
-          {/* Stödlinjer */}
+          {/* Horisontella stödlinjer */}
           <line
             x1={paddingLeft}
             x2={chartWidth - paddingRight}
@@ -196,10 +202,8 @@ function PriceChart({ predictions }: PriceChartProps) {
             className="stroke-[var(--border)]"
           />
 
-          {/* Gradient-area */}
           <path d={areaPath} fill="url(#priceAreaGradient)" />
 
-          {/* Grafkurva */}
           <path
             d={linePath}
             fill="none"
@@ -221,13 +225,12 @@ function PriceChart({ predictions }: PriceChartProps) {
             />
           )}
 
-          {/* Punkter och tidsetiketter */}
+          {/* Datapunkter */}
           {points.map((point, index) => {
             const { isOptimal, isCurrentHour, isHistorical, raw_timestamp, timestamp } =
               point.prediction;
             const isSelected = selectedPoint?.raw_timestamp === raw_timestamp;
 
-            // X-axel: skriv ut var 3:e eller var 4:e timme samt aktuell timme
             const step = activeTab === "all" ? 4 : 3;
             const showLabel = index % step === 0 || isCurrentHour;
 
@@ -242,10 +245,10 @@ function PriceChart({ predictions }: PriceChartProps) {
                 className="cursor-pointer"
                 onClick={() => setSelectedPoint(point.prediction)}
               >
-                {/* Stor träffyta */}
+                {/* Träffyta för muspekare och fingrar */}
                 <circle cx={point.x} cy={point.y} r="18" fill="transparent" />
 
-                {/* Grön aura för alla optimala timmar */}
+                {/* Aura för framtida optimala timmar */}
                 {isOptimal && !isHistorical && (
                   <circle
                     cx={point.x}
@@ -256,7 +259,7 @@ function PriceChart({ predictions }: PriceChartProps) {
                   />
                 )}
 
-                {/* Noden */}
+                {/* Punkt */}
                 <circle
                   cx={point.x}
                   cy={point.y}
@@ -266,7 +269,7 @@ function PriceChart({ predictions }: PriceChartProps) {
                   strokeWidth={isSelected ? "3" : "2"}
                 />
 
-                {/* X-axeltid */}
+                {/* Klockslag på tidsaxeln */}
                 {showLabel && (
                   <text
                     x={point.x}
@@ -282,7 +285,7 @@ function PriceChart({ predictions }: PriceChartProps) {
             );
           })}
 
-          {/* Studsande indikator på dygnets absolut bästa tid att ladda */}
+          {/* Studsande pil på bästa återstående laddtid */}
           {bestPointToCharge && (
             <g
               className="animate-bounce"
@@ -318,7 +321,7 @@ function PriceChart({ predictions }: PriceChartProps) {
             </g>
           )}
 
-          {/* Tooltip vid klick på punkt */}
+          {/* Flytande tooltip vid klick */}
           {activePointCoord && (
             <g
               transform={`translate(${Math.min(
