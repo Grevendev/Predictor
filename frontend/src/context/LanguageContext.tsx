@@ -6,11 +6,14 @@ import {
   type ReactNode
 } from "react";
 
+import { translations } from "../translations/translations";
+
 export type Language = "sv" | "en";
 
 interface LanguageContextValue {
   language: Language;
   toggleLanguage: () => void;
+  translations: (typeof translations)[Language];
 }
 
 const LanguageContext = createContext<LanguageContextValue | undefined>(
@@ -50,11 +53,14 @@ export function LanguageProvider({
     );
   }
 
+  const currentTranslations = translations[language];
+
   return (
     <LanguageContext.Provider
       value={{
         language,
-        toggleLanguage
+        toggleLanguage,
+        translations: currentTranslations
       }}
     >
       {children}
