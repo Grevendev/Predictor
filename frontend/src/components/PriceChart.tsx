@@ -1,10 +1,14 @@
 import type { PricePrediction } from "../types/Prediction";
 
+import { useLanguage } from "../context/LanguageContext";
+
 interface PriceChartProps {
   predictions: PricePrediction[];
 }
 
 function PriceChart({ predictions }: PriceChartProps) {
+  const { translations: t } = useLanguage();
+
   if (predictions.length === 0) {
     return (
       <div>
@@ -17,7 +21,7 @@ function PriceChart({ predictions }: PriceChartProps) {
             text-[var(--text-subtle)]
           "
         >
-          PRISPROGNOS
+          {t.results.priceForecast}
         </span>
 
         <p
@@ -28,7 +32,7 @@ function PriceChart({ predictions }: PriceChartProps) {
             text-[var(--text-muted)]
           "
         >
-          Ingen prisprognos tillgänglig.
+          {t.results.noPriceForecast}
         </p>
       </div>
     );
@@ -36,7 +40,6 @@ function PriceChart({ predictions }: PriceChartProps) {
 
   const chartWidth = 800;
   const chartHeight = 280;
-
   const paddingLeft = 20;
   const paddingRight = 20;
   const paddingTop = 30;
@@ -131,7 +134,7 @@ function PriceChart({ predictions }: PriceChartProps) {
               text-[var(--text-subtle)]
             "
           >
-            PRISPROGNOS
+            {t.results.priceForecast}
           </span>
 
           <h3
@@ -143,7 +146,7 @@ function PriceChart({ predictions }: PriceChartProps) {
               text-[var(--text)]
             "
           >
-            Förväntat elpris
+            {t.results.expectedPrice}
           </h3>
         </div>
 
@@ -184,14 +187,14 @@ function PriceChart({ predictions }: PriceChartProps) {
             text-[var(--text-subtle)]
           "
         >
-          lägsta prognostiserade pris
+          {t.results.lowestPredictedPrice}
         </span>
       </div>
 
       <div
         className="line-chart"
         role="img"
-        aria-label="Graf över förutspådda elpriser"
+        aria-label={t.results.chartAriaLabel}
       >
         <svg
           viewBox={`0 0 ${chartWidth} ${chartHeight}`}
