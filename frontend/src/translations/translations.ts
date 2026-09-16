@@ -9,11 +9,17 @@ export const translations = {
     },
 
     hero: {
-      title:
-        "Vill du veta när det är billigast att använda elen i ditt elområde?",
+      label: "INTELLIGENT ELPROGNOS",
+      title: "Använd elen när",
+      titleAccent: "priset är lägst.",
+      description:
+        "Sök efter din stad och få en prognos för när det är smartast att använda elen i ditt elområde.",
       cityPlaceholder: "STAD",
+      cityLabel: "Stad",
       search: "Sök",
-      loading: "Hämtar information..."
+      loading: "Hämtar information...",
+      predictionInfo:
+        "Prognoser baseras på data och maskininlärning."
     },
 
     howItWorks: {
@@ -83,11 +89,17 @@ export const translations = {
     },
 
     hero: {
-      title:
-        "Want to know when electricity is cheapest to use in your area?",
+      label: "INTELLIGENT ELECTRICITY FORECAST",
+      title: "Use electricity when",
+      titleAccent: "prices are lowest.",
+      description:
+        "Search for your city and get a forecast for when it is smartest to use electricity in your area.",
       cityPlaceholder: "CITY",
+      cityLabel: "City",
       search: "Search",
-      loading: "Fetching information..."
+      loading: "Fetching information...",
+      predictionInfo:
+        "Forecasts are based on data and machine learning."
     },
 
     howItWorks: {
