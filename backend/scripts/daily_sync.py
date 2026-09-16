@@ -1,6 +1,6 @@
 import os
 import sys
-from datetime import timedelta
+from datetime import date, timedelta
 from pathlib import Path
 from dotenv import load_dotenv
 from entsoe import EntsoePandasClient
@@ -21,7 +21,12 @@ PREV_DATASET_DIR = BACKEND_DIR / "prev_dataset"
 PREV_DATASET_DIR.mkdir(parents=True, exist_ok=True)
 
 # Master-dataset (Predictor/dataset/all_zones_complete.csv)
-DATASET_DIR = REPO_ROOT / "dataset"
+# Kontrollera om /app/dataset finns (Docker) annars lokalt
+if Path("/app/dataset").exists():
+    DATASET_DIR = Path("/app/dataset")
+else:
+    DATASET_DIR = REPO_ROOT / "dataset"
+
 DATASET_DIR.mkdir(parents=True, exist_ok=True)
 MASTER_DATASET_PATH = DATASET_DIR / "all_zones_complete.csv"
 
@@ -93,6 +98,14 @@ def fetch_and_stage_data(start_date: str, end_date: str) -> pd.DataFrame:
 
     # 2. Hämta väder (Open-Meteo)
     print("Hämtar väderdata från Open-Meteo...")
+
+    # Dynamiskt val av endpoint: om slutdatum är idag eller senare -> forecast-api
+    today_iso = date.today().isoformat()
+    if end_date >= today_iso:
+        weather_api_url = "https://api.open-meteo.com/v1/forecast"
+    else:
+        weather_api_url = "https://archive-api.open-meteo.com/v1/archive"
+
     weather_dfs = []
     for zone, (lat, lon) in COORDINATES.items():
         params = {
@@ -102,9 +115,7 @@ def fetch_and_stage_data(start_date: str, end_date: str) -> pd.DataFrame:
             "end_date": end_date,
             "hourly": ["temperature_2m", "wind_speed_10m", "precipitation"],
         }
-        res = om_client.weather_api(
-            "https://archive-api.open-meteo.com/v1/archive", params=params
-        )[0]
+        res = om_client.weather_api(weather_api_url, params=params)[0]
         hourly = res.Hourly()
         df_w_zone = pd.DataFrame(
             {
@@ -162,7 +173,6 @@ def append_to_master_dataset(
         combined = df_new_wide.sort_values("timestamp").reset_index(drop=True)
 
     # --- REGENERERA ALLA TIDS-FEATURES FÖR HELA DATASETET ---
-    # Skapar lokal svensk tid och plockar ut timme, veckodag, månad
     combined["timestamp_local"] = (
         combined["timestamp"].dt.tz_convert("Europe/Stockholm").dt.tz_localize(None)
     )
@@ -173,8 +183,6 @@ def append_to_master_dataset(
 
     # --- NAN-KONTROLL ---
     critical_cols = ["timestamp", "timestamp_local", "hour", "day_of_week", "month"]
-    price_cols = [c for c in combined.columns if c.startswith("price_se")]
-
     missing_critical = combined[critical_cols].isnull().sum()
     if missing_critical.sum() > 0:
         print("VARNING: Följande tids-kolumner innehåller NaN efter uppdatering:")
