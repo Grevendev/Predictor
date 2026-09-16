@@ -57,16 +57,12 @@ COORDINATES = {
 
 
 # -----------------------------------------------------------------------------
-# 3. Hämtning och Staging
+# 3. Hämtning och Staging (med 1h-aggregering)
 # -----------------------------------------------------------------------------
 def fetch_and_stage_data(start_date: str, end_date: str) -> pd.DataFrame:
-    """
-    Hämtar elpriser och väder för intervallet (YYYY-MM-DD),
-    sparar råfilerna i backend/prev_dataset/ och returnerar en sammanslagen bred DataFrame.
-    """
+    """Hämtar priser och väder, resamplar till 1h, och sparar staging-fil."""
     print(f"\n--- Påbörjar hämtning: {start_date} till {end_date} ---")
 
-    # Tidsstämplar för ENTSO-E (UTC)
     start_ts = pd.Timestamp(start_date, tz="UTC")
     end_ts = pd.Timestamp(end_date, tz="UTC") + pd.Timedelta(days=1)
 
@@ -78,6 +74,14 @@ def fetch_and_stage_data(start_date: str, end_date: str) -> pd.DataFrame:
         df_z = s.reset_index()
         df_z.columns = ["timestamp", f"price_{zone_name.lower()}_eur_mwh"]
         df_z["timestamp"] = pd.to_datetime(df_z["timestamp"]).dt.tz_convert("UTC")
+
+        # Säkerställ 1-timmesupplösning (hanterar 15-minuters spotpriser)
+        df_z = (
+            df_z.set_index("timestamp")
+            .resample("1h")
+            .mean(numeric_only=True)
+            .reset_index()
+        )
         price_dfs.append(df_z)
 
     df_prices = price_dfs[0]
@@ -86,7 +90,6 @@ def fetch_and_stage_data(start_date: str, end_date: str) -> pd.DataFrame:
 
     price_file = PREV_DATASET_DIR / f"raw_prices_{start_date}_to_{end_date}.csv"
     df_prices.to_csv(price_file, index=False)
-    print(f"Sparade råpris-data till: {price_file.name}")
 
     # 2. Hämta väder (Open-Meteo)
     print("Hämtar väderdata från Open-Meteo...")
@@ -124,28 +127,27 @@ def fetch_and_stage_data(start_date: str, end_date: str) -> pd.DataFrame:
 
     weather_file = PREV_DATASET_DIR / f"raw_weather_{start_date}_to_{end_date}.csv"
     df_weather.to_csv(weather_file, index=False)
-    print(f"Sparade råväder-data till: {weather_file.name}")
 
-    # 3. Slå ihop och spara bred mellanlandningsfil
+    # 3. Slå ihop priser och väder
     df_merged_wide = pd.merge(df_prices, df_weather, on="timestamp", how="inner")
     staged_wide_file = PREV_DATASET_DIR / f"staged_wide_{start_date}_to_{end_date}.csv"
     df_merged_wide.to_csv(staged_wide_file, index=False)
     print(
-        f"Sparade bred mellanlandning ({len(df_merged_wide)} timmar) till: {staged_wide_file.name}"
+        f"Staging klar: {len(df_merged_wide)} timmar sparade till {staged_wide_file.name}"
     )
 
     return df_merged_wide
 
 
 # -----------------------------------------------------------------------------
-# 4. Master-uppdatering (Merge & Deduplicate)
+# 4. Master-uppdatering med Feature Enrichment & NaN-skydd
 # -----------------------------------------------------------------------------
 def append_to_master_dataset(
     df_new_wide: pd.DataFrame, master_path: Path = MASTER_DATASET_PATH
-):
-    """Slår ihop ny data med master-filen, tar bort dubbletter och sorterar kronologiskt."""
+) -> pd.DataFrame:
+    """Slår ihop ny data, regenererar tids-features och rensar bort oväntade NaN."""
     df_new_wide["timestamp"] = pd.to_datetime(df_new_wide["timestamp"], utc=True)
-    print(master_path, "dddddddddddddddddddddddddddddddddddddddddddddddd")
+
     if master_path.exists():
         existing_df = pd.read_csv(master_path)
         existing_df["timestamp"] = pd.to_datetime(existing_df["timestamp"], utc=True)
@@ -159,6 +161,41 @@ def append_to_master_dataset(
     else:
         combined = df_new_wide.sort_values("timestamp").reset_index(drop=True)
 
+    # --- REGENERERA ALLA TIDS-FEATURES FÖR HELA DATASETET ---
+    # Skapar lokal svensk tid och plockar ut timme, veckodag, månad
+    combined["timestamp_local"] = (
+        combined["timestamp"].dt.tz_convert("Europe/Stockholm").dt.tz_localize(None)
+    )
+    combined["hour"] = combined["timestamp_local"].dt.hour
+    combined["day_of_week"] = combined["timestamp_local"].dt.dayofweek
+    combined["month"] = combined["timestamp_local"].dt.month
+    combined["is_weekend"] = (combined["day_of_week"] >= 5).astype(int)
+
+    # --- NAN-KONTROLL ---
+    critical_cols = ["timestamp", "timestamp_local", "hour", "day_of_week", "month"]
+    price_cols = [c for c in combined.columns if c.startswith("price_se")]
+
+    missing_critical = combined[critical_cols].isnull().sum()
+    if missing_critical.sum() > 0:
+        print("VARNING: Följande tids-kolumner innehåller NaN efter uppdatering:")
+        print(missing_critical[missing_critical > 0])
+
+    # Interpolera enstaka timluckor i pris eller väder om API:t missat ett värde
+    measure_cols = [
+        c
+        for c in combined.columns
+        if c.startswith(("price_", "temp_", "wind_", "rain_"))
+    ]
+    missing_measures = combined[measure_cols].isnull().sum()
+    if missing_measures.sum() > 0:
+        print("Info: Små luckor i mätdata hittades, kör linjär interpolering:")
+        print(missing_measures[missing_measures > 0])
+        combined[measure_cols] = (
+            combined[measure_cols].interpolate(method="linear").bfill()
+        )
+
     combined.to_csv(master_path, index=False)
-    print(f"Master-dataset uppdaterat: {master_path} (Totalt {len(combined)} rader)")
+    print(
+        f"Master-dataset sparat: {master_path} (Totalt {len(combined)} rader, 0 tids-NaN)"
+    )
     return combined
