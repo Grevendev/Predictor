@@ -1,11 +1,14 @@
 import { useState } from "react";
 
+import { useLanguage } from "../context/LanguageContext";
+
 interface SearchFormProps {
   onSearch: (city: string) => void;
 }
 
 function SearchForm({ onSearch }: SearchFormProps) {
   const [city, setCity] = useState("");
+  const { translations: t } = useLanguage();
 
   function handleSubmit(event: React.SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -57,7 +60,7 @@ function SearchForm({ onSearch }: SearchFormProps) {
         "
         htmlFor="city"
       >
-        Stad
+        {t.hero.cityLabel}
       </label>
 
       <input
@@ -85,7 +88,7 @@ function SearchForm({ onSearch }: SearchFormProps) {
         id="city"
         name="city"
         type="text"
-        placeholder="STAD"
+        placeholder={t.hero.cityPlaceholder}
         value={city}
         onChange={(event) => setCity(event.target.value)}
       />
@@ -112,7 +115,7 @@ function SearchForm({ onSearch }: SearchFormProps) {
         "
         type="submit"
       >
-        Sök
+        {t.hero.search}
       </button>
     </form>
   );
