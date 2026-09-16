@@ -1,3 +1,4 @@
+
 export const translations = {
   sv: {
     navigation: {
@@ -32,6 +33,11 @@ export const translations = {
       area: "Elområde",
       yourArea: "Ditt elområde",
       installedCapacity: "Installerad effekt",
+      priceForecast: "Prisprognos",
+      expectedPrice: "Förväntat elpris",
+      lowestPredictedPrice: "Lägsta prognostiserade pris",
+      chartAriaLabel: "Graf över förutspådda elpriser",
+      noPriceForecast: "Ingen prisprognos tillgänglig.",
       today: "Idag",
       tomorrow: "Imorgon",
       price: "Pris",
@@ -62,13 +68,16 @@ export const translations = {
     },
 
     costSavingTips: {
-      label: "SPARTIPS",
-      title: "Spara pengar på din elanvändning.",
+      label: "SMART ELANVÄNDNING",
+      title: "Spara pengar",
       description:
-        "Genom att planera när du använder mest el kan du minska dina elkostnader.",
-      tip1: "Använd el när priserna är lägre.",
-      tip2: "Undvik onödig elanvändning under pristoppar.",
-      tip3: "Planera energikrävande aktiviteter efter elpriset."
+        "Planera din elanvändning efter elpriset för att minska dina elkostnader.",
+      tip1:
+        "Kör tvättmaskin och diskmaskin under timmar då elpriset förväntas vara lägre.",
+      tip2:
+        "Ladda elbilen under billigare timmar istället för under pristoppar.",
+      tip3:
+        "Försök undvika flera stora elförbrukare samtidigt när priset är högt."
     },
 
     footer: {
@@ -114,6 +123,11 @@ export const translations = {
       area: "Electricity Area",
       yourArea: "Your electricity area",
       installedCapacity: "Installed capacity",
+      priceForecast: "Price forecast",
+      expectedPrice: "Expected electricity price",
+      lowestPredictedPrice: "Lowest predicted price",
+      chartAriaLabel: "Chart showing predicted electricity prices",
+      noPriceForecast: "No price forecast available.",
       today: "Today",
       tomorrow: "Tomorrow",
       price: "Price",
@@ -144,13 +158,16 @@ export const translations = {
     },
 
     costSavingTips: {
-      label: "COST-SAVING TIPS",
-      title: "Save money on your electricity usage.",
+      label: "SMART ELECTRICITY USAGE",
+      title: "Save money",
       description:
-        "By planning when you use the most electricity, you can reduce your energy costs.",
-      tip1: "Use electricity when prices are lower.",
-      tip2: "Avoid unnecessary electricity usage during price peaks.",
-      tip3: "Plan energy-intensive activities around electricity prices."
+        "Plan your electricity usage around electricity prices to reduce your energy costs.",
+      tip1:
+        "Run your washing machine and dishwasher during hours when electricity prices are expected to be lower.",
+      tip2:
+        "Charge your electric vehicle during cheaper hours instead of during price peaks.",
+      tip3:
+        "Try to avoid using several high-consumption appliances at the same time when prices are high."
     },
 
     footer: {
@@ -163,3 +180,4 @@ export const translations = {
     }
   }
 } as const;
+;
