@@ -40,6 +40,7 @@ services:
     volumes:
       - ./backend/app:/app/app:ro
       - ./models_bin:/models_bin:ro
+      - ./dataset:/app/dataset
     networks:
       - predictor-net
 
