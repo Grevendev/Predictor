@@ -1,4 +1,3 @@
-
 import {
   test,
   expect
@@ -27,9 +26,7 @@ test.describe("Mobile navigation", () => {
 
     const navigation = page.locator(".site-navigation");
 
-    await expect(
-      navigation
-    ).not.toHaveClass(/is-open/);
+    await expect(navigation).toBeHidden();
 
     await menuButton.click();
 
@@ -39,9 +36,7 @@ test.describe("Mobile navigation", () => {
       })
     ).toBeVisible();
 
-    await expect(
-      navigation
-    ).toHaveClass(/is-open/);
+    await expect(navigation).toBeVisible();
 
     await expect(
       navigation.getByRole("link", {
@@ -71,9 +66,6 @@ test.describe("Mobile navigation", () => {
       })
     ).toBeVisible();
 
-    await expect(
-      navigation
-    ).not.toHaveClass(/is-open/);
+    await expect(navigation).toBeHidden();
   });
 });
-;
