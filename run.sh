@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
 case "$1" in
+  get-data)
+    python backend/scripts/get_last_date.py
   dev-local)
     trap 'kill 0' SIGINT SIGTERM EXIT
     (cd backend && uv run uvicorn app.main:app --reload --port 8000) &
