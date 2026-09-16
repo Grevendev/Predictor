@@ -3,7 +3,9 @@ export const translations = {
     navigation: {
       home: "Hem",
       howItWorks: "Så fungerar det",
-      about: "Om oss"
+      about: "Om oss",
+      openMenu: "Öppna meny",
+      closeMenu: "Stäng meny"
     },
 
     hero: {
@@ -75,7 +77,9 @@ export const translations = {
     navigation: {
       home: "Home",
       howItWorks: "How it works",
-      about: "About"
+      about: "About",
+      openMenu: "Open menu",
+      closeMenu: "Close menu"
     },
 
     hero: {
