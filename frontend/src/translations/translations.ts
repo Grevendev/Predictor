@@ -6,7 +6,7 @@ export const translations = {
       howItWorks: "Så fungerar det",
       about: "Om oss",
       openMenu: "Öppna meny",
-      closeMenu: "Stäng meny"
+      closeMenu: "Stäng meny",
     },
 
     hero: {
@@ -20,12 +20,12 @@ export const translations = {
       search: "Sök",
       loading: "Hämtar information...",
       predictionInfo:
-        "Prognoser baseras på data och maskininlärning."
+        "Prognoser baseras på data och maskininlärning.",
     },
 
     howItWorks: {
       label: "SÅ FUNGERAR DET",
-      title: "Från din stad till en prognos."
+      title: "Från din stad till en prognos.",
     },
 
     results: {
@@ -44,20 +44,20 @@ export const translations = {
       lowestPrice: "Lägsta pris",
       highestPrice: "Högsta pris",
       averagePrice: "Genomsnittligt pris",
-      forecast: "Prognos"
+      forecast: "Prognos",
     },
 
     errors: {
       cityNotFound: "Kunde inte hitta staden.",
       noResults: "Ingen information kunde hittas.",
       generic: "Något gick fel. Försök igen.",
-      invalidCity: "Ange en giltig stad."
+      invalidCity: "Ange en giltig stad.",
     },
 
     loading: {
       search: "Söker...",
       prediction: "Hämtar prognos...",
-      information: "Hämtar information..."
+      information: "Hämtar information...",
     },
 
     about: {
@@ -75,7 +75,7 @@ export const translations = {
         selectArea: "VÄLJ ELOMRÅDE",
         placeholderTitle: "Utforska Sveriges elområden",
         placeholderDescription:
-          "Klicka på ett elområde på kartan för att se information om området och vilka kraftslag som har störst installerad effekt."
+          "Klicka på ett elområde på kartan för att se information om området och vilka kraftslag som har störst installerad effekt.",
       },
 
       price: {
@@ -88,27 +88,24 @@ export const translations = {
           supply: {
             title: "Tillgång",
             description:
-              "När mycket el produceras kan tillgången öka och priserna pressas ned."
+              "När mycket el produceras kan tillgången öka och priserna pressas ned.",
           },
-
           demand: {
             title: "Efterfrågan",
             description:
-              "Hög elanvändning ökar efterfrågan och kan bidra till högre priser."
+              "Hög elanvändning ökar efterfrågan och kan bidra till högre priser.",
           },
-
           weather: {
             title: "Väder",
             description:
-              "Temperatur, vind och nederbörd påverkar både elanvändning och produktion."
+              "Temperatur, vind och nederbörd påverkar både elanvändning och produktion.",
           },
-
           transmission: {
             title: "Överföring",
             description:
-              "Begränsningar i elnätet påverkar hur mycket el som kan överföras mellan olika områden."
-          }
-        }
+              "Begränsningar i elnätet påverkar hur mycket el som kan överföras mellan olika områden.",
+          },
+        },
       },
 
       forecasts: {
@@ -122,8 +119,8 @@ export const translations = {
         process: {
           data: "DATA",
           patterns: "MÖNSTER",
-          forecast: "PROGNOS"
-        }
+          forecast: "PROGNOS",
+        },
       },
 
       whyPredictor: {
@@ -136,25 +133,23 @@ export const translations = {
           plan: {
             title: "Planera",
             description:
-              "Se när priserna förväntas vara lägre och planera elanvändningen därefter."
+              "Se när priserna förväntas vara lägre och planera elanvändningen därefter.",
           },
-
           understand: {
             title: "Förstå",
             description:
-              "Få en tydligare bild av elpriset och vad som påverkar utvecklingen i ditt område."
+              "Få en tydligare bild av elpriset och vad som påverkar utvecklingen i ditt område.",
           },
-
           act: {
             title: "Agera",
             description:
-              "Anpassa elanvändningen när prognosen visar bättre förutsättningar."
-          }
-        }
+              "Anpassa elanvändningen när prognosen visar bättre förutsättningar.",
+          },
+        },
       },
 
       disclaimer:
-        "Prognoser är uppskattningar och kan skilja sig från det faktiska elpriset. Predictor är ett beslutsstöd och ingen garanti för framtida priser."
+        "Prognoser är uppskattningar och kan skilja sig från det faktiska elpriset. Predictor är ett beslutsstöd och ingen garanti för framtida priser.",
     },
 
     costSavingTips: {
@@ -162,12 +157,15 @@ export const translations = {
       title: "Spara pengar",
       description:
         "Planera din elanvändning efter elpriset för att minska dina elkostnader.",
+
       tip1:
         "Kör tvättmaskin och diskmaskin under timmar då elpriset förväntas vara lägre.",
+
       tip2:
         "Ladda elbilen under billigare timmar istället för under pristoppar.",
+
       tip3:
-        "Försök undvika flera stora elförbrukare samtidigt när priset är högt."
+        "Försök undvika flera stora elförbrukare samtidigt när priset är högt.",
     },
 
     footer: {
@@ -176,8 +174,214 @@ export const translations = {
       home: "Hem",
       howItWorks: "Så fungerar det",
       about: "Om oss",
-      copyright: "Alla rättigheter förbehållna."
-    }
+      copyright: "Alla rättigheter förbehållna.",
+    },
+
+    howItWorksPage: {
+      hero: {
+        label: "SÅ FUNGERAR DET",
+        title: "Från din stad till en prognos.",
+        description:
+          "Predictor kopplar din stad till rätt elområde, analyserar relevant data och använder maskininlärning för att uppskatta hur elpriserna kan utvecklas.",
+
+        flow: {
+          city: "STAD",
+          area: "ELOMRÅDE",
+          data: "DATA",
+          model: "MODELL",
+          forecast: "PROGNOS",
+        },
+      },
+
+      energyArea: {
+        label: "01 — ELOMRÅDE",
+        title: "Så hittar Predictor ditt elområde",
+        description:
+          "Din stad används för att identifiera vilket av Sveriges fyra elområden du tillhör. Elområdet är viktigt eftersom elpriserna kan skilja sig mellan olika delar av Sverige.",
+        city: "STAD",
+        cityExample: "Malmö",
+        area: "ELOMRÅDE",
+        areaExample: "SE4",
+      },
+
+      data: {
+        label: "02 — DATA",
+        title: "Vilken data används?",
+        description:
+          "För att identifiera mönster i elpriser behöver modellen information om både marknaden och de faktorer som påverkar elproduktion och elanvändning.",
+
+        cards: [
+          {
+            number: "01",
+            title: "ELPRIS",
+            text: "Historiska elpriser används för att identifiera tidigare prisnivåer och återkommande mönster.",
+          },
+          {
+            number: "02",
+            title: "VÄDER",
+            text: "Temperatur, vind och nederbörd kan påverka både produktion och efterfrågan på el.",
+          },
+          {
+            number: "03",
+            title: "PRODUKTION",
+            text: "Information om vattenkraft, vindkraft, kärnkraft och solenergi hjälper modellen att förstå tillgången på el.",
+          },
+          {
+            number: "04",
+            title: "TID",
+            text: "Timme, veckodag och återkommande tidsmönster används för att hitta variationer i elpriset.",
+          },
+        ],
+      },
+
+      machineLearning: {
+        label: "03 — MASKININLÄRNING",
+        title: "Från data till mönster",
+        description:
+          "När datan har samlats in bearbetas den innan modellen tränas. Målet är att hitta mönster som kan användas för att uppskatta framtida elpriser.",
+
+        steps: [
+          {
+            number: "01",
+            title: "DATA",
+            text: "Historisk data samlas in.",
+          },
+          {
+            number: "02",
+            title: "PREPROCESSING",
+            text: "Datan rengörs och förbereds för modellen.",
+          },
+          {
+            number: "03",
+            title: "MODELL",
+            text: "En maskininlärningsmodell tränas på historiska observationer.",
+          },
+          {
+            number: "04",
+            title: "MÖNSTER",
+            text: "Modellen identifierar mönster som kan användas för framtida prognoser.",
+          },
+        ],
+      },
+
+      forecast: {
+        label: "04 — PROGNOS",
+        title: "Från mönster till prognos",
+        description:
+          "När modellen har tränats kan den använda aktuell information för att uppskatta framtida elpriser i ett specifikt elområde.",
+        forecast: "PROGNOS",
+        area: "SE4",
+        unit: "öre/kWh",
+        note:
+          "Exemplet ovan är illustrativt. Den faktiska prognosen kommer från Predictors tränade modell.",
+      },
+
+      interpretation: {
+        label: "05 — TOLKNING",
+        title: "Hur ska du tolka prognosen?",
+        forecast: "PROGNOS",
+        examplePrice: "≈ 31 öre/kWh",
+        description:
+          "Prognosen ska ses som en uppskattning av framtida elpriser. Den visar en förväntad utveckling och är inte ett garanterat elpris.",
+      },
+
+      decisions: {
+        label: "06 — BESLUT",
+        title: "Från prognos till beslut",
+        description:
+          "Prognosen kan hjälpa dig att planera din elanvändning och förstå när priserna förväntas vara högre eller lägre.",
+
+        cards: [
+          {
+            number: "01",
+            title: "PLANERA",
+            text: "Planera energikrävande aktiviteter till timmar där priset förväntas vara lägre.",
+          },
+          {
+            number: "02",
+            title: "FÖRSTÅ",
+            text: "Använd prognosen för att förstå hur elpriset kan utvecklas under dagen.",
+          },
+          {
+            number: "03",
+            title: "AGERA",
+            text: "Anpassa din elanvändning utifrån den information som prognosen ger.",
+          },
+        ],
+      },
+
+      uncertainty: {
+        label: "07 — OSÄKERHET",
+        title: "Varför kan prognosen ha fel?",
+        description:
+          "En prognos är aldrig en garanti. Elmarknaden påverkas av många faktorer och oväntade förändringar kan göra att det faktiska priset skiljer sig från modellens uppskattning.",
+
+        cards: [
+          {
+            number: "01",
+            title: "VÄDER",
+            text: "Oväntade förändringar i temperatur, vind eller nederbörd kan påverka både produktion och efterfrågan.",
+          },
+          {
+            number: "02",
+            title: "EFTERFRÅGAN",
+            text: "Elanvändningen kan förändras snabbt beroende på exempelvis temperatur och samhällsaktivitet.",
+          },
+          {
+            number: "03",
+            title: "PRODUKTION",
+            text: "Förändringar i exempelvis vind-, vatten- eller kärnkraftsproduktion kan påverka tillgången på el.",
+          },
+          {
+            number: "04",
+            title: "ELNÄT",
+            text: "Begränsningar och förändringar i elnätet kan påverka hur el kan distribueras mellan olika områden.",
+          },
+        ],
+      },
+
+      technical: {
+        label: "08 — FÖR DIG SOM VILL VETA MER",
+        title: "Från rådata till maskininlärning",
+        description:
+          "Bakom prognosen finns en pipeline där rådata bearbetas, relevanta egenskaper skapas och en modell tränas och valideras innan den används för prognoser.",
+
+        steps: [
+          {
+            number: "01",
+            title: "DATA",
+          },
+          {
+            number: "02",
+            title: "PREPROCESSING",
+          },
+          {
+            number: "03",
+            title: "FEATURES",
+          },
+          {
+            number: "04",
+            title: "TRÄNING",
+          },
+          {
+            number: "05",
+            title: "VALIDERING",
+          },
+          {
+            number: "06",
+            title: "PROGNOS",
+          },
+        ],
+      },
+
+      cta: {
+        label: "REDO?",
+        title: "Testa Predictor",
+        description:
+          "Sök efter din stad och se prognosen för ditt elområde.",
+        button: "TESTA PREDICTOR →",
+      },
+    },
   },
 
   en: {
@@ -186,7 +390,7 @@ export const translations = {
       howItWorks: "How it works",
       about: "About",
       openMenu: "Open menu",
-      closeMenu: "Close menu"
+      closeMenu: "Close menu",
     },
 
     hero: {
@@ -200,12 +404,12 @@ export const translations = {
       search: "Search",
       loading: "Fetching information...",
       predictionInfo:
-        "Forecasts are based on data and machine learning."
+        "Forecasts are based on data and machine learning.",
     },
 
     howItWorks: {
       label: "HOW IT WORKS",
-      title: "From your city to a forecast."
+      title: "From your city to a forecast.",
     },
 
     results: {
@@ -224,20 +428,20 @@ export const translations = {
       lowestPrice: "Lowest price",
       highestPrice: "Highest price",
       averagePrice: "Average price",
-      forecast: "Forecast"
+      forecast: "Forecast",
     },
 
     errors: {
       cityNotFound: "Could not find the city.",
       noResults: "No information could be found.",
       generic: "Something went wrong. Please try again.",
-      invalidCity: "Please enter a valid city."
+      invalidCity: "Please enter a valid city.",
     },
 
     loading: {
       search: "Searching...",
       prediction: "Fetching forecast...",
-      information: "Fetching information..."
+      information: "Fetching information...",
     },
 
     about: {
@@ -255,7 +459,7 @@ export const translations = {
         selectArea: "SELECT ELECTRICITY AREA",
         placeholderTitle: "Explore Sweden's electricity areas",
         placeholderDescription:
-          "Click an electricity area on the map to see information about the area and which energy sources have the highest installed capacity."
+          "Click an electricity area on the map to see information about the area and which energy sources have the highest installed capacity.",
       },
 
       price: {
@@ -268,27 +472,24 @@ export const translations = {
           supply: {
             title: "Supply",
             description:
-              "When a large amount of electricity is produced, supply can increase and prices may decrease."
+              "When a large amount of electricity is produced, supply can increase and prices may decrease.",
           },
-
           demand: {
             title: "Demand",
             description:
-              "High electricity usage increases demand and can contribute to higher prices."
+              "High electricity usage increases demand and can contribute to higher prices.",
           },
-
           weather: {
             title: "Weather",
             description:
-              "Temperature, wind, and precipitation affect both electricity usage and production."
+              "Temperature, wind, and precipitation affect both electricity usage and production.",
           },
-
           transmission: {
             title: "Transmission",
             description:
-              "Limitations in the power grid affect how much electricity can be transmitted between different areas."
-          }
-        }
+              "Limitations in the power grid affect how much electricity can be transmitted between different areas.",
+          },
+        },
       },
 
       forecasts: {
@@ -302,8 +503,8 @@ export const translations = {
         process: {
           data: "DATA",
           patterns: "PATTERNS",
-          forecast: "FORECAST"
-        }
+          forecast: "FORECAST",
+        },
       },
 
       whyPredictor: {
@@ -316,25 +517,23 @@ export const translations = {
           plan: {
             title: "Plan",
             description:
-              "See when prices are expected to be lower and plan your electricity usage accordingly."
+              "See when prices are expected to be lower and plan your electricity usage accordingly.",
           },
-
           understand: {
             title: "Understand",
             description:
-              "Get a clearer view of electricity prices and what affects their development in your area."
+              "Get a clearer view of electricity prices and what affects their development in your area.",
           },
-
           act: {
             title: "Act",
             description:
-              "Adjust your electricity usage when the forecast shows more favorable conditions."
-          }
-        }
+              "Adjust your electricity usage when the forecast shows more favorable conditions.",
+          },
+        },
       },
 
       disclaimer:
-        "Forecasts are estimates and may differ from actual electricity prices. Predictor is a decision-support tool and does not guarantee future prices."
+        "Forecasts are estimates and may differ from actual electricity prices. Predictor is a decision-support tool and does not guarantee future prices.",
     },
 
     costSavingTips: {
@@ -342,12 +541,15 @@ export const translations = {
       title: "Save money",
       description:
         "Plan your electricity usage around electricity prices to reduce your energy costs.",
+
       tip1:
         "Run your washing machine and dishwasher during hours when electricity prices are expected to be lower.",
+
       tip2:
         "Charge your electric vehicle during cheaper hours instead of during price peaks.",
+
       tip3:
-        "Try to avoid using several high-consumption appliances at the same time when prices are high."
+        "Try to avoid using several high-consumption appliances at the same time when prices are high.",
     },
 
     footer: {
@@ -356,8 +558,214 @@ export const translations = {
       home: "Home",
       howItWorks: "How it works",
       about: "About",
-      copyright: "All rights reserved."
-    }
-  }
+      copyright: "All rights reserved.",
+    },
+
+    howItWorksPage: {
+      hero: {
+        label: "HOW IT WORKS",
+        title: "From your city to a forecast.",
+        description:
+          "Predictor connects your city to the correct electricity area, analyzes relevant data, and uses machine learning to estimate how electricity prices may develop.",
+
+        flow: {
+          city: "CITY",
+          area: "ELECTRICITY AREA",
+          data: "DATA",
+          model: "MODEL",
+          forecast: "FORECAST",
+        },
+      },
+
+      energyArea: {
+        label: "01 — ELECTRICITY AREA",
+        title: "How Predictor finds your electricity area",
+        description:
+          "Your city is used to identify which of Sweden's four electricity areas you belong to. The electricity area is important because electricity prices can differ between different parts of Sweden.",
+        city: "CITY",
+        cityExample: "Malmö",
+        area: "ELECTRICITY AREA",
+        areaExample: "SE4",
+      },
+
+      data: {
+        label: "02 — DATA",
+        title: "What data is used?",
+        description:
+          "To identify patterns in electricity prices, the model needs information about both the market and the factors that affect electricity production and consumption.",
+
+        cards: [
+          {
+            number: "01",
+            title: "ELECTRICITY PRICE",
+            text: "Historical electricity prices are used to identify previous price levels and recurring patterns.",
+          },
+          {
+            number: "02",
+            title: "WEATHER",
+            text: "Temperature, wind and precipitation can affect both electricity production and demand.",
+          },
+          {
+            number: "03",
+            title: "PRODUCTION",
+            text: "Information about hydropower, wind power, nuclear power and solar energy helps the model understand electricity supply.",
+          },
+          {
+            number: "04",
+            title: "TIME",
+            text: "Hour, weekday and recurring time patterns are used to identify variations in electricity prices.",
+          },
+        ],
+      },
+
+      machineLearning: {
+        label: "03 — MACHINE LEARNING",
+        title: "From data to patterns",
+        description:
+          "Once the data has been collected, it is processed before the model is trained. The goal is to identify patterns that can be used to estimate future electricity prices.",
+
+        steps: [
+          {
+            number: "01",
+            title: "DATA",
+            text: "Historical data is collected.",
+          },
+          {
+            number: "02",
+            title: "PREPROCESSING",
+            text: "The data is cleaned and prepared for the model.",
+          },
+          {
+            number: "03",
+            title: "MODEL",
+            text: "A machine learning model is trained on historical observations.",
+          },
+          {
+            number: "04",
+            title: "PATTERNS",
+            text: "The model identifies patterns that can be used for future forecasts.",
+          },
+        ],
+      },
+
+      forecast: {
+        label: "04 — FORECAST",
+        title: "From patterns to forecast",
+        description:
+          "Once the model has been trained, it can use current information to estimate future electricity prices in a specific electricity area.",
+        forecast: "FORECAST",
+        area: "SE4",
+        unit: "öre/kWh",
+        note:
+          "The example above is illustrative. The actual forecast comes from Predictor's trained model.",
+      },
+
+      interpretation: {
+        label: "05 — INTERPRETATION",
+        title: "How should you interpret the forecast?",
+        forecast: "FORECAST",
+        examplePrice: "≈ 31 öre/kWh",
+        description:
+          "The forecast should be viewed as an estimate of future electricity prices. It shows an expected development, not a guaranteed price.",
+      },
+
+      decisions: {
+        label: "06 — DECISION",
+        title: "From forecast to decision",
+        description:
+          "The forecast can help you plan your electricity usage and understand when prices are expected to be higher or lower.",
+
+        cards: [
+          {
+            number: "01",
+            title: "PLAN",
+            text: "Plan energy-intensive activities for hours when the price is expected to be lower.",
+          },
+          {
+            number: "02",
+            title: "UNDERSTAND",
+            text: "Use the forecast to understand how electricity prices may develop throughout the day.",
+          },
+          {
+            number: "03",
+            title: "ACT",
+            text: "Adjust your electricity usage based on the information provided by the forecast.",
+          },
+        ],
+      },
+
+      uncertainty: {
+        label: "07 — UNCERTAINTY",
+        title: "Why can the forecast be wrong?",
+        description:
+          "A forecast is never a guarantee. The electricity market is affected by many factors, and unexpected changes can cause the actual price to differ from the model's estimate.",
+
+        cards: [
+          {
+            number: "01",
+            title: "WEATHER",
+            text: "Unexpected changes in temperature, wind or precipitation can affect both production and demand.",
+          },
+          {
+            number: "02",
+            title: "DEMAND",
+            text: "Electricity usage can change quickly depending on factors such as temperature and societal activity.",
+          },
+          {
+            number: "03",
+            title: "PRODUCTION",
+            text: "Changes in wind, hydropower or nuclear production can affect the availability of electricity.",
+          },
+          {
+            number: "04",
+            title: "POWER GRID",
+            text: "Limitations and changes in the power grid can affect how electricity is distributed between different areas.",
+          },
+        ],
+      },
+
+      technical: {
+        label: "08 — FOR THOSE WHO WANT TO KNOW MORE",
+        title: "From raw data to machine learning",
+        description:
+          "Behind the forecast is a pipeline where raw data is processed, relevant features are created, and a model is trained and validated before being used for forecasting.",
+
+        steps: [
+          {
+            number: "01",
+            title: "DATA",
+          },
+          {
+            number: "02",
+            title: "PREPROCESSING",
+          },
+          {
+            number: "03",
+            title: "FEATURES",
+          },
+          {
+            number: "04",
+            title: "TRAINING",
+          },
+          {
+            number: "05",
+            title: "VALIDATION",
+          },
+          {
+            number: "06",
+            title: "FORECAST",
+          },
+        ],
+      },
+
+      cta: {
+        label: "READY?",
+        title: "Try Predictor",
+        description:
+          "Search for your city and see the forecast for your electricity area.",
+        button: "TRY PREDICTOR →",
+      },
+    },
+  },
 } as const;
 ;

@@ -1,7 +1,12 @@
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import { useLanguage } from "../context/LanguageContext";
+import { translations } from "../translations/translations";
 
 function HowItWorksPage() {
+  const { language } = useLanguage();
+  const t = translations[language];
+
   return (
     <>
       <Header />
@@ -33,7 +38,7 @@ function HowItWorksPage() {
               text-[var(--text-muted)]
             "
           >
-            SÅ FUNGERAR DET
+            {t.howItWorksPage.hero.label}
           </p>
 
           <h1
@@ -49,9 +54,7 @@ function HowItWorksPage() {
               max-[600px]:text-[clamp(3rem,15vw,4.5rem)]
             "
           >
-            Från din stad
-            <br />
-            till en prognos.
+            {t.howItWorksPage.hero.title}
           </h1>
 
           <p
@@ -65,10 +68,7 @@ function HowItWorksPage() {
               max-[600px]:text-base
             "
           >
-            Predictor kopplar ihop din stad med rätt
-            elområde, analyserar relevanta data och
-            använder maskininlärning för att uppskatta
-            hur elpriset kan utvecklas.
+            {t.howItWorksPage.hero.description}
           </p>
 
           <div
@@ -89,220 +89,62 @@ function HowItWorksPage() {
               max-[600px]:grid-cols-2
             "
           >
-            <div
-              className="
-                how-it-works-flow-item
-                flex
-                min-w-[120px]
-                flex-col
-                gap-2
-                max-[600px]:min-w-0
-                max-[600px]:border
-                max-[600px]:border-[var(--border)]
-                max-[600px]:bg-[var(--surface)]
-                max-[600px]:p-5
-              "
-            >
-              <span
-                className="
-                  text-[0.7rem]
-                  tracking-[0.12em]
-                  text-[var(--text-muted)]
-                "
-              >
-                01
-              </span>
+            {[
+              t.howItWorksPage.hero.flow.city,
+              t.howItWorksPage.hero.flow.area,
+              t.howItWorksPage.hero.flow.data,
+              t.howItWorksPage.hero.flow.model,
+              t.howItWorksPage.hero.flow.forecast,
+            ].map((label, index) => (
+              <div key={label} className="contents">
+                <div
+                  className="
+                    how-it-works-flow-item
+                    flex
+                    min-w-[120px]
+                    flex-col
+                    gap-2
+                    max-[600px]:min-w-0
+                    max-[600px]:border
+                    max-[600px]:border-[var(--border)]
+                    max-[600px]:bg-[var(--surface)]
+                    max-[600px]:p-5
+                  "
+                >
+                  <span
+                    className="
+                      text-[0.7rem]
+                      tracking-[0.12em]
+                      text-[var(--text-muted)]
+                    "
+                  >
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
 
-              <strong
-                className="
-                  text-[0.9rem]
-                  tracking-[0.08em]
-                  text-[var(--text-strong)]
-                "
-              >
-                STAD
-              </strong>
-            </div>
+                  <strong
+                    className="
+                      text-[0.9rem]
+                      tracking-[0.08em]
+                      text-[var(--text-strong)]
+                    "
+                  >
+                    {label}
+                  </strong>
+                </div>
 
-            <span
-              className="
-                how-it-works-arrow
-                text-[1.2rem]
-                text-[var(--text-muted)]
-              "
-            >
-              →
-            </span>
-
-            <div
-              className="
-                how-it-works-flow-item
-                flex
-                min-w-[120px]
-                flex-col
-                gap-2
-                max-[600px]:min-w-0
-                max-[600px]:border
-                max-[600px]:border-[var(--border)]
-                max-[600px]:bg-[var(--surface)]
-                max-[600px]:p-5
-              "
-            >
-              <span
-                className="
-                  text-[0.7rem]
-                  tracking-[0.12em]
-                  text-[var(--text-muted)]
-                "
-              >
-                02
-              </span>
-
-              <strong
-                className="
-                  text-[0.9rem]
-                  tracking-[0.08em]
-                  text-[var(--text-strong)]
-                "
-              >
-                ELOMRÅDE
-              </strong>
-            </div>
-
-            <span
-              className="
-                how-it-works-arrow
-                text-[1.2rem]
-                text-[var(--text-muted)]
-              "
-            >
-              →
-            </span>
-
-            <div
-              className="
-                how-it-works-flow-item
-                flex
-                min-w-[120px]
-                flex-col
-                gap-2
-                max-[600px]:min-w-0
-                max-[600px]:border
-                max-[600px]:border-[var(--border)]
-                max-[600px]:bg-[var(--surface)]
-                max-[600px]:p-5
-              "
-            >
-              <span
-                className="
-                  text-[0.7rem]
-                  tracking-[0.12em]
-                  text-[var(--text-muted)]
-                "
-              >
-                03
-              </span>
-
-              <strong
-                className="
-                  text-[0.9rem]
-                  tracking-[0.08em]
-                  text-[var(--text-strong)]
-                "
-              >
-                DATA
-              </strong>
-            </div>
-
-            <span
-              className="
-                how-it-works-arrow
-                text-[1.2rem]
-                text-[var(--text-muted)]
-              "
-            >
-              →
-            </span>
-
-            <div
-              className="
-                how-it-works-flow-item
-                flex
-                min-w-[120px]
-                flex-col
-                gap-2
-                max-[600px]:min-w-0
-                max-[600px]:border
-                max-[600px]:border-[var(--border)]
-                max-[600px]:bg-[var(--surface)]
-                max-[600px]:p-5
-              "
-            >
-              <span
-                className="
-                  text-[0.7rem]
-                  tracking-[0.12em]
-                  text-[var(--text-muted)]
-                "
-              >
-                04
-              </span>
-
-              <strong
-                className="
-                  text-[0.9rem]
-                  tracking-[0.08em]
-                  text-[var(--text-strong)]
-                "
-              >
-                MODELL
-              </strong>
-            </div>
-
-            <span
-              className="
-                how-it-works-arrow
-                text-[1.2rem]
-                text-[var(--text-muted)]
-              "
-            >
-              →
-            </span>
-
-            <div
-              className="
-                how-it-works-flow-item
-                flex
-                min-w-[120px]
-                flex-col
-                gap-2
-                max-[600px]:min-w-0
-                max-[600px]:border
-                max-[600px]:border-[var(--border)]
-                max-[600px]:bg-[var(--surface)]
-                max-[600px]:p-5
-              "
-            >
-              <span
-                className="
-                  text-[0.7rem]
-                  tracking-[0.12em]
-                  text-[var(--text-muted)]
-                "
-              >
-                05
-              </span>
-
-              <strong
-                className="
-                  text-[0.9rem]
-                  tracking-[0.08em]
-                  text-[var(--text-strong)]
-                "
-              >
-                PROGNOS
-              </strong>
-            </div>
+                {index < 4 && (
+                  <span
+                    className="
+                      how-it-works-arrow
+                      text-[1.2rem]
+                      text-[var(--text-muted)]
+                    "
+                  >
+                    →
+                  </span>
+                )}
+              </div>
+            ))}
           </div>
         </section>
 
@@ -320,56 +162,17 @@ function HowItWorksPage() {
             max-[600px]:py-[72px]
           "
         >
-          <div
-            className="
-              how-it-works-section-content
-              mx-auto
-              max-w-[1200px]
-            "
-          >
-            <p
-              className="
-                section-label
-                text-[0.68rem]
-                font-bold
-                tracking-[0.14em]
-                text-[var(--text-muted)]
-              "
-            >
-              01 — ELOMRÅDE
+          <div className="how-it-works-section-content mx-auto max-w-[1200px]">
+            <p className="section-label text-[0.68rem] font-bold tracking-[0.14em] text-[var(--text-muted)]">
+              {t.howItWorksPage.energyArea.label}
             </p>
 
-            <h2
-              className="
-                mt-5
-                mb-6
-                max-w-[850px]
-                text-[clamp(2.4rem,5vw,5rem)]
-                font-bold
-                leading-none
-                tracking-[-0.05em]
-                text-[var(--text-strong)]
-                max-[600px]:text-[clamp(2.5rem,12vw,4rem)]
-              "
-            >
-              Så hittar Predictor ditt elområde
+            <h2 className="mt-5 mb-6 max-w-[850px] text-[clamp(2.4rem,5vw,5rem)] font-bold leading-none tracking-[-0.05em] text-[var(--text-strong)] max-[600px]:text-[clamp(2.5rem,12vw,4rem)]">
+              {t.howItWorksPage.energyArea.title}
             </h2>
 
-            <p
-              className="
-                m-0
-                max-w-[720px]
-                text-[1.05rem]
-                leading-[1.75]
-                text-[var(--text-muted)]
-                max-[600px]:text-base
-              "
-            >
-              Din stad används för att identifiera
-              vilket av Sveriges fyra elområden du
-              tillhör. Elområdet är viktigt eftersom
-              elpriset kan skilja sig mellan olika
-              delar av Sverige.
+            <p className="m-0 max-w-[720px] text-[1.05rem] leading-[1.75] text-[var(--text-muted)] max-[600px]:text-base">
+              {t.howItWorksPage.energyArea.description}
             </p>
 
             <div
@@ -393,25 +196,12 @@ function HowItWorksPage() {
               "
             >
               <div className="flex flex-col gap-3">
-                <span
-                  className="
-                    text-[0.7rem]
-                    tracking-[0.12em]
-                    text-[var(--text-muted)]
-                  "
-                >
-                  STAD
+                <span className="text-[0.7rem] tracking-[0.12em] text-[var(--text-muted)]">
+                  {t.howItWorksPage.energyArea.city}
                 </span>
 
-                <strong
-                  className="
-                    text-[clamp(2rem,4vw,4rem)]
-                    font-bold
-                    tracking-[-0.04em]
-                    text-[var(--text-strong)]
-                  "
-                >
-                  Malmö
+                <strong className="text-[clamp(2rem,4vw,4rem)] font-bold tracking-[-0.04em] text-[var(--text-strong)]">
+                  {t.howItWorksPage.energyArea.cityExample}
                 </strong>
               </div>
 
@@ -428,25 +218,12 @@ function HowItWorksPage() {
               </span>
 
               <div className="flex flex-col gap-3">
-                <span
-                  className="
-                    text-[0.7rem]
-                    tracking-[0.12em]
-                    text-[var(--text-muted)]
-                  "
-                >
-                  ELOMRÅDE
+                <span className="text-[0.7rem] tracking-[0.12em] text-[var(--text-muted)]">
+                  {t.howItWorksPage.energyArea.area}
                 </span>
 
-                <strong
-                  className="
-                    text-[clamp(2rem,4vw,4rem)]
-                    font-bold
-                    tracking-[-0.04em]
-                    text-[var(--text-strong)]
-                  "
-                >
-                  SE4
+                <strong className="text-[clamp(2rem,4vw,4rem)] font-bold tracking-[-0.04em] text-[var(--text-strong)]">
+                  {t.howItWorksPage.energyArea.areaExample}
                 </strong>
               </div>
             </div>
@@ -471,18 +248,15 @@ function HowItWorksPage() {
         >
           <div className="how-it-works-section-content mx-auto max-w-[1200px]">
             <p className="section-label text-[0.68rem] font-bold tracking-[0.14em] text-[var(--text-muted)]">
-              02 — DATA
+              {t.howItWorksPage.data.label}
             </p>
 
             <h2 className="mt-5 mb-6 max-w-[850px] text-[clamp(2.4rem,5vw,5rem)] font-bold leading-none tracking-[-0.05em] text-[var(--text-strong)] max-[600px]:text-[clamp(2.5rem,12vw,4rem)]">
-              Vilken data används?
+              {t.howItWorksPage.data.title}
             </h2>
 
             <p className="m-0 max-w-[720px] text-[1.05rem] leading-[1.75] text-[var(--text-muted)] max-[600px]:text-base">
-              För att kunna hitta mönster i elpriset
-              behöver modellen information om både
-              marknaden och de faktorer som påverkar
-              produktion och elanvändning.
+              {t.howItWorksPage.data.description}
             </p>
 
             <div
@@ -499,28 +273,7 @@ function HowItWorksPage() {
                 max-[600px]:grid-cols-1
               "
             >
-              {[
-                {
-                  number: "01",
-                  title: "ELPRIS",
-                  text: "Historiska elpriser används för att förstå hur priset har utvecklats över tid."
-                },
-                {
-                  number: "02",
-                  title: "VÄDER",
-                  text: "Temperatur, vind och nederbörd kan påverka både produktion och elanvändning."
-                },
-                {
-                  number: "03",
-                  title: "PRODUKTION",
-                  text: "Information om exempelvis vattenkraft, vindkraft, kärnkraft och solkraft ger modellen mer kontext."
-                },
-                {
-                  number: "04",
-                  title: "TID",
-                  text: "Timme, veckodag och andra tidsmönster kan hjälpa modellen att identifiera återkommande variationer."
-                }
-              ].map((item) => (
+              {t.howItWorksPage.data.cards.map((item) => (
                 <article
                   className="
                     how-it-works-data-card
@@ -566,18 +319,15 @@ function HowItWorksPage() {
         >
           <div className="how-it-works-section-content mx-auto max-w-[1200px]">
             <p className="section-label text-[0.68rem] font-bold tracking-[0.14em] text-[var(--text-muted)]">
-              03 — MASKININLÄRNING
+              {t.howItWorksPage.machineLearning.label}
             </p>
 
             <h2 className="mt-5 mb-6 max-w-[850px] text-[clamp(2.4rem,5vw,5rem)] font-bold leading-none tracking-[-0.05em] text-[var(--text-strong)] max-[600px]:text-[clamp(2.5rem,12vw,4rem)]">
-              Från data till mönster
+              {t.howItWorksPage.machineLearning.title}
             </h2>
 
             <p className="m-0 max-w-[720px] text-[1.05rem] leading-[1.75] text-[var(--text-muted)] max-[600px]:text-base">
-              Rådata behöver först bearbetas så att
-              modellen kan använda informationen.
-              Därefter kan relevanta egenskaper
-              användas för att träna modellen.
+              {t.howItWorksPage.machineLearning.description}
             </p>
 
             <div
@@ -594,13 +344,8 @@ function HowItWorksPage() {
                 max-[600px]:grid-cols-1
               "
             >
-              {[
-                ["01", "DATA", "Historiska observationer och relevanta variabler."],
-                ["02", "PREPROCESSING", "Data struktureras och förbereds för modellen."],
-                ["03", "MODELL", "Maskininlärningen tränas på historiska mönster."],
-                ["04", "MÖNSTER", "Modellen lär sig samband som kan användas för nya prognoser."]
-              ].map((step, index) => (
-                <div key={step[0]} className="contents">
+              {t.howItWorksPage.machineLearning.steps.map((step, index) => (
+                <div key={step.number} className="contents">
                   <article
                     className="
                       how-it-works-process-step
@@ -613,29 +358,30 @@ function HowItWorksPage() {
                     "
                   >
                     <span className="text-[0.7rem] tracking-[0.12em] text-[var(--text-muted)]">
-                      {step[0]}
+                      {step.number}
                     </span>
 
                     <strong className="mt-[50px] block text-[0.95rem] tracking-[0.06em] text-[var(--text-strong)]">
-                      {step[1]}
+                      {step.title}
                     </strong>
 
                     <p className="mt-3.5 mb-0 text-[0.9rem] leading-[1.6] text-[var(--text-muted)]">
-                      {step[2]}
+                      {step.text}
                     </p>
                   </article>
 
-                  {index < 3 && (
-                    <span
-                      className="
+                  {index <
+                    t.howItWorksPage.machineLearning.steps.length - 1 && (
+                      <span
+                        className="
                         how-it-works-process-arrow
                         text-[1.2rem]
                         text-[var(--text-muted)]
                       "
-                    >
-                      →
-                    </span>
-                  )}
+                      >
+                        →
+                      </span>
+                    )}
                 </div>
               ))}
             </div>
@@ -660,17 +406,15 @@ function HowItWorksPage() {
         >
           <div className="how-it-works-section-content mx-auto max-w-[1200px]">
             <p className="section-label text-[0.68rem] font-bold tracking-[0.14em] text-[var(--text-muted)]">
-              04 — PROGNOS
+              {t.howItWorksPage.forecast.label}
             </p>
 
             <h2 className="mt-5 mb-6 max-w-[850px] text-[clamp(2.4rem,5vw,5rem)] font-bold leading-none tracking-[-0.05em] text-[var(--text-strong)] max-[600px]:text-[clamp(2.5rem,12vw,4rem)]">
-              Från mönster till prognos
+              {t.howItWorksPage.forecast.title}
             </h2>
 
             <p className="m-0 max-w-[720px] text-[1.05rem] leading-[1.75] text-[var(--text-muted)] max-[600px]:text-base">
-              När modellen har tränats kan den
-              använda aktuell information för att
-              uppskatta framtida elpriser.
+              {t.howItWorksPage.forecast.description}
             </p>
 
             <div
@@ -699,17 +443,21 @@ function HowItWorksPage() {
               >
                 <div className="flex flex-col gap-2">
                   <span className="text-[0.7rem] tracking-[0.1em] text-[var(--text-muted)]">
-                    PROGNOS
+                    {t.howItWorksPage.forecast.forecast}
                   </span>
-                  <strong className="text-[var(--text-strong)]">SE4</strong>
+
+                  <strong className="text-[var(--text-strong)]">
+                    {t.howItWorksPage.forecast.area}
+                  </strong>
                 </div>
 
                 <div className="flex flex-col gap-2">
                   <span className="text-[0.7rem] tracking-[0.1em] text-[var(--text-muted)]">
-                    ENHET
+                    UNIT
                   </span>
+
                   <strong className="text-[var(--text-strong)]">
-                    öre/kWh
+                    {t.howItWorksPage.forecast.unit}
                   </strong>
                 </div>
               </div>
@@ -728,7 +476,7 @@ function HowItWorksPage() {
                   ["09:00", "38"],
                   ["10:00", "34"],
                   ["11:00", "31"],
-                  ["12:00", "29"]
+                  ["12:00", "29"],
                 ].map(([time, price], index) => (
                   <div
                     className={`
@@ -761,19 +509,8 @@ function HowItWorksPage() {
               </div>
             </div>
 
-            <p
-              className="
-                how-it-works-note
-                mt-5
-                max-w-[720px]
-                text-[0.8rem]
-                leading-[1.6]
-                text-[var(--text-muted)]
-              "
-            >
-              Exemplet ovan är illustrativt. Den
-              faktiska prognosen kommer från
-              Predictors tränade modell.
+            <p className="how-it-works-note mt-5 max-w-[720px] text-[0.8rem] leading-[1.6] text-[var(--text-muted)]">
+              {t.howItWorksPage.forecast.note}
             </p>
           </div>
         </section>
@@ -794,11 +531,11 @@ function HowItWorksPage() {
         >
           <div className="how-it-works-section-content mx-auto max-w-[1200px]">
             <p className="section-label text-[0.68rem] font-bold tracking-[0.14em] text-[var(--text-muted)]">
-              05 — TOLKNING
+              {t.howItWorksPage.interpretation.label}
             </p>
 
             <h2 className="mt-5 mb-6 max-w-[850px] text-[clamp(2.4rem,5vw,5rem)] font-bold leading-none tracking-[-0.05em] text-[var(--text-strong)] max-[600px]:text-[clamp(2.5rem,12vw,4rem)]">
-              Hur ska du tolka prognosen?
+              {t.howItWorksPage.interpretation.title}
             </h2>
 
             <div
@@ -817,19 +554,16 @@ function HowItWorksPage() {
             >
               <div className="border border-[var(--border)] bg-[var(--surface)] p-9 text-[var(--text)] max-[600px]:p-7">
                 <span className="mb-4 block text-[0.7rem] tracking-[0.1em] text-[var(--text-muted)]">
-                  PROGNOS
+                  {t.howItWorksPage.interpretation.forecast}
                 </span>
 
                 <strong className="text-[clamp(2rem,4vw,3.5rem)] tracking-[-0.05em] text-[var(--text-strong)]">
-                  ≈ 31 öre/kWh
+                  {t.howItWorksPage.interpretation.examplePrice}
                 </strong>
               </div>
 
               <p className="m-0 leading-[1.7] text-[var(--text-muted)]">
-                Prognosen ska ses som en uppskattning
-                av det framtida elpriset. Den visar
-                en förväntad utveckling, inte ett
-                garanterat pris.
+                {t.howItWorksPage.interpretation.description}
               </p>
             </div>
           </div>
@@ -854,18 +588,15 @@ function HowItWorksPage() {
         >
           <div className="how-it-works-section-content mx-auto max-w-[1200px]">
             <p className="section-label text-[0.68rem] font-bold tracking-[0.14em] text-[var(--text-muted)]">
-              06 — BESLUT
+              {t.howItWorksPage.decisions.label}
             </p>
 
             <h2 className="mt-5 mb-6 max-w-[850px] text-[clamp(2.4rem,5vw,5rem)] font-bold leading-none tracking-[-0.05em] text-[var(--text-strong)] max-[600px]:text-[clamp(2.5rem,12vw,4rem)]">
-              Från prognos till beslut
+              {t.howItWorksPage.decisions.title}
             </h2>
 
             <p className="m-0 max-w-[720px] text-[1.05rem] leading-[1.75] text-[var(--text-muted)] max-[600px]:text-base">
-              Syftet med Predictor är att göra
-              prognosen användbar. När du förstår
-              hur priset kan utvecklas blir det
-              lättare att planera elanvändningen.
+              {t.howItWorksPage.decisions.description}
             </p>
 
             <div
@@ -882,11 +613,7 @@ function HowItWorksPage() {
                 max-[600px]:mt-12
               "
             >
-              {[
-                ["01", "PLANERA", "Identifiera timmar då priset förväntas vara lägre."],
-                ["02", "FÖRSTÅ", "Se hur elpriset kan variera över tid och mellan områden."],
-                ["03", "AGERA", "Anpassa elanvändningen när prognosen ger bättre förutsättningar."]
-              ].map(([number, title, text]) => (
+              {t.howItWorksPage.decisions.cards.map((card) => (
                 <article
                   className="
                     min-h-[280px]
@@ -894,20 +621,19 @@ function HowItWorksPage() {
                     p-9
                     text-[var(--text)]
                     max-[600px]:min-h-0
-                    max-[600px]:p-7
                   "
-                  key={number}
+                  key={card.number}
                 >
                   <span className="text-[0.7rem] tracking-[0.12em] text-[var(--text-muted)]">
-                    {number}
+                    {card.number}
                   </span>
 
                   <strong className="mt-[60px] block text-base tracking-[0.08em] text-[var(--text-strong)] max-[600px]:mt-10">
-                    {title}
+                    {card.title}
                   </strong>
 
                   <p className="mt-4 mb-0 leading-[1.7] text-[var(--text-muted)]">
-                    {text}
+                    {card.text}
                   </p>
                 </article>
               ))}
@@ -931,18 +657,15 @@ function HowItWorksPage() {
         >
           <div className="how-it-works-section-content mx-auto max-w-[1200px]">
             <p className="section-label text-[0.68rem] font-bold tracking-[0.14em] text-[var(--text-muted)]">
-              07 — OSÄKERHET
+              {t.howItWorksPage.uncertainty.label}
             </p>
 
             <h2 className="mt-5 mb-6 max-w-[850px] text-[clamp(2.4rem,5vw,5rem)] font-bold leading-none tracking-[-0.05em] text-[var(--text-strong)] max-[600px]:text-[clamp(2.5rem,12vw,4rem)]">
-              Varför kan prognosen ha fel?
+              {t.howItWorksPage.uncertainty.title}
             </h2>
 
             <p className="m-0 max-w-[720px] text-[1.05rem] leading-[1.75] text-[var(--text-muted)] max-[600px]:text-base">
-              Elmarknaden påverkas av många faktorer
-              och alla framtida händelser går inte att
-              förutse. Därför kommer en prognos alltid
-              att innehålla en viss osäkerhet.
+              {t.howItWorksPage.uncertainty.description}
             </p>
 
             <div
@@ -960,12 +683,7 @@ function HowItWorksPage() {
                 max-[600px]:grid-cols-1
               "
             >
-              {[
-                ["01", "VÄDER", "Vädret kan utvecklas annorlunda än förväntat."],
-                ["02", "EFTERFRÅGAN", "Elanvändningen kan förändras snabbt."],
-                ["03", "PRODUKTION", "Driftstörningar eller förändrad produktion kan påverka priset."],
-                ["04", "ELNÄT", "Begränsningar i överföringen kan förändra marknadsläget."]
-              ].map(([number, title, text]) => (
+              {t.howItWorksPage.uncertainty.cards.map((card) => (
                 <article
                   className="
                     min-h-[240px]
@@ -975,18 +693,18 @@ function HowItWorksPage() {
                     max-[600px]:min-h-0
                     max-[600px]:p-7
                   "
-                  key={number}
+                  key={card.number}
                 >
                   <span className="text-[0.7rem] tracking-[0.12em] text-[var(--text-muted)]">
-                    {number}
+                    {card.number}
                   </span>
 
                   <strong className="mt-12 block text-[0.9rem] tracking-[0.07em] text-[var(--text-strong)] max-[600px]:mt-9">
-                    {title}
+                    {card.title}
                   </strong>
 
                   <p className="mt-3.5 mb-0 text-[0.9rem] leading-[1.6] text-[var(--text-muted)]">
-                    {text}
+                    {card.text}
                   </p>
                 </article>
               ))}
@@ -1012,18 +730,15 @@ function HowItWorksPage() {
         >
           <div className="how-it-works-section-content mx-auto max-w-[1200px]">
             <p className="section-label text-[0.68rem] font-bold tracking-[0.14em] text-[var(--text-muted)]">
-              08 — FÖR DIG SOM VILL VETA MER
+              {t.howItWorksPage.technical.label}
             </p>
 
             <h2 className="mt-5 mb-6 max-w-[850px] text-[clamp(2.4rem,5vw,5rem)] font-bold leading-none tracking-[-0.05em] text-[var(--text-strong)] max-[600px]:text-[clamp(2.5rem,12vw,4rem)]">
-              Från rådata till maskininlärning
+              {t.howItWorksPage.technical.title}
             </h2>
 
             <p className="m-0 max-w-[720px] text-[1.05rem] leading-[1.75] text-[var(--text-muted)] max-[600px]:text-base">
-              Bakom Predictor finns en teknisk
-              pipeline där data hämtas, bearbetas
-              och används för att träna
-              maskininlärningsmodeller.
+              {t.howItWorksPage.technical.description}
             </p>
 
             <div
@@ -1039,14 +754,7 @@ function HowItWorksPage() {
                 max-[600px]:grid-cols-2
               "
             >
-              {[
-                ["01", "DATA"],
-                ["02", "PREPROCESSING"],
-                ["03", "FEATURES"],
-                ["04", "TRÄNING"],
-                ["05", "VALIDERING"],
-                ["06", "PROGNOS"]
-              ].map(([number, title], index) => (
+              {t.howItWorksPage.technical.steps.map((step, index) => (
                 <div
                   className={`
                     flex
@@ -1066,14 +774,14 @@ function HowItWorksPage() {
                     ${index % 2 === 1 ? "max-[600px]:border-r-0" : ""}
                     ${index < 4 ? "max-[600px]:border-b" : ""}
                   `}
-                  key={number}
+                  key={step.number}
                 >
                   <span className="text-[0.7rem] tracking-[0.12em] text-[var(--text-muted)]">
-                    {number}
+                    {step.number}
                   </span>
 
                   <strong className="text-[0.8rem] tracking-[0.06em] text-[var(--text-strong)]">
-                    {title}
+                    {step.title}
                   </strong>
                 </div>
               ))}
@@ -1095,7 +803,7 @@ function HowItWorksPage() {
           "
         >
           <p className="section-label text-[0.68rem] font-bold tracking-[0.14em] text-[var(--text-muted)]">
-            REDO?
+            {t.howItWorksPage.cta.label}
           </p>
 
           <h2
@@ -1110,19 +818,11 @@ function HowItWorksPage() {
               max-[600px]:text-[clamp(3rem,15vw,5rem)]
             "
           >
-            Testa Predictor
+            {t.howItWorksPage.cta.title}
           </h2>
 
-          <p
-            className="
-              m-0
-              max-w-[560px]
-              leading-[1.7]
-              text-[var(--text-muted)]
-            "
-          >
-            Sök efter din stad och se prognosen för
-            ditt elområde.
+          <p className="m-0 max-w-[560px] leading-[1.7] text-[var(--text-muted)]">
+            {t.howItWorksPage.cta.description}
           </p>
 
           <a
@@ -1146,7 +846,7 @@ function HowItWorksPage() {
             "
             href="/"
           >
-            TESTA PREDICTOR →
+            {t.howItWorksPage.cta.button}
           </a>
         </section>
       </main>
