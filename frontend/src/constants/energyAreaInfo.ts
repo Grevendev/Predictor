@@ -15,13 +15,13 @@ export const energyAreaInfo: Record<
     dominantSources: [
       {
         name: "Vattenkraft",
-        installedCapacityMw: 5198
+        installedCapacityMw: 5198,
       },
       {
         name: "Vindkraft",
-        installedCapacityMw: 3144
-      }
-    ]
+        installedCapacityMw: 3144,
+      },
+    ],
   },
 
   SE2: {
@@ -35,13 +35,13 @@ export const energyAreaInfo: Record<
     dominantSources: [
       {
         name: "Vattenkraft",
-        installedCapacityMw: 8103
+        installedCapacityMw: 8103,
       },
       {
         name: "Vindkraft",
-        installedCapacityMw: 7957
-      }
-    ]
+        installedCapacityMw: 7957,
+      },
+    ],
   },
 
   SE3: {
@@ -55,21 +55,21 @@ export const energyAreaInfo: Record<
     dominantSources: [
       {
         name: "Kärnkraft",
-        installedCapacityMw: 7012
+        installedCapacityMw: 7012,
       },
       {
         name: "Vindkraft",
-        installedCapacityMw: 4555
+        installedCapacityMw: 4555,
       },
       {
         name: "Vattenkraft",
-        installedCapacityMw: 2627
+        installedCapacityMw: 2627,
       },
       {
         name: "Solkraft",
-        installedCapacityMw: 2578
-      }
-    ]
+        installedCapacityMw: 2578,
+      },
+    ],
   },
 
   SE4: {
@@ -83,12 +83,12 @@ export const energyAreaInfo: Record<
     dominantSources: [
       {
         name: "Vindkraft",
-        installedCapacityMw: 2687
+        installedCapacityMw: 2687,
       },
       {
         name: "Solkraft",
-        installedCapacityMw: 2652
-      }
-    ]
-  }
+        installedCapacityMw: 2652,
+      },
+    ],
+  },
 };

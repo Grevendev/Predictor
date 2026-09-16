@@ -75,6 +75,48 @@ export const translations = {
         placeholderTitle: "Utforska Sveriges elområden",
         placeholderDescription:
           "Klicka på ett elområde på kartan för att se information om området och vilka kraftslag som har störst installerad effekt.",
+
+        areas: {
+          SE1: {
+            name: "Luleå",
+            region: "Norra Sverige",
+            description:
+              "SE1 omfattar den nordligaste delen av Sverige och har en stor elproduktion i förhållande till den lokala elanvändningen.",
+            balanceDescription:
+              "Området har ett stort produktionsöverskott och är särskilt präglat av vattenkraft och vindkraft.",
+          },
+          SE2: {
+            name: "Sundsvall",
+            region: "Norra och mellersta Sverige",
+            description:
+              "SE2 sträcker sig över stora delar av norra och mellersta Sverige och är ett av landets viktigaste produktionsområden.",
+            balanceDescription:
+              "Området har ett stort produktionsöverskott och har mycket både vattenkraft och vindkraft.",
+          },
+          SE3: {
+            name: "Stockholm",
+            region: "Mellersta Sverige",
+            description:
+              "SE3 omfattar bland annat Stockholm och stora delar av mellersta Sverige och är Sveriges största elområde sett till elanvändning.",
+            balanceDescription:
+              "Kärnkraft står för den största installerade effekten, följt av vindkraft, vattenkraft och solkraft.",
+          },
+          SE4: {
+            name: "Malmö",
+            region: "Södra Sverige",
+            description:
+              "SE4 omfattar södra Sverige och är det svenska elområde som ligger närmast kontinentala Europa.",
+            balanceDescription:
+              "Området har normalt ett större elbehov än den lokala produktionen och är därför beroende av överföring från andra områden och import.",
+          },
+        },
+
+        sources: {
+          hydropower: "Vattenkraft",
+          windPower: "Vindkraft",
+          nuclearPower: "Kärnkraft",
+          solarPower: "Solkraft",
+        },
       },
 
       price: {
@@ -471,6 +513,48 @@ export const translations = {
         placeholderTitle: "Explore Sweden's electricity areas",
         placeholderDescription:
           "Click an electricity area on the map to see information about the area and which energy sources have the highest installed capacity.",
+
+        areas: {
+          SE1: {
+            name: "Luleå",
+            region: "Northern Sweden",
+            description:
+              "SE1 covers the northernmost part of Sweden and has a large amount of electricity production in relation to local electricity consumption.",
+            balanceDescription:
+              "The area has a large production surplus and is particularly characterized by hydropower and wind power.",
+          },
+          SE2: {
+            name: "Sundsvall",
+            region: "Northern and central Sweden",
+            description:
+              "SE2 stretches across large parts of northern and central Sweden and is one of the country's most important electricity production areas.",
+            balanceDescription:
+              "The area has a large production surplus and has significant amounts of both hydropower and wind power.",
+          },
+          SE3: {
+            name: "Stockholm",
+            region: "Central Sweden",
+            description:
+              "SE3 includes Stockholm and large parts of central Sweden and is Sweden's largest electricity area in terms of electricity consumption.",
+            balanceDescription:
+              "Nuclear power has the largest installed capacity, followed by wind power, hydropower and solar power.",
+          },
+          SE4: {
+            name: "Malmö",
+            region: "Southern Sweden",
+            description:
+              "SE4 covers southern Sweden and is the Swedish electricity area closest to continental Europe.",
+            balanceDescription:
+              "The area normally has a greater electricity demand than local production and therefore depends on transmission from other areas and imports.",
+          },
+        },
+
+        sources: {
+          hydropower: "Hydropower",
+          windPower: "Wind power",
+          nuclearPower: "Nuclear power",
+          solarPower: "Solar power",
+        },
       },
 
       price: {

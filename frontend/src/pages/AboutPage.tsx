@@ -1,8 +1,8 @@
-
 import { useState } from "react";
 
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+
 import EnergyAreaMap from "../components/EnergyAreaMap";
 import EnergyAreaInfo from "../components/EnergyAreaInfo";
 
@@ -18,52 +18,84 @@ function AboutPage() {
   const [selectedArea, setSelectedArea] =
     useState<EnergyArea["code"] | null>(null);
 
-  const selectedAreaInfo =
-    selectedArea
-      ? energyAreaInfo[selectedArea]
-      : null;
+  const selectedAreaInfo = selectedArea
+    ? {
+      code: selectedArea,
+      name: t.about.energyAreas.areas[selectedArea].name,
+      region: t.about.energyAreas.areas[selectedArea].region,
+      description:
+        t.about.energyAreas.areas[selectedArea].description,
+      balanceDescription:
+        t.about.energyAreas.areas[selectedArea]
+          .balanceDescription,
+      dominantSources:
+        energyAreaInfo[selectedArea].dominantSources.map(
+          (source) => {
+            const sourceKeyMap: Record<
+              string,
+              keyof typeof t.about.energyAreas.sources
+            > = {
+              Vattenkraft: "hydropower",
+              Vindkraft: "windPower",
+              Kärnkraft: "nuclearPower",
+              Solkraft: "solarPower",
+            };
+
+            const sourceKey = sourceKeyMap[source.name];
+
+            return {
+              name: sourceKey
+                ? t.about.energyAreas.sources[sourceKey]
+                : source.name,
+              installedCapacityMw:
+                source.installedCapacityMw,
+            };
+          }
+        ),
+    }
+    : null;
 
   const priceFactors = [
     {
       number: "01",
       title: t.about.price.factors.supply.title,
       description:
-        t.about.price.factors.supply.description
+        t.about.price.factors.supply.description,
     },
     {
       number: "02",
       title: t.about.price.factors.demand.title,
       description:
-        t.about.price.factors.demand.description
+        t.about.price.factors.demand.description,
     },
     {
       number: "03",
       title: t.about.price.factors.weather.title,
       description:
-        t.about.price.factors.weather.description
+        t.about.price.factors.weather.description,
     },
     {
       number: "04",
       title:
         t.about.price.factors.transmission.title,
       description:
-        t.about.price.factors.transmission.description
-    }
+        t.about.price.factors.transmission.description,
+    },
   ];
 
   const forecastSteps = [
     {
       number: "01",
-      title: t.about.forecasts.process.data
+      title: t.about.forecasts.process.data,
     },
     {
       number: "02",
-      title: t.about.forecasts.process.patterns
+      title: t.about.forecasts.process.patterns,
     },
     {
       number: "03",
-      title: t.about.forecasts.process.forecast
-    }
+      title: t.about.forecasts.process.forecast,
+    },
   ];
 
   const benefits = [
@@ -72,7 +104,7 @@ function AboutPage() {
       title:
         t.about.whyPredictor.benefits.plan.title,
       description:
-        t.about.whyPredictor.benefits.plan.description
+        t.about.whyPredictor.benefits.plan.description,
     },
     {
       number: "02",
@@ -80,15 +112,15 @@ function AboutPage() {
         t.about.whyPredictor.benefits.understand.title,
       description:
         t.about.whyPredictor.benefits.understand
-          .description
+          .description,
     },
     {
       number: "03",
       title:
         t.about.whyPredictor.benefits.act.title,
       description:
-        t.about.whyPredictor.benefits.act.description
-    }
+        t.about.whyPredictor.benefits.act.description,
+    },
   ];
 
   return (
@@ -102,7 +134,6 @@ function AboutPage() {
         "
       >
         {/* Hero */}
-
         <section
           className="
             about-hero
@@ -168,7 +199,6 @@ function AboutPage() {
         </section>
 
         {/* Energy areas */}
-
         <section
           className="
             about-section
@@ -333,7 +363,6 @@ function AboutPage() {
         </section>
 
         {/* Electricity prices */}
-
         <section
           className="
             about-section
@@ -414,7 +443,7 @@ function AboutPage() {
                 ({
                   number,
                   title,
-                  description
+                  description,
                 }) => (
                   <article
                     className="
@@ -473,7 +502,6 @@ function AboutPage() {
         </section>
 
         {/* Forecasts */}
-
         <section
           className="
             about-section
@@ -567,25 +595,24 @@ function AboutPage() {
                 ({ number, title }, index) => (
                   <article
                     key={number}
-                    className={
-                      `;
-about - forecast - step;
-relative;
-min - h - [190px];
-px - 8;
-py - 9;
-max - [900px]: min - h - 0;
-max - [900px]: border - l - 0;
-max - [900px]: border - t;
-max - [900px]: border - [var(--border)]
-max - [900px]: first: border - t - 0;
-max - [600px]: px - [22px];
-max - [600px]: py - 7
-  ` +
-                      (index > 0
-                        ? " border-l border-[var(--border)] max-[900px]:border-l-0"
-                        : "")
-                    }
+                    className={`
+                      about-forecast-step
+                      relative
+                      min-h-[190px]
+                      px-8
+                      py-9
+                      max-[900px]:min-h-0
+                      max-[900px]:border-l-0
+                      max-[900px]:border-t
+                      max-[900px]:border-[var(--border)]
+                      max-[900px]:first:border-t-0
+                      max-[600px]:px-[22px]
+                      max-[600px]:py-7
+                      ${index > 0
+                        ? "border-l border-[var(--border)] max-[900px]:border-l-0"
+                        : ""
+                      }
+                    `}
                   >
                     <span
                       className="
@@ -637,7 +664,6 @@ max - [600px]: py - 7
         </section>
 
         {/* Why Predictor */}
-
         <section
           className="
             about-section
@@ -718,7 +744,7 @@ max - [600px]: py - 7
                 ({
                   number,
                   title,
-                  description
+                  description,
                 }) => (
                   <div
                     className="
@@ -774,7 +800,6 @@ max - [600px]: py - 7
         </section>
 
         {/* Disclaimer */}
-
         <section
           className="
             about-disclaimer
@@ -811,4 +836,3 @@ max - [600px]: py - 7
 }
 
 export default AboutPage;
-;
