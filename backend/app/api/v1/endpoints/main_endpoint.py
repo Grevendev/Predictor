@@ -1,10 +1,10 @@
-from typing import Any, Dict
+from typing import List
 from fastapi import APIRouter, HTTPException, Query
 from pydantic import BaseModel
 import requests
 
-from app.api.v1.endpoints.predictions import run_prediction
-from app.ml.features import get_features_for_zone
+# Importerar dynamisk data för UI/Frontend (från den första filen)
+from app.ml.features import get_dynamic_forecast
 
 router = APIRouter()
 
@@ -15,20 +15,39 @@ class ZoneInfo(BaseModel):
     description: str
 
 
-class PredictionResult(BaseModel):
-    predicted_price_eur_mwh: float
-    is_optimal_hour: bool
-    cluster: Any
+# Återskapad: Behövs för grafen
+class HourlyPricePoint(BaseModel):
+    timestamp: str
+    raw_timestamp: str
+    predictedPrice: float
+    isHistorical: bool
+    isCurrentHour: bool
+    isOptimal: bool
+    day: str  # "today" eller "tomorrow"
 
 
+# Återskapad: Den fullständiga responsmodellen med all data för Hero-kort och grafer
 class LocationZoneResponse(BaseModel):
+    # Geografisk data
     name: str
+    city: str
     country: str
     country_code: str
     latitude: float
     longitude: float
+    energyArea: str
     zone: ZoneInfo
-    prediction: PredictionResult
+
+    # Sammanfattning för Hero-kortet
+    unit: str
+    has_tomorrow_data: bool
+    current_price: float
+    is_now_optimal: bool
+    lowest_price: float
+    lowest_price_time: str
+
+    # Dynamisk tidsserie för grafen
+    predictions: List[HourlyPricePoint]
 
 
 ZONE_METADATA: dict[str, dict[str, str]] = {
@@ -54,7 +73,8 @@ ZONE_METADATA: dict[str, dict[str, str]] = {
     },
 }
 
-# Snabbspärr för uppenbara lands- och regionnamn
+
+# Från fil 2: Snabbspärr för uppenbara lands- och regionnamn
 COUNTRIES_BLACKLIST = {
     "england",
     "storbritannien",
@@ -102,6 +122,7 @@ def lookup_zone(
 ):
     query_clean = location.strip().lower()
 
+    # Smartare validering från fil 2
     if query_clean in COUNTRIES_BLACKLIST:
         raise HTTPException(
             status_code=400,
@@ -132,7 +153,7 @@ def lookup_zone(
             detail=f"Kunde inte hitta någon stad eller ort med namnet '{location}'.",
         )
 
-    # Filtrera på tätorter/städer (feature_code PPL*)
+    # Från fil 2: Filtrera på tätorter/städer (feature_code PPL*)
     city_results = [
         r
         for r in results
@@ -142,6 +163,7 @@ def lookup_zone(
     top_hit = city_results[0]
     country_code = top_hit.get("country_code", "").upper()
 
+    # Från fil 2: Tydligt felmeddelande om staden inte ligger i Sverige
     if country_code != "SE":
         country_name = top_hit.get("country") or country_code
         admin = top_hit.get("admin1")
@@ -165,15 +187,24 @@ def lookup_zone(
     except ValueError as err:
         raise HTTPException(status_code=400, detail=str(err))
 
-    features = get_features_for_zone(zone_data["code"])
-    prediction_result = run_prediction(features)
+    # Från fil 1: Hämta dynamisk prognos för att bygga grafer & hero-kort
+    forecast_data = get_dynamic_forecast(zone_data["code"])
 
+    # Från fil 1: Returnera synkat svar där nycklarna mappar mot den fullständiga LocationZoneResponse
     return LocationZoneResponse(
         name=official_name,
+        city=official_name,
         country=country,
         country_code="SE",
         latitude=lat,
         longitude=lon,
+        energyArea=zone_data["code"],
         zone=ZoneInfo(**zone_data),
-        prediction=PredictionResult(**prediction_result),
+        unit=forecast_data["unit"],
+        has_tomorrow_data=forecast_data["has_tomorrow_data"],
+        current_price=forecast_data["current_price"],
+        is_now_optimal=forecast_data["is_now_optimal"],
+        lowest_price=forecast_data["lowest_future_price"],
+        lowest_price_time=forecast_data["lowest_future_time"],
+        predictions=forecast_data["predictions"],
     )
