@@ -31,7 +31,7 @@ test.describe("City search", () => {
     ).toBeVisible();
 
     await expect(
-      page.getByText("ELPROGNOS", { exact: true })
+      page.getByText("Prognos", { exact: true })
     ).toBeVisible();
 
     await expect(
