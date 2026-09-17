@@ -10,7 +10,6 @@ export type WeatherType =
 export interface WeatherHour {
   time: string;
   temperature: number;
-  precipitationProbability: number;
   precipitationMm: number;
   windSpeedKmh: number;
   weatherType: WeatherType;
