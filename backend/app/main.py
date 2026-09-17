@@ -4,6 +4,7 @@ from app.core.config import settings
 from app.api.v1.endpoints import predictions
 from app.api.v1.endpoints import energy_areas
 from app.api.v1.endpoints import main_endpoint
+from app.api.v1.endpoints import weather
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
@@ -44,6 +45,11 @@ app.include_router(
 # Registrera zonuppslagets router så att /spot-check blir åtkomlig.
 app.include_router(
     main_endpoint.router,
+    prefix="/api/v1",
+)
+
+app.include_router(
+    weather.router,
     prefix="/api/v1",
 )
 
