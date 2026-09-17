@@ -83,7 +83,7 @@ jobs:
 
       # Hämta docker hub inloggningnarna från hashicorp Vault
       - name: Import Secrwets from Vault
-        uses: hashicorp/vault-actions@v3
+        uses: hashicorp/vault-action@v3
         with:
           url: https://vault.jarllindquist.com
           method: approle
