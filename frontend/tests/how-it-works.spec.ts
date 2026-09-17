@@ -81,7 +81,7 @@ test.describe("How it works page", () => {
 
     await expect(
       page.getByText(
-        "Elområdet är viktigt eftersom elpriset kan skilja sig mellan olika delar av Sverige."
+        "Din stad används för att identifiera vilket av Sveriges fyra elområden du tillhör. Elområdet är viktigt eftersom elpriserna kan skilja sig mellan olika delar av Sverige."
       )
     ).toBeVisible();
   });

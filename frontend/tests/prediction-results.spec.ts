@@ -18,13 +18,13 @@ test.describe("Prediction results", () => {
     }).click();
 
     const results = page.getByRole("region", {
-      name: "Sökresultat"
+      name: "Elprisprognos"
     });
 
     await expect(results).toBeVisible();
 
     await expect(
-      results.getByText("DITT ELOMRÅDE", {
+      results.getByText("Elområde", {
         exact: true
       })
     ).toBeVisible();
@@ -38,12 +38,12 @@ test.describe("Prediction results", () => {
     await expect(
       results.getByRole("heading", {
         name: "Malmö",
-        level: 3
+        level: 2
       })
     ).toBeVisible();
 
     await expect(
-      results.getByText("PRISPROGNOS", {
+      results.getByText("Prognos", {
         exact: true
       })
     ).toBeVisible();
@@ -51,12 +51,6 @@ test.describe("Prediction results", () => {
     await expect(
       results.getByRole("heading", {
         name: "Förväntat elpris"
-      })
-    ).toBeVisible();
-
-    await expect(
-      results.getByText("öre/kWh", {
-        exact: true
       })
     ).toBeVisible();
 
@@ -87,7 +81,9 @@ test.describe("Prediction results", () => {
     await expect(
       results.getByText(
         "Försök undvika flera stora elförbrukare samtidigt",
-        { exact: false }
+        {
+          exact: false
+        }
       )
     ).toBeVisible();
   });

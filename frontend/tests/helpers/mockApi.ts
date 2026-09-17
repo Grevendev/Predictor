@@ -9,15 +9,52 @@ export async function mockSpotCheck(page: Page): Promise<void> {
         contentType: "application/json",
         body: JSON.stringify({
           name: "Malmö",
+          city: "Malmö",
           country: "Sverige",
           country_code: "SE",
           latitude: 55.605,
           longitude: 13.0038,
+          energyArea: "SE4",
           zone: {
             code: "SE4",
             name: "Södra Sverige",
             description: "Elområde SE4 omfattar södra Sverige."
-          }
+          },
+          unit: "öre/kWh",
+          has_tomorrow_data: true,
+          current_price: 31.5,
+          is_now_optimal: false,
+          lowest_price: 24.2,
+          lowest_price_time: "2026-09-17T03:00:00",
+          predictions: [
+            {
+              timestamp: "03:00",
+              raw_timestamp: "2026-09-17T03:00:00",
+              predictedPrice: 24.2,
+              isHistorical: false,
+              isCurrentHour: false,
+              isOptimal: true,
+              day: "today"
+            },
+            {
+              timestamp: "12:00",
+              raw_timestamp: "2026-09-17T12:00:00",
+              predictedPrice: 31.5,
+              isHistorical: false,
+              isCurrentHour: true,
+              isOptimal: false,
+              day: "today"
+            },
+            {
+              timestamp: "18:00",
+              raw_timestamp: "2026-09-17T18:00:00",
+              predictedPrice: 38.7,
+              isHistorical: false,
+              isCurrentHour: false,
+              isOptimal: false,
+              day: "today"
+            }
+          ]
         })
       });
     }
