@@ -127,8 +127,8 @@ jobs:
           tags: |
             ${{ env.DOCKER_USERNAME }}/predictor-frontend:latest
             ${{ env.DOCKER_USERNAME }}/predictor-frontend:${{ steps.meta.outputs.TIMESTAMP }}
-            ${{ env.DOCKER_USERNAME }}/predictor-frontend:${{ steps.meta.outputs.TIMESTAMP }}
-          cache-from: type=sha
+            ${{ env.DOCKER_USERNAME }}/predictor-frontend:${{ steps.meta.outputs.TIMESTAMP }}-${{ steps.meta.outputs.SHORT_SHA }}
+          cache-from: type=gha
           cache-to: type=gha,mode=max
 
   deploy:
@@ -177,7 +177,7 @@ jobs:
           username: ${{ env.SERVER_USER }}
           key: ${{ env.SERVER_PRIVATE_KEY }}
           port: ${{ env.SERVER_PORT }}
-          source: "docker-compose.prod.yml"
+          source: "compose.prod.yml"
           target: "/home/repos/predictor"
 
       # 5. Kör deploy-kommandona
@@ -199,6 +199,6 @@ jobs:
 
             echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 
-            docker compose -f docker-compose.prod.yml pull
-            docker compose -f docker-compose.prod.yml up -d --force-recreate
+            docker compose -f compose.prod.yml pull
+            docker compose -f compose.prod.yml up -d --force-recreate
             docker image prune -f
