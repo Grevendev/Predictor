@@ -1,6 +1,6 @@
-
 import { useState } from "react";
 import type { WeatherDay } from "../../types/Weather";
+import HourlyForecast from "./HourlyForecast";
 import WeatherCard from "./WeatherCard";
 import WeatherIcon from "./WeatherIcon";
 
@@ -91,7 +91,7 @@ function Weather({
         </div>
       </div>
 
-      {/* Selected day */}
+      {/* Selected day summary */}
       <div
         className="
           mb-5
@@ -100,71 +100,82 @@ function Weather({
           border-[var(--border)]
           bg-[var(--surface-soft)]
           px-5
-          py-5
+          py-4
         "
       >
-        <div className="text-center">
-          <span
-            className="
-              text-[0.65rem]
-              font-semibold
-              uppercase
-              tracking-[0.16em]
-              text-[var(--text-muted)]
-            "
-          >
-            {selectedDay.dayName}
-          </span>
+        <div
+          className="
+            flex
+            items-center
+            justify-center
+            gap-5
+            sm:gap-8
+          "
+        >
+          <div className="text-center">
+            <span
+              className="
+                text-[0.65rem]
+                font-semibold
+                uppercase
+                tracking-[0.16em]
+                text-[var(--text-muted)]
+              "
+            >
+              {selectedDay.dayName}
+            </span>
 
-          <div
-            className="
-              mt-2
-              flex
-              justify-center
-              text-[var(--text)]
-            "
-          >
-            <WeatherIcon
-              type={selectedDay.weatherType}
-              size={48}
-            />
+            <div
+              className="
+                mt-1
+                flex
+                justify-center
+                text-[var(--text)]
+              "
+            >
+              <WeatherIcon
+                type={selectedDay.weatherType}
+                size={36}
+              />
+            </div>
           </div>
 
-          <div
-            className="
-              mt-2
-              text-5xl
-              font-semibold
-              leading-none
-              tracking-[-0.04em]
-              text-[var(--text)]
-              sm:text-6xl
-            "
-          >
-            {selectedDay.temperatureMax}°
-          </div>
+          <div>
+            <div
+              className="
+                text-4xl
+                font-semibold
+                leading-none
+                tracking-[-0.04em]
+                text-[var(--text)]
+                sm:text-5xl
+              "
+            >
+              {selectedDay.temperatureMax}°
+            </div>
 
-          <p
-            className="
-              mt-2
-              text-xs
-              text-[var(--text-muted)]
-            "
-          >
-            Lägst {selectedDay.temperatureMin}°
-          </p>
+            <p
+              className="
+                mt-1
+                text-xs
+                text-[var(--text-muted)]
+              "
+            >
+              Lägst {selectedDay.temperatureMin}°
+            </p>
+          </div>
         </div>
 
         {/* Selected day details */}
         <div
           className="
-            mt-5
+            mt-4
             grid
             grid-cols-2
             gap-4
             border-t
             border-[var(--border)]
-            pt-4
+            pt-3
           "
         >
           <div className="text-center">
@@ -180,7 +191,7 @@ function Weather({
             <p
               className="
                 mt-0.5
-                text-base
+                text-sm
                 font-medium
                 text-[var(--text)]
               "
@@ -202,7 +213,7 @@ function Weather({
             <p
               className="
                 mt-0.5
-                text-base
+                text-sm
                 font-medium
                 text-[var(--text)]
               "
@@ -213,16 +224,16 @@ function Weather({
         </div>
       </div>
 
+      {/* Hourly forecast */}
+      <div className="mb-5">
+        <HourlyForecast
+          forecast={selectedDay.hourlyForecast}
+        />
+      </div>
+
       {/* Weekly forecast */}
       <div>
-        <div
-          className="
-            mb-2
-            flex
-            items-center
-            justify-between
-          "
-        >
+        <div className="mb-2">
           <span
             className="
               text-[0.65rem]
@@ -236,7 +247,6 @@ function Weather({
           </span>
         </div>
 
-        {/* Horizontal forecast */}
         <div
           className="
             flex
