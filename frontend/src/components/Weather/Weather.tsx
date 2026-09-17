@@ -104,9 +104,6 @@ function Weather({
             flex
             flex-col
             gap-6
-            sm:flex-row
-            sm:items-center
-            sm:justify-between
           "
         >
           {/* Temperature */}
@@ -125,7 +122,7 @@ function Weather({
 
             <div
               className="
-                mt-1
+                mt-2
                 flex
                 items-start
               "
@@ -160,9 +157,10 @@ function Weather({
             className="
               grid
               grid-cols-2
-              gap-x-8
-              gap-y-4
-              sm:min-w-[240px]
+              gap-4
+              border-t
+              border-[var(--border)]
+              pt-4
             "
           >
             <div>
@@ -239,9 +237,8 @@ function Weather({
           className="
             grid
             grid-cols-2
-            gap-2
+            gap-3
             sm:grid-cols-3
-            lg:grid-cols-5
           "
         >
           {forecast.map((day, index) => (

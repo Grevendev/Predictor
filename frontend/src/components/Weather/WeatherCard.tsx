@@ -13,15 +13,13 @@ function WeatherCard({
   return (
     <article
       className={`
-        flex
-        min-w-[120px]
-        flex-1
-        flex-col
+        min-w-0
         rounded-2xl
         border
-        p-4
+        p-3
         transition
         duration-200
+        sm:p-4
         ${isToday
           ? "border-[var(--text)] bg-[var(--surface-soft)]"
           : "border-[var(--border)] bg-[var(--surface)] hover:bg-[var(--surface-soft)]"
@@ -31,7 +29,8 @@ function WeatherCard({
       <div className="flex items-center justify-between gap-2">
         <span
           className="
-            text-[0.72rem]
+            truncate
+            text-[0.68rem]
             font-semibold
             uppercase
             tracking-[0.12em]
@@ -44,11 +43,12 @@ function WeatherCard({
         {isToday && (
           <span
             className="
+              shrink-0
               rounded-full
               bg-[var(--text)]
               px-2
               py-1
-              text-[0.6rem]
+              text-[0.55rem]
               font-semibold
               uppercase
               tracking-[0.08em]
@@ -62,20 +62,21 @@ function WeatherCard({
 
       <div
         className="
-          my-5
+          my-4
           flex
           justify-center
           text-[var(--text)]
+          sm:my-5
         "
       >
         <WeatherIcon
           type={day.weatherType}
-          size={44}
+          size={40}
         />
       </div>
 
-      <div className="flex items-baseline justify-center gap-2">
-        <span
+      <div className="text-center">
+        <div
           className="
             text-xl
             font-semibold
@@ -84,49 +85,70 @@ function WeatherCard({
           "
         >
           {day.temperatureMax}°
-        </span>
+        </div>
 
-        <span
+        <div
           className="
+            mt-1
             text-sm
             text-[var(--text-muted)]
           "
         >
-          {day.temperatureMin}°
-        </span>
+          Lägst {day.temperatureMin}°
+        </div>
       </div>
 
       <div
         className="
           mt-4
-          flex
-          items-center
-          justify-center
-          gap-3
           border-t
           border-[var(--border)]
           pt-3
-          text-xs
-          text-[var(--text-muted)]
         "
       >
-        <span>
-          {day.precipitationMm} mm
-        </span>
-
-        <span
+        <div
           className="
-            h-1
-            w-1
-            rounded-full
-            bg-[var(--text-muted)]
+            flex
+            items-center
+            justify-between
+            gap-2
+            text-xs
           "
-          aria-hidden="true"
-        />
+        >
+          <div>
+            <span className="block text-[var(--text-muted)]">
+              Regn
+            </span>
 
-        <span>
-          {day.windSpeedKmh} km/h
-        </span>
+            <span
+              className="
+                mt-1
+                block
+                font-medium
+                text-[var(--text)]
+              "
+            >
+              {day.precipitationMm} mm
+            </span>
+          </div>
+
+          <div className="text-right">
+            <span className="block text-[var(--text-muted)]">
+              Vind
+            </span>
+
+            <span
+              className="
+                mt-1
+                block
+                font-medium
+                text-[var(--text)]
+              "
+            >
+              {day.windSpeedKmh} km/h
+            </span>
+          </div>
+        </div>
       </div>
     </article>
   );
