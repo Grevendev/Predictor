@@ -128,4 +128,56 @@ test.describe("Language switch", () => {
       })
     ).toBeVisible();
   });
+  test("should translate the How It Works page", async ({ page }) => {
+    await page.goto("/how-it-works");
+
+    await expect(
+      page.getByText("SÅ FUNGERAR DET", {
+        exact: true
+      })
+    ).toBeVisible();
+
+    await page.getByRole("button", {
+      name: /English|engelska/i
+    }).click();
+
+    await expect(
+      page.getByText("HOW IT WORKS", {
+        exact: true
+      })
+    ).toBeVisible();
+
+    await expect(
+      page.getByText("SÅ FUNGERAR DET", {
+        exact: true
+      })
+    ).not.toBeVisible();
+  });
+  test("should translate How It Works content from Swedish to English", async ({
+    page
+  }) => {
+    await page.goto("/how-it-works");
+
+    await expect(
+      page.getByText("Så hittar Predictor ditt elområde", {
+        exact: true
+      })
+    ).toBeVisible();
+
+    await page.getByRole("button", {
+      name: /English|engelska/i
+    }).click();
+
+    await expect(
+      page.getByText("How Predictor finds your electricity area", {
+        exact: true
+      })
+    ).toBeVisible();
+
+    await expect(
+      page.getByText("Så hittar Predictor ditt elområde", {
+        exact: true
+      })
+    ).not.toBeVisible();
+  });
 });
