@@ -13,5 +13,6 @@ export interface WeatherDay {
   weatherType: WeatherType;
   temperatureMax: number;
   temperatureMin: number;
-  precipitationProbability: number;
+  precipitationMm: number;
+  windSpeedKmh: number;
 }
