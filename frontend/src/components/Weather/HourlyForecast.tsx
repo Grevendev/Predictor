@@ -12,8 +12,29 @@ function HourlyForecast({
     return null;
   }
 
+  const rainyHours = forecast.filter(
+    (hour) =>
+      hour.precipitationProbability > 0 ||
+      hour.precipitationMm > 0,
+  );
+
+  const highestRainProbability = forecast.reduce(
+    (highest, hour) =>
+      hour.precipitationProbability >
+        highest.precipitationProbability
+        ? hour
+        : highest,
+    forecast[0],
+  );
+
+  const firstRainHour = rainyHours[0];
+  const lastRainHour = rainyHours[rainyHours.length - 1];
+
+  const hasRain = rainyHours.length > 0;
+
   return (
     <section aria-label="Timprognos">
+      {/* Section title */}
       <div className="mb-2">
         <span
           className="
@@ -28,6 +49,89 @@ function HourlyForecast({
         </span>
       </div>
 
+      {/* Rain summary */}
+      {hasRain ? (
+        <div
+          className="
+            mb-3
+            rounded-xl
+            border
+            border-[var(--border)]
+            bg-[var(--surface-soft)]
+            px-3
+            py-2.5
+          "
+        >
+          <div
+            className="
+              flex
+              flex-wrap
+              items-center
+              justify-between
+              gap-x-4
+              gap-y-1
+            "
+          >
+            <p
+              className="
+                text-xs
+                text-[var(--text-muted)]
+              "
+            >
+              Regn{" "}
+              <span
+                className="
+                  font-medium
+                  text-[var(--text)]
+                "
+              >
+                {firstRainHour.time}–{lastRainHour.time}
+              </span>
+            </p>
+
+            <p
+              className="
+                text-xs
+                text-[var(--text-muted)]
+              "
+            >
+              Störst risk{" "}
+              <span
+                className="
+                  font-medium
+                  text-[var(--text)]
+                "
+              >
+                {highestRainProbability.time} ·{" "}
+                {highestRainProbability.precipitationProbability}%
+              </span>
+            </p>
+          </div>
+        </div>
+      ) : (
+        <div
+          className="
+            mb-3
+            rounded-xl
+            border
+            border-[var(--border)]
+            bg-[var(--surface-soft)]
+            px-3
+            py-2.5
+          "
+        >
+          <p
+            className="
+              text-xs
+              text-[var(--text-muted)]
+            "
+          >
+            Ingen nederbörd väntas
+          </p>
+        </div>
+      )}
+
+      {/* Hourly cards */}
       <div
         className="
           flex
@@ -42,7 +146,9 @@ function HourlyForecast({
         "
       >
         {forecast.map((hour) => {
-          const hasRain = hour.precipitationProbability > 0;
+          const hourHasRain =
+            hour.precipitationProbability > 0 ||
+            hour.precipitationMm > 0;
 
           return (
             <div
@@ -60,6 +166,7 @@ function HourlyForecast({
                 text-center
               "
             >
+              {/* Time */}
               <span
                 className="
                   text-xs
@@ -70,6 +177,7 @@ function HourlyForecast({
                 {hour.time}
               </span>
 
+              {/* Weather icon */}
               <div
                 className="
                   my-2
@@ -84,6 +192,7 @@ function HourlyForecast({
                 />
               </div>
 
+              {/* Temperature */}
               <p
                 className="
                   text-sm
@@ -94,19 +203,27 @@ function HourlyForecast({
                 {hour.temperature}°
               </p>
 
+              {/* Rain probability */}
               <p
-                className={`
-                  mt-1
-                  text-[0.65rem]
-                  ${hasRain
-                    ? "font-semibold text-[var(--text)]"
-                    : "text-[var(--text-muted)]"
-                  }
-                `}
+                className={
+                  hourHasRain
+                    ? `
+                      mt-1
+                      text-[0.65rem]
+                      font-semibold
+                      text-[var(--text)]
+                    `
+                    : `
+                      mt-1
+                      text-[0.65rem]
+                      text-[var(--text-muted)]
+                    `
+                }
               >
                 {hour.precipitationProbability}%
               </p>
 
+              {/* Precipitation amount */}
               {hour.precipitationMm > 0 && (
                 <p
                   className="
