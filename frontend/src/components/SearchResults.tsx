@@ -3,12 +3,13 @@ import type { Prediction } from "../types/Prediction";
 import { getEnergyArea } from "../utils/energyAreaUtils";
 
 import EnergyAreaInfo from "./EnergyAreaInfo";
-
 import PriceChart from "./PriceChart";
-
 import CostSavingTips from "./CostSavingTips";
+import Weather from "../components/Weather/Weather";
 
 import { useLanguage } from "../context/LanguageContext";
+
+import { mockWeather } from "../dat/mockWeather";
 
 interface SearchResultsProps {
   prediction: Prediction;
@@ -16,7 +17,6 @@ interface SearchResultsProps {
 
 function SearchResults({ prediction }: SearchResultsProps) {
   const energyArea = getEnergyArea(prediction.energyArea);
-
   const { translations: t } = useLanguage();
 
   return (
@@ -167,6 +167,31 @@ function SearchResults({ prediction }: SearchResultsProps) {
           "
         >
           <PriceChart predictions={prediction.predictions} />
+        </div>
+
+        <div
+          className="
+            result-card
+            weather-card
+            min-w-0
+            rounded-[20px]
+            border
+            border-[var(--border)]
+            bg-[var(--surface)]
+            p-[26px]
+            shadow-[var(--shadow)]
+            transition
+            duration-200
+            ease-in-out
+            hover:-translate-y-0.5
+            hover:shadow-[0_18px_40px_rgba(15,23,42,0.07),0_3px_10px_rgba(15,23,42,0.03)]
+            max-[600px]:p-5
+          "
+        >
+          <Weather
+            city={prediction.city}
+            forecast={mockWeather}
+          />
         </div>
 
         <div
