@@ -46,4 +46,22 @@ export const mockWeather: WeatherDay[] = [
     precipitationMm: 12.5,
     windSpeedKmh: 24,
   },
+  {
+    date: "2026-09-22",
+    dayName: "Tis",
+    weatherType: "clear",
+    temperatureMax: 17,
+    temperatureMin: 10,
+    precipitationMm: 0,
+    windSpeedKmh: 8,
+  },
+  {
+    date: "2026-09-23",
+    dayName: "Ons",
+    weatherType: "partlyCloudy",
+    temperatureMax: 20,
+    temperatureMin: 13,
+    precipitationMm: 0.6,
+    windSpeedKmh: 11,
+  },
 ];

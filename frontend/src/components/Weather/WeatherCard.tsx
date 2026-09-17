@@ -4,28 +4,41 @@ import WeatherIcon from "./WeatherIcon";
 interface WeatherCardProps {
   day: WeatherDay;
   isToday?: boolean;
+  isSelected?: boolean;
+  onClick?: () => void;
 }
 
 function WeatherCard({
   day,
   isToday = false,
+  isSelected = false,
+  onClick,
 }: WeatherCardProps) {
   return (
-    <article
+    <button
+      type="button"
+      onClick={onClick}
       className={`
-        min-w-0
+        w-full
         rounded-2xl
         border
-        p-3
+        p-4
+        text-left
         transition
         duration-200
-        sm:p-4
-        ${isToday
+        focus:outline-none
+        focus:ring-2
+        focus:ring-[var(--text)]
+        focus:ring-offset-2
+        focus:ring-offset-[var(--surface)]
+        ${isSelected
           ? "border-[var(--text)] bg-[var(--surface-soft)]"
           : "border-[var(--border)] bg-[var(--surface)] hover:bg-[var(--surface-soft)]"
         }
       `}
+      aria-pressed={isSelected}
     >
+      {/* Day */}
       <div className="flex items-center justify-between gap-2">
         <span
           className="
@@ -60,13 +73,13 @@ function WeatherCard({
         )}
       </div>
 
+      {/* Weather icon */}
       <div
         className="
-          my-4
+          my-5
           flex
           justify-center
           text-[var(--text)]
-          sm:my-5
         "
       >
         <WeatherIcon
@@ -75,6 +88,7 @@ function WeatherCard({
         />
       </div>
 
+      {/* Temperature */}
       <div className="text-center">
         <div
           className="
@@ -98,6 +112,7 @@ function WeatherCard({
         </div>
       </div>
 
+      {/* Weather details */}
       <div
         className="
           mt-4
@@ -116,7 +131,12 @@ function WeatherCard({
           "
         >
           <div>
-            <span className="block text-[var(--text-muted)]">
+            <span
+              className="
+                block
+                text-[var(--text-muted)]
+              "
+            >
               Regn
             </span>
 
@@ -133,7 +153,12 @@ function WeatherCard({
           </div>
 
           <div className="text-right">
-            <span className="block text-[var(--text-muted)]">
+            <span
+              className="
+                block
+                text-[var(--text-muted)]
+              "
+            >
               Vind
             </span>
 
@@ -150,7 +175,7 @@ function WeatherCard({
           </div>
         </div>
       </div>
-    </article>
+    </button>
   );
 }
 
