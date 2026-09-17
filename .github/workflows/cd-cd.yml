@@ -133,7 +133,7 @@ jobs:
 
   deploy:
     name: Deploy to VPS
-    needs: ci-cd
+    needs: build-and-push
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/deploy'
     steps:
