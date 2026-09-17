@@ -63,3 +63,70 @@ jobs:
       - name: Type check and build
         working-directory: ./frontend
         run: npm run build
+
+  build-and-push:
+    name: Build & Push Images to Docker Hub
+    needs: [test-backend, test-frontend]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          lfs: true # Krävs för att dra ned faktiska modellfiler och inte bara the pointers
+
+      # Generera en snygg tidsstämpel (ÅÅÅÅMMDD-TTMM) och kort SHA
+      - name: Generate timestamp and short sha
+        id: meta
+        run: |
+          echo "TIMESTAMP=$(date +'%Y%m%d-%H%M')" >> $GITHUB_OUTPUT
+          echo "SHORT_SHA=$(echo ${{ github.sha }} | cut -c1-7)" >> $GITHUB_OUTPUT
+
+      # Hämta docker hub inloggningnarna från hashicorp Vault
+      - name: Import Secrwets from Vault
+        uses: hashicorp/vault-actions@v3
+        with:
+          url: https://vault.jarllindquist.com
+          method: approle
+          roleId: ${{ secrets.VAULT_ROLE_ID }}
+          secretId: ${{ secrets.VAULT_SECRET_ID }}
+          secrets: |
+            kv/data/server-deploy DOCKER_USERNAME | DOCKER_USERNAME ;
+            kv/data/server-deploy DOCKER_PASSWORD | DOCKER_PASSWORD
+
+      # Logga in mot Docker Hub
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{env.DOCKER_USERNAME}}
+          password: ${{env.DOCKER_PASSWORD}}
+
+      # Kofigurera Docker Buildx för snabbare byggen och lager-caching
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # Bygga och pusha backend
+      - name: Build & Push backend Image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./backend
+          file: ./backend/Dockerfile.prod
+          push: true
+          tags: |
+            ${{ env.DOCKER_USERNAME }}/predictor-backend:latest
+            ${{ env.DOCKER_USERNAME }}/predictor-backend:${{ steps.meta.outputs.TIMESTAMP }}
+            ${{ env.DOCKER_USERNAME }}/predictor-backend:${{ steps.meta.outputs.TIMESTAMP }}-${{ steps.meta.outputs.SHORT_SHA }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Build & Push Frontend Image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./frontend
+          file: ./frontend/Dockerfile.prod
+          push: true
+          tags: |
+            ${{ env.DOCKER_USERNAME }}/predictor-frontend:latest
+            ${{ env.DOCKER_USERNAME }}/predictor-frontend:${{ steps.meta.outputs.TIMESTAMP }}
+            ${{ env.DOCKER_USERNAME }}/predictor-frontend:${{ steps.meta.outputs.TIMESTAMP }}
+          cache-from: type=sha
+          cache-to: type=gha,mode=max
