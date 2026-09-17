@@ -28,13 +28,23 @@ ZONE_COORDINATES = {
 }
 
 
+class WeatherHour(BaseModel):
+    time: str
+    temperature: float
+    precipitation_mm: float
+    wind_speed_kmh: float
+    weather_type: str
+
+
 class WeatherDay(BaseModel):
     date: str
+    day_name: str
     temperature_max: float
     temperature_min: float
     precipitation_mm: float
     wind_speed_kmh: float
     weather_type: str
+    hourly_forecast: List[WeatherHour]
 
 
 class WeatherResponse(BaseModel):
@@ -56,6 +66,20 @@ def get_weather_type(
         return "cloudy"
 
     return "clear"
+
+
+def get_day_name(date: pd.Timestamp) -> str:
+    day_names = {
+        0: "Mån",
+        1: "Tis",
+        2: "Ons",
+        3: "Tor",
+        4: "Fre",
+        5: "Lör",
+        6: "Sön",
+    }
+
+    return day_names[date.dayofweek]
 
 
 @router.get("", response_model=WeatherResponse)
@@ -163,13 +187,18 @@ def get_weather(
             wind_speed_kmh=(wind_col, "mean"),
         )
         .reset_index()
+        .head(7)
     )
-
-    daily = daily.head(5)
 
     forecast = []
 
     for _, row in daily.iterrows():
+        date = row["date"]
+
+        day_weather = future_weather[
+            future_weather["date"] == date
+        ].sort_values("timestamp")
+
         precipitation = max(
             0.0,
             float(row["precipitation_mm"]),
@@ -180,9 +209,45 @@ def get_weather(
             float(row["wind_speed_kmh"]),
         )
 
+        hourly_forecast = []
+
+        for _, hour in day_weather.iterrows():
+            hourly_rain = max(
+                0.0,
+                float(hour[rain_col]),
+            )
+
+            hourly_wind = max(
+                0.0,
+                float(hour[wind_col]),
+            )
+
+            hourly_forecast.append(
+                WeatherHour(
+                    time=hour["timestamp"].strftime("%H:%M"),
+                    temperature=round(
+                        float(hour[temp_col]),
+                        1,
+                    ),
+                    precipitation_mm=round(
+                        hourly_rain,
+                        1,
+                    ),
+                    wind_speed_kmh=round(
+                        hourly_wind,
+                        1,
+                    ),
+                    weather_type=get_weather_type(
+                        hourly_rain,
+                        hourly_wind,
+                    ),
+                )
+            )
+
         forecast.append(
             WeatherDay(
-                date=row["date"].date().isoformat(),
+                date=date.date().isoformat(),
+                day_name=get_day_name(date),
                 temperature_max=round(
                     float(row["temperature_max"]),
                     1,
@@ -203,6 +268,7 @@ def get_weather(
                     precipitation,
                     wind_speed,
                 ),
+                hourly_forecast=hourly_forecast,
             )
         )
 
