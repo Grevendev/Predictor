@@ -364,4 +364,106 @@ test.describe("Language switch", () => {
       })
     ).not.toBeVisible();
   });
+  test("should translate cost saving tips from Swedish to English", async ({
+    page
+  }) => {
+    await mockSpotCheck(page);
+
+    await page.goto("/");
+
+    // Search for Malmö
+    await page.getByRole("textbox", {
+      name: "Stad"
+    }).fill("Malmö");
+
+    await page.getByRole("button", {
+      name: "Sök"
+    }).click();
+
+    // Swedish
+    await expect(
+      page.getByRole("heading", {
+        name: "Spara pengar"
+      })
+    ).toBeVisible();
+
+    await expect(
+      page.getByText(
+        "Kör tvättmaskin och diskmaskin under timmar då elpriset förväntas vara lägre.",
+        {
+          exact: true
+        }
+      )
+    ).toBeVisible();
+
+    await expect(
+      page.getByText(
+        "Ladda elbilen under billigare timmar istället för under pristoppar.",
+        {
+          exact: true
+        }
+      )
+    ).toBeVisible();
+
+    await expect(
+      page.getByText(
+        "Försök undvika flera stora elförbrukare samtidigt när priset är högt.",
+        {
+          exact: true
+        }
+      )
+    ).toBeVisible();
+
+    // Switch to English
+    await page.getByRole("button", {
+      name: /English|engelska/i
+    }).click();
+
+    // English
+    await expect(
+      page.getByRole("heading", {
+        name: "Save money"
+      })
+    ).toBeVisible();
+
+    await expect(
+      page.getByText(
+        "Run your washing machine and dishwasher during hours when electricity prices are expected to be lower.",
+        {
+          exact: true
+        }
+      )
+    ).toBeVisible();
+
+    await expect(
+      page.getByText(
+        "Charge your electric vehicle during cheaper hours instead of during price peaks.",
+        {
+          exact: true
+        }
+      )
+    ).toBeVisible();
+
+    await expect(
+      page.getByText(
+        "Try to avoid using several high-consumption appliances at the same time when prices are high.",
+        {
+          exact: true
+        }
+      )
+    ).toBeVisible();
+
+    // Swedish tips should no longer be visible
+    await expect(
+      page.getByRole("heading", {
+        name: "Spara pengar"
+      })
+    ).not.toBeVisible();
+
+    await expect(
+      page.getByRole("heading", {
+        name: "Save money"
+      })
+    ).toBeVisible();
+  });
 });
