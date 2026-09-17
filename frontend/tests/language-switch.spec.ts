@@ -1,5 +1,5 @@
 import { test, expect } from "@playwright/test";
-
+import { mockSpotCheck } from "./helpers/mockApi";
 test.describe("Language switch", () => {
   test("should display Swedish by default", async ({ page }) => {
     await page.goto("/");
@@ -247,6 +247,119 @@ test.describe("Language switch", () => {
 
     await expect(
       page.getByText("ELOMRÅDEN", {
+        exact: true
+      })
+    ).not.toBeVisible();
+  });
+  test("should translate prediction results from Swedish to English", async ({
+    page
+  }) => {
+    await mockSpotCheck(page);
+
+    await page.goto("/");
+
+    // Search for Malmö in Swedish
+    await page.getByRole("textbox", {
+      name: "Stad"
+    }).fill("Malmö");
+
+    await page.getByRole("button", {
+      name: "Sök"
+    }).click();
+
+    const results = page.getByRole("region", {
+      name: "Elprisprognos"
+    });
+
+    // Swedish result content
+    await expect(results).toBeVisible();
+
+    await expect(
+      results.getByText("Elområde", {
+        exact: true
+      })
+    ).toBeVisible();
+
+    await expect(
+      results.getByText("Prognos", {
+        exact: true
+      })
+    ).toBeVisible();
+
+    await expect(
+      results.getByRole("heading", {
+        name: "Förväntat elpris"
+      })
+    ).toBeVisible();
+
+    await expect(
+      results.getByRole("img", {
+        name: "Graf över förutspådda elpriser"
+      })
+    ).toBeVisible();
+
+    // Switch to English
+    await page.getByRole("button", {
+      name: /English|engelska/i
+    }).click();
+
+    // English result region
+    const englishResults = page.getByRole("region", {
+      name: "Electricity Price Forecast"
+    });
+
+    await expect(englishResults).toBeVisible();
+
+    // English result content
+    await expect(
+      englishResults.getByText("Electricity Area", {
+        exact: true
+      })
+    ).toBeVisible();
+
+    await expect(
+      englishResults.getByText("Forecast", {
+        exact: true
+      })
+    ).toBeVisible();
+
+    await expect(
+      englishResults.getByRole("heading", {
+        name: "Expected electricity price"
+      })
+    ).toBeVisible();
+
+    await expect(
+      englishResults.getByRole("img", {
+        name: "Chart showing predicted electricity prices"
+      })
+    ).toBeVisible();
+
+    // Dynamic prediction data should remain unchanged
+    await expect(
+      englishResults.getByRole("heading", {
+        name: "Malmö",
+        level: 2
+      })
+    ).toBeVisible();
+
+    await expect(
+      englishResults
+        .locator(".energy-area-badge")
+        .getByText("SE4", {
+          exact: true
+        })
+    ).toBeVisible();
+
+    // Swedish result content should no longer be visible
+    await expect(
+      englishResults.getByText("Elområde", {
+        exact: true
+      })
+    ).not.toBeVisible();
+
+    await expect(
+      englishResults.getByText("Prognos", {
         exact: true
       })
     ).not.toBeVisible();
