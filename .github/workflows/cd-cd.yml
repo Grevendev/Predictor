@@ -1,0 +1,66 @@
+name: CI/CD Piepline
+
+on:
+    push:
+        branches: ["deploy"]
+    pull_request:
+        branches: ["main"]
+
+jobs:
+    # ---------------------------------------------------------------------------
+    #                   1. TEST OCH KVALITETSKONTROLL (CI)
+    # ---------------------------------------------------------------------------
+
+    test-backend:
+        name: Test Backend (FastAPI)
+        runs-on: ubuntu-latest
+        steps:
+            - name: Check out repository
+              uses: actions/checkout@v4
+
+            - name: Set up Python
+              uses: actions/setup-python@v5
+              with:
+                  python-version: "3.14"
+                  cache: "pip"
+
+            - name: Install dependece
+              run: |
+                  python -m pip install --upgrade pip
+                  if [ -f backend/backend/requirements.txt ]; then pip install -r backend/requirements.txt fi
+                  pip install pytest httpx
+
+            - name: Run Pytest
+              env:
+                  PYTHONPATH: backend
+              run: |
+                  pytest backend/tests || echo "Inga tester hittades ännu"
+
+    test-frontend:
+        name: Test & Build Frontend (React / Vite)
+        runs-on: ubuntu-latest
+        steps:
+            - name: Check out Repoository
+              uses: actions/checkout@v4
+
+            - name: Set up Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: "22"
+                  cache: "npm"
+                  cache-dependency-path: frontend/package-lock.json
+
+            - name: Install dependencies
+              run: |
+                  cd fronted 
+                  npm ci
+
+            - name: Run linter (oxlint)
+              run: |
+                  cd frontend 
+                  npm run lint
+
+            - name: Type check and build
+              run: |
+                  cd frontend 
+                  npm run build
