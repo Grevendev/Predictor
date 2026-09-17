@@ -1,4 +1,4 @@
-import PriceChart from "../components/PriceChart";
+
 
 export const translations = {
   sv: {
