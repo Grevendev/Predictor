@@ -1,5 +1,5 @@
-import type { EnergyArea } from "../types/EnergyArea";
 
+import type { EnergyArea } from "../types/EnergyArea";
 import { useLanguage } from "../context/LanguageContext";
 
 interface EnergyAreaInfoProps {
@@ -8,6 +8,15 @@ interface EnergyAreaInfoProps {
 
 function EnergyAreaInfo({ energyArea }: EnergyAreaInfoProps) {
   const { translations: t } = useLanguage();
+
+  const translatedArea = t.about.energyAreas.areas[energyArea.code];
+
+  const translatedSources: Record<string, string> = {
+    Vattenkraft: t.about.energyAreas.sources.hydropower,
+    Vindkraft: t.about.energyAreas.sources.windPower,
+    Kärnkraft: t.about.energyAreas.sources.nuclearPower,
+    Solkraft: t.about.energyAreas.sources.solarPower,
+  };
 
   return (
     <div
@@ -69,7 +78,7 @@ function EnergyAreaInfo({ energyArea }: EnergyAreaInfoProps) {
           text-[var(--text)]
         "
       >
-        {energyArea.name}
+        {translatedArea.name}
       </h3>
 
       <span
@@ -81,7 +90,7 @@ function EnergyAreaInfo({ energyArea }: EnergyAreaInfoProps) {
           text-[var(--text-muted)]
         "
       >
-        {energyArea.region}
+        {translatedArea.region}
       </span>
 
       <div className="mt-[18px] max-w-[300px]">
@@ -93,7 +102,7 @@ function EnergyAreaInfo({ energyArea }: EnergyAreaInfoProps) {
             text-[var(--text-muted)]
           "
         >
-          {energyArea.description}
+          {translatedArea.description}
         </p>
 
         <p
@@ -104,7 +113,7 @@ function EnergyAreaInfo({ energyArea }: EnergyAreaInfoProps) {
             text-[var(--text-muted)]
           "
         >
-          {energyArea.balanceDescription}
+          {translatedArea.balanceDescription}
         </p>
       </div>
 
@@ -141,37 +150,34 @@ function EnergyAreaInfo({ energyArea }: EnergyAreaInfoProps) {
           {energyArea.dominantSources.map((source) => (
             <div
               className="
-                energy-area-source
-                flex
-                items-center
-                justify-between
-                gap-5
-                border-b
-                border-[var(--border)]
-                py-[14px]
-                last:border-b-0
-              "
+      energy-area-source
+      flex
+      items-center
+      justify-between
+      gap-5
+      border-b
+      border-[var(--border)]
+      py-[14px]
+      last:border-b-0
+    "
               key={source.name}
             >
               <span
                 className="
-                  text-[0.9rem]
-                  text-[var(--text-muted)]
-                "
+        text-[0.9rem]
+        text-[var(--text-muted)]
+      "
               >
-                {source.name}
+                {translatedSources[source.name] ?? source.name}
               </span>
 
               <strong
                 className="
-                  text-[0.9rem]
-                  text-[var(--text)]
-                "
+        text-[0.9rem]
+        text-[var(--text)]
+      "
               >
-                {source.installedCapacityMw.toLocaleString(
-                  "sv-SE"
-                )}{" "}
-                MW
+                {source.installedCapacityMw.toLocaleString("sv-SE")} MW
               </strong>
             </div>
           ))}
@@ -182,3 +188,4 @@ function EnergyAreaInfo({ energyArea }: EnergyAreaInfoProps) {
 }
 
 export default EnergyAreaInfo;
+;
