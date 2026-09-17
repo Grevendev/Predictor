@@ -116,8 +116,7 @@ function PriceChart({ predictions }: PriceChartProps) {
     L ${points[points.length - 1]?.x ??
     paddingLeft
     } ${chartHeight - paddingBottom}
-    L ${points[0]?.x ?? paddingLeft} ${chartHeight - paddingBottom
-    }
+    L ${points[0]?.x ?? paddingLeft} ${chartHeight - paddingBottom}
     Z
   `;
 
@@ -212,12 +211,12 @@ function PriceChart({ predictions }: PriceChartProps) {
           >
             <div className="flex items-center gap-1.5">
               <span className="inline-block h-2 w-2 rounded-full bg-[#10b981]" />
-              <span>Optimal tid</span>
+              <span>{t.results.priceChart.optimalTime}</span>
             </div>
 
             <div className="flex items-center gap-1.5">
               <span className="inline-block h-2 w-2 rounded-full bg-[#2563eb]" />
-              <span>Nu</span>
+              <span>{t.results.priceChart.current}</span>
             </div>
           </div>
 
@@ -241,7 +240,7 @@ function PriceChart({ predictions }: PriceChartProps) {
                 setSelectedPoint(null);
               }}
             >
-              Idag
+              {t.results.priceChart.today}
             </button>
 
             <button
@@ -255,7 +254,7 @@ function PriceChart({ predictions }: PriceChartProps) {
                 setSelectedPoint(null);
               }}
             >
-              Imorgon
+              {t.results.priceChart.tomorrow}
             </button>
 
             <button
@@ -269,7 +268,7 @@ function PriceChart({ predictions }: PriceChartProps) {
                 setSelectedPoint(null);
               }}
             >
-              Alla
+              {t.results.priceChart.all}
             </button>
           </div>
         </div>
@@ -297,7 +296,7 @@ function PriceChart({ predictions }: PriceChartProps) {
           "
         >
           {selectedPoint
-            ? `öre/kWh kl. ${selectedPoint.timestamp}`
+            ? `${t.results.priceChart.pricePerKwhAt} ${selectedPoint.timestamp}`
             : t.results.lowestPredictedPrice}
         </span>
       </div>
@@ -486,10 +485,11 @@ function PriceChart({ predictions }: PriceChartProps) {
                       : "font-normal"
                       }`}
                   >
-                    {timestamp.replace(
-                      "Imorgon ",
-                      ""
-                    )}
+                    {timestamp.includes(" ")
+                      ? timestamp.slice(
+                        timestamp.lastIndexOf(" ") + 1
+                      )
+                      : timestamp}
                   </text>
                 )}
               </g>
@@ -527,17 +527,14 @@ function PriceChart({ predictions }: PriceChartProps) {
                   tracking-wider
                 "
               >
-                LADDA HÄR
+                {t.results.priceChart.chargeHere}
               </text>
 
               <path
                 d={`
-                  M ${bestPointToCharge.x} ${bestPointToCharge.y - 8
-                  }
-                  L ${bestPointToCharge.x - 4} ${bestPointToCharge.y - 14
-                  }
-                  L ${bestPointToCharge.x + 4} ${bestPointToCharge.y - 14
-                  }
+                  M ${bestPointToCharge.x} ${bestPointToCharge.y - 8}
+                  L ${bestPointToCharge.x - 4} ${bestPointToCharge.y - 14}
+                  L ${bestPointToCharge.x + 4} ${bestPointToCharge.y - 14}
                   Z
                 `}
                 fill="#10b981"
@@ -589,7 +586,7 @@ function PriceChart({ predictions }: PriceChartProps) {
                   activePointCoord.prediction
                     .predictedPrice
                 }{" "}
-                öre
+                {t.results.priceChart.priceUnit}
               </text>
 
               <text
