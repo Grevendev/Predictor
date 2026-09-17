@@ -466,4 +466,112 @@ test.describe("Language switch", () => {
       })
     ).toBeVisible();
   });
+  test("should translate the price chart from Swedish to English", async ({
+    page
+  }) => {
+    await mockSpotCheck(page);
+
+    await page.goto("/");
+
+    // Search for Malmö
+    await page.getByRole("textbox", {
+      name: "Stad"
+    }).fill("Malmö");
+
+    await page.getByRole("button", {
+      name: "Sök"
+    }).click();
+
+    // Swedish chart
+    await expect(
+      page.getByText("Optimal tid", {
+        exact: true
+      })
+    ).toBeVisible();
+
+    await expect(
+      page.getByText("Nu", {
+        exact: true
+      })
+    ).toBeVisible();
+
+    await expect(
+      page.getByRole("button", {
+        name: "Idag"
+      })
+    ).toBeVisible();
+
+    await expect(
+      page.getByRole("button", {
+        name: "Imorgon"
+      })
+    ).toBeVisible();
+
+    await expect(
+      page.getByRole("button", {
+        name: "Alla"
+      })
+    ).toBeVisible();
+
+    await expect(
+      page.getByText("LADDA HÄR", {
+        exact: true
+      })
+    ).toBeVisible();
+
+    // Switch to English
+    await page.getByRole("button", {
+      name: /English|engelska/i
+    }).click();
+
+    // English chart
+    await expect(
+      page.getByText("Optimal time", {
+        exact: true
+      })
+    ).toBeVisible();
+
+    await expect(
+      page.getByText("Now", {
+        exact: true
+      })
+    ).toBeVisible();
+
+    await expect(
+      page.getByRole("button", {
+        name: "Today"
+      })
+    ).toBeVisible();
+
+    await expect(
+      page.getByRole("button", {
+        name: "Tomorrow"
+      })
+    ).toBeVisible();
+
+    await expect(
+      page.getByRole("button", {
+        name: "All"
+      })
+    ).toBeVisible();
+
+    await expect(
+      page.getByText("CHARGE HERE", {
+        exact: true
+      })
+    ).toBeVisible();
+
+    // Swedish chart text should no longer be visible
+    await expect(
+      page.getByText("Optimal tid", {
+        exact: true
+      })
+    ).not.toBeVisible();
+
+    await expect(
+      page.getByText("LADDA HÄR", {
+        exact: true
+      })
+    ).not.toBeVisible();
+  });
 });
