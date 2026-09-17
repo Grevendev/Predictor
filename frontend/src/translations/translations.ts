@@ -1,3 +1,5 @@
+import PriceChart from "../components/PriceChart";
+
 export const translations = {
   sv: {
     navigation: {
@@ -44,6 +46,17 @@ export const translations = {
       highestPrice: "Högsta pris",
       averagePrice: "Genomsnittligt pris",
       forecast: "Prognos",
+
+      priceChart: {
+        optimalTime: "Optimal tid",
+        current: "Nu",
+        today: "Idag",
+        tomorrow: "Imorgon",
+        all: "Alla",
+        pricePerKwhAt: "öre/kWh kl.",
+        priceUnit: "öre",
+        chargeHere: "LADDA HÄR",
+      },
     },
 
     errors: {
@@ -482,6 +495,17 @@ export const translations = {
       highestPrice: "Highest price",
       averagePrice: "Average price",
       forecast: "Forecast",
+
+      priceChart: {
+        optimalTime: "Optimal time",
+        current: "Now",
+        today: "Today",
+        tomorrow: "Tomorrow",
+        all: "All",
+        pricePerKwhAt: "öre/kWh at",
+        priceUnit: "öre",
+        chargeHere: "CHARGE HERE",
+      },
     },
 
     errors: {
