@@ -10,6 +10,22 @@ services:
       - PYTHONPATH=/app
     volumes:
       - ./models_bin:/models_bin:ro
+      - shared-data:/app/dataset # Monterad så API:et läser samma data
+    networks:
+      - internal-net
+
+  data-scheduler:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: predictor-scheduler
+    restart: unless-stopped
+    command: python app/scheduler_sync.py
+    environment:
+      - PYTHONUNBUFFERED=1
+      - PYTHONPATH=/app
+    volumes:
+      - shared-data:/app/dataset # Delad volym dit schedulern skriver
     networks:
       - internal-net
 
@@ -21,7 +37,6 @@ services:
         - VITE_BASE_PATH=/predictor/
     container_name: predictor_ui_prod
     restart: always
-    # Ta bort publika port-mappningar (t.ex. 80:80) – Traefik sköter all extern trafik
     expose:
       - "80"
     labels:
@@ -44,10 +59,14 @@ services:
       - backend
     networks:
       - internal-net
-      - traefik-net # Traefiks delade nätverk
+      - traefik-net
 
 networks:
   internal-net:
     driver: bridge
   traefik-net:
-    external: true # Förutsätter att  Traefik-nätverk redan existerar
+    external: true
+
+volumes:
+  shared-data:
+    driver: local
