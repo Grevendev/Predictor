@@ -130,3 +130,75 @@ jobs:
             ${{ env.DOCKER_USERNAME }}/predictor-frontend:${{ steps.meta.outputs.TIMESTAMP }}
           cache-from: type=sha
           cache-to: type=gha,mode=max
+
+  deploy:
+    name: Deploy to VPS
+    needs: ci-cd
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/deploy'
+    steps:
+      # 1. Hämta alla hemligheter (både server-uppgifter och applikationsnycklar) från Vault
+      - name: Import Secrets from Vault
+        uses: hashicorp/vault-action@v3
+        with:
+          url: https://vault.jarllindquist.com
+          method: approle
+          roleId: ${{ secrets.VAULT_ROLE_ID }}
+          secretId: ${{ secrets.VAULT_SECRET_ID }}
+          secrets: |
+            kv/data/server-deploy SSH_HOST | SERVER_HOST ;
+            kv/data/server-deploy SSH_USERNAME | SERVER_USER ;
+            kv/data/server-deploy SERVER_PORT | SERVER_PORT ;
+            kv/data/server-deploy SSH_PRIVATE_KEY | SSH_PRIVATE_KEY ;
+            kv/data/predictor ENTSOE_API_KEY | ENTSOE_API_KEY
+
+      # 2. Klona/uppdatera, skapa .env och starta containrar via SSH
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        env:
+          REPO_URL: "https://github.com/${{ github.repository }}.git"
+          ENTSOE_API_KEY: ${{ env.ENTSOE_API_KEY }}
+          TARGET_DIR: "/home/repos/predictor"
+        with:
+          host: ${{ env.SERVER_HOST }}
+          username: ${{ env.SERVER_USER }}
+          key: ${{ env.SSH_PRIVATE_KEY }}
+          port: ${{ env.SERVER_PORT }}
+          envs: REPO_URL,ENTSOE_API_KEY,TARGET_DIR
+          script: |
+            set -e
+
+            # 1. Kontrollera om projektmappen redan finns
+            if [ ! -d "$TARGET_DIR" ]; then
+              echo "Mappen $TARGET_DIR finns inte. Genomför initial kloning..."
+              mkdir -p "$(dirname "$TARGET_DIR")"
+              git clone "$REPO_URL" "$TARGET_DIR"
+              cd "$TARGET_DIR"
+              git lfs install
+              git lfs pull
+            else
+              echo "Projektet finns redan. Hämtar senaste ändringarna..."
+              cd "$TARGET_DIR"
+              git fetch --all
+              git reset --hard origin/main
+              git lfs pull
+            fi
+
+            # 2. Skapa / uppdatera backend/.env säkert
+            echo "Konfigurerar backend/.env..."
+            mkdir -p backend
+            cat <<EOF > backend/.env
+            ENTSOE_API_KEY=${ENTSOE_API_KEY}
+            FASTAPI_ENV=production
+            PYTHONPATH=/app
+            EOF
+            chmod 600 backend/.env
+
+            # 3. Dra nya images från Docker Hub och starta om tjänsterna
+            echo "Driftsätter med Docker Compose..."
+            docker compose -f docker-compose.prod.yml pull
+            docker compose -f docker-compose.prod.yml up -d --remove-orphans
+
+            # 4. Rensa gamla oanvända images
+            docker image prune -f
+            echo "Deploy slutförd framgångsrikt!"
