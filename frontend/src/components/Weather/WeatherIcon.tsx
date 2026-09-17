@@ -9,24 +9,35 @@ function WeatherIcon({
   type,
   size = 48,
 }: WeatherIconProps) {
+  const commonProps = {
+    width: size,
+    height: size,
+    viewBox: "0 0 64 64",
+    fill: "none",
+    "aria-hidden": true,
+  };
+
   if (type === "clear") {
     return (
-      <svg
-        width={size}
-        height={size}
-        viewBox="0 0 64 64"
-        fill="none"
-        aria-hidden="true"
-      >
+      <svg {...commonProps}>
         <circle
           cx="32"
           cy="32"
-          r="13"
+          r="12"
           fill="currentColor"
         />
 
         <path
-          d="M32 6V14M32 50V58M6 32H14M50 32H58M13.6 13.6L19.2 19.2M44.8 44.8L50.4 50.4M50.4 13.6L44.8 19.2M19.2 44.8L13.6 50.4"
+          d="
+            M32 6V13
+            M32 51V58
+            M6 32H13
+            M51 32H58
+            M13.6 13.6L18.5 18.5
+            M45.5 45.5L50.4 50.4
+            M50.4 13.6L45.5 18.5
+            M18.5 45.5L13.6 50.4
+          "
           stroke="currentColor"
           strokeWidth="3"
           strokeLinecap="round"
@@ -37,123 +48,246 @@ function WeatherIcon({
 
   if (type === "partlyCloudy") {
     return (
-      <svg
-        width={size}
-        height={size}
-        viewBox="0 0 64 64"
-        fill="none"
-        aria-hidden="true"
-      >
+      <svg {...commonProps}>
         <circle
-          cx="24"
+          cx="25"
           cy="23"
           r="10"
           fill="currentColor"
         />
 
         <path
-          d="M24 8V13M24 33V38M9 23H14M34 23H39"
+          d="
+            M25 8V13
+            M25 33V38
+            M10 23H15
+            M35 23H40
+          "
           stroke="currentColor"
           strokeWidth="2.5"
           strokeLinecap="round"
         />
 
         <path
-          d="M19 46C19 40.477 23.477 36 29 36C31.021 36 32.902 36.599 34.476 37.63C36.087 33.738 39.938 31 44.429 31C50.378 31 55.2 35.822 55.2 41.771C55.2 42.094 55.185 42.413 55.157 42.728C57.404 43.347 59 45.397 59 47.82C59 50.732 56.639 53.093 53.727 53.093H24C18.477 53.093 14 48.616 14 43.093"
+          d="
+            M18 47
+            C18 41.477 22.477 37 28 37
+            C30.021 37 31.902 37.599 33.476 38.63
+            C35.087 34.738 38.938 32 43.429 32
+            C49.378 32 54.2 36.822 54.2 42.771
+            C54.2 43.094 54.185 43.413 54.157 43.728
+            C56.404 44.347 58 46.397 58 48.82
+            C58 51.732 55.639 54.093 52.727 54.093
+            H23
+            C17.477 54.093 13 49.616 13 44.093
+          "
           fill="currentColor"
         />
       </svg>
     );
   }
 
-  if (
-    type === "cloudy" ||
-    type === "rain" ||
-    type === "heavyRain"
-  ) {
+  if (type === "cloudy") {
     return (
-      <svg
-        width={size}
-        height={size}
-        viewBox="0 0 64 64"
-        fill="none"
-        aria-hidden="true"
-      >
+      <svg {...commonProps}>
         <path
-          d="M19 45C19 39.477 23.477 35 29 35C31.021 35 32.902 35.599 34.476 36.63C36.087 32.738 39.938 30 44.429 30C50.378 30 55.2 34.822 55.2 40.771C55.2 41.094 55.185 41.413 55.157 41.728C57.404 42.347 59 44.397 59 46.82C59 49.732 56.639 52.093 53.727 52.093H24C18.477 52.093 14 47.616 14 42.093"
+          d="
+            M18 46
+            C18 40.477 22.477 36 28 36
+            C30.021 36 31.902 36.599 33.476 37.63
+            C35.087 33.738 38.938 31 43.429 31
+            C49.378 31 54.2 35.822 54.2 41.771
+            C54.2 42.094 54.185 42.413 54.157 42.728
+            C56.404 43.347 58 45.397 58 47.82
+            C58 50.732 55.639 53.093 52.727 53.093
+            H23
+            C17.477 53.093 13 48.616 13 43.093
+          "
+          fill="currentColor"
+        />
+      </svg>
+    );
+  }
+
+  if (type === "rain") {
+    return (
+      <svg {...commonProps}>
+        <path
+          d="
+            M18 40
+            C18 34.477 22.477 30 28 30
+            C30.021 30 31.902 30.599 33.476 31.63
+            C35.087 27.738 38.938 25 43.429 25
+            C49.378 25 54.2 29.822 54.2 35.771
+            C54.2 36.094 54.185 36.413 54.157 36.728
+            C56.404 37.347 58 39.397 58 41.82
+            C58 44.732 55.639 47.093 52.727 47.093
+            H23
+            C17.477 47.093 13 42.616 13 37.093
+          "
           fill="currentColor"
         />
 
-        {type !== "cloudy" && (
-          <>
-            <path
-              d="M25 57L29 51"
-              stroke="currentColor"
-              strokeWidth="3"
-              strokeLinecap="round"
-            />
+        <path
+          d="M25 54L28 49"
+          stroke="currentColor"
+          strokeWidth="3"
+          strokeLinecap="round"
+        />
 
-            <path
-              d="M36 57L40 51"
-              stroke="currentColor"
-              strokeWidth="3"
-              strokeLinecap="round"
-            />
+        <path
+          d="M37 54L40 49"
+          stroke="currentColor"
+          strokeWidth="3"
+          strokeLinecap="round"
+        />
 
-            {type === "heavyRain" && (
-              <path
-                d="M47 57L51 51"
-                stroke="currentColor"
-                strokeWidth="3"
-                strokeLinecap="round"
-              />
-            )}
-          </>
-        )}
+        <path
+          d="M49 54L52 49"
+          stroke="currentColor"
+          strokeWidth="3"
+          strokeLinecap="round"
+        />
+      </svg>
+    );
+  }
+
+  if (type === "heavyRain") {
+    return (
+      <svg {...commonProps}>
+        <path
+          d="
+            M17 39
+            C17 33.477 21.477 29 27 29
+            C29.021 29 30.902 29.599 32.476 30.63
+            C34.087 26.738 37.938 24 42.429 24
+            C48.378 24 53.2 28.822 53.2 34.771
+            C53.2 35.094 53.185 35.413 53.157 35.728
+            C55.404 36.347 57 38.397 57 40.82
+            C57 43.732 54.639 46.093 51.727 46.093
+            H22
+            C16.477 46.093 12 41.616 12 36.093
+          "
+          fill="currentColor"
+        />
+
+        <path
+          d="M21 54L24 49"
+          stroke="currentColor"
+          strokeWidth="3"
+          strokeLinecap="round"
+        />
+
+        <path
+          d="M32 56L35 50"
+          stroke="currentColor"
+          strokeWidth="3"
+          strokeLinecap="round"
+        />
+
+        <path
+          d="M43 54L46 49"
+          stroke="currentColor"
+          strokeWidth="3"
+          strokeLinecap="round"
+        />
+
+        <path
+          d="M54 54L57 49"
+          stroke="currentColor"
+          strokeWidth="3"
+          strokeLinecap="round"
+        />
       </svg>
     );
   }
 
   if (type === "snow") {
     return (
-      <svg
-        width={size}
-        height={size}
-        viewBox="0 0 64 64"
-        fill="none"
-        aria-hidden="true"
-      >
+      <svg {...commonProps}>
         <path
-          d="M19 42C19 36.477 23.477 32 29 32C31.021 32 32.902 32.599 34.476 33.63C36.087 29.738 39.938 27 44.429 27C50.378 27 55.2 31.822 55.2 37.771C55.2 38.094 55.185 38.413 55.157 38.728C57.404 39.347 59 41.397 59 43.82C59 46.732 56.639 49.093 53.727 49.093H24C18.477 49.093 14 44.616 14 39.093"
+          d="
+            M18 40
+            C18 34.477 22.477 30 28 30
+            C30.021 30 31.902 30.599 33.476 31.63
+            C35.087 27.738 38.938 25 43.429 25
+            C49.378 25 54.2 29.822 54.2 35.771
+            C54.2 36.094 54.185 36.413 54.157 36.728
+            C56.404 37.347 58 39.397 58 41.82
+            C58 44.732 55.639 47.093 52.727 47.093
+            H23
+            C17.477 47.093 13 42.616 13 37.093
+          "
           fill="currentColor"
         />
 
-        <circle cx="26" cy="56" r="2" fill="currentColor" />
-        <circle cx="38" cy="56" r="2" fill="currentColor" />
-        <circle cx="50" cy="56" r="2" fill="currentColor" />
+        <circle
+          cx="24"
+          cy="54"
+          r="2.2"
+          fill="currentColor"
+        />
+
+        <circle
+          cx="36"
+          cy="54"
+          r="2.2"
+          fill="currentColor"
+        />
+
+        <circle
+          cx="48"
+          cy="54"
+          r="2.2"
+          fill="currentColor"
+        />
+      </svg>
+    );
+  }
+
+  if (type === "thunderstorm") {
+    return (
+      <svg {...commonProps}>
+        <path
+          d="
+            M17 38
+            C17 32.477 21.477 28 27 28
+            C29.021 28 30.902 28.599 32.476 29.63
+            C34.087 25.738 37.938 23 42.429 23
+            C48.378 23 53.2 27.822 53.2 33.771
+            C53.2 34.094 53.185 34.413 53.157 34.728
+            C55.404 35.347 57 37.397 57 39.82
+            C57 42.732 54.639 45.093 51.727 45.093
+            H22
+            C16.477 45.093 12 40.616 12 35.093
+          "
+          fill="currentColor"
+        />
+
+        <path
+          d="M35 36L29 47H36L31 58L43 44H36L41 36H35Z"
+          fill="currentColor"
+        />
       </svg>
     );
   }
 
   return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 64 64"
-      fill="none"
-      aria-hidden="true"
-    >
+    <svg {...commonProps}>
       <path
-        d="M18 44C18 38.477 22.477 34 28 34C30.021 34 31.902 34.599 33.476 35.63C35.087 31.738 38.938 29 43.429 29C49.378 29 54.2 33.822 54.2 39.771C54.2 40.094 54.185 40.413 54.157 40.728C56.404 41.347 58 43.397 58 45.82C58 48.732 55.639 51.093 52.727 51.093H23C17.477 51.093 13 46.616 13 41.093"
+        d="
+          M18 45
+          C18 39.477 22.477 35 28 35
+          C30.021 35 31.902 35.599 33.476 36.63
+          C35.087 32.738 38.938 30 43.429 30
+          C49.378 30 54.2 34.822 54.2 40.771
+          C54.2 41.094 54.185 41.413 54.157 41.728
+          C56.404 42.347 58 44.397 58 46.82
+          C58 49.732 55.639 52.093 52.727 52.093
+          H23
+          C17.477 52.093 13 47.616 13 42.093
+        "
         fill="currentColor"
-      />
-
-      <path
-        d="M35 10L29 23H37L31 35"
-        stroke="currentColor"
-        strokeWidth="3"
-        strokeLinecap="round"
-        strokeLinejoin="round"
       />
     </svg>
   );
