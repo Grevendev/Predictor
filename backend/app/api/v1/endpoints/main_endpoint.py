@@ -141,10 +141,9 @@ def lookup_zone(
         res = requests.get(geo_url, params=params, timeout=5)
         res.raise_for_status()
         data = res.json()
-    except Exception as e:
-        raise HTTPException(
-            status_code=502, detail=f"Fel vid anrop till geokodningstjänst: {e}"
-        )
+    except Exception as error:
+        # Externa fel ska inte läcka tokens, URL:er eller intern felinformation.
+        raise HTTPException(status_code=502, detail="Geocoding service unavailable.") from error
 
     results = data.get("results", [])
     if not results:

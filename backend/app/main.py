@@ -34,6 +34,12 @@ app.include_router(
     prefix="/api/v1",
 )
 
+# Registrera zonuppslagets router så att /spot-check blir åtkomlig.
+app.include_router(
+    main_endpoint.router,
+    prefix="/api/v1",
+)
+
 
 # Registrera zonuppslagets router så att /spot-check blir åtkomlig.
 app.include_router(
