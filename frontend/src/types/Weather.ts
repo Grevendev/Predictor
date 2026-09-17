@@ -7,6 +7,15 @@ export type WeatherType =
   | "snow"
   | "thunderstorm";
 
+export interface WeatherHour {
+  time: string;
+  temperature: number;
+  precipitationProbability: number;
+  precipitationMm: number;
+  windSpeedKmh: number;
+  weatherType: WeatherType;
+}
+
 export interface WeatherDay {
   date: string;
   dayName: string;
@@ -15,4 +24,5 @@ export interface WeatherDay {
   temperatureMin: number;
   precipitationMm: number;
   windSpeedKmh: number;
+  hourlyForecast: WeatherHour[];
 }
