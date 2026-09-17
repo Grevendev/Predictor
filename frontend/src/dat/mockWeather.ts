@@ -7,7 +7,8 @@ export const mockWeather: WeatherDay[] = [
     weatherType: "clear",
     temperatureMax: 18,
     temperatureMin: 11,
-    precipitationProbability: 5,
+    precipitationMm: 0,
+    windSpeedKmh: 12,
   },
   {
     date: "2026-09-18",
@@ -15,7 +16,8 @@ export const mockWeather: WeatherDay[] = [
     weatherType: "rain",
     temperatureMax: 16,
     temperatureMin: 10,
-    precipitationProbability: 70,
+    precipitationMm: 4.2,
+    windSpeedKmh: 18,
   },
   {
     date: "2026-09-19",
@@ -23,7 +25,8 @@ export const mockWeather: WeatherDay[] = [
     weatherType: "cloudy",
     temperatureMax: 15,
     temperatureMin: 9,
-    precipitationProbability: 35,
+    precipitationMm: 1.1,
+    windSpeedKmh: 15,
   },
   {
     date: "2026-09-20",
@@ -31,7 +34,8 @@ export const mockWeather: WeatherDay[] = [
     weatherType: "partlyCloudy",
     temperatureMax: 19,
     temperatureMin: 12,
-    precipitationProbability: 20,
+    precipitationMm: 0.3,
+    windSpeedKmh: 9,
   },
   {
     date: "2026-09-21",
@@ -39,6 +43,7 @@ export const mockWeather: WeatherDay[] = [
     weatherType: "heavyRain",
     temperatureMax: 14,
     temperatureMin: 9,
-    precipitationProbability: 85,
+    precipitationMm: 12.5,
+    windSpeedKmh: 24,
   },
 ];
