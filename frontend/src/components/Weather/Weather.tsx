@@ -1,3 +1,5 @@
+
+import { useState } from "react";
 import type { WeatherDay } from "../../types/Weather";
 import WeatherCard from "./WeatherCard";
 import WeatherIcon from "./WeatherIcon";
@@ -13,6 +15,10 @@ function Weather({
 }: WeatherProps) {
   const today = forecast[0];
 
+  const [selectedDay, setSelectedDay] = useState<WeatherDay>(
+    today,
+  );
+
   if (!today) {
     return null;
   }
@@ -20,30 +26,27 @@ function Weather({
   return (
     <section
       className="
+        min-w-0
         overflow-hidden
-        rounded-3xl
-        border
-        border-[var(--border)]
-        bg-[var(--surface)]
         p-5
-        sm:p-7
+        sm:p-6
       "
       aria-label="Väderprognos"
     >
       {/* Header */}
       <div
         className="
-          mb-8
+          mb-4
           flex
-          items-start
+          items-center
           justify-between
           gap-4
         "
       >
-        <div>
+        <div className="min-w-0">
           <span
             className="
-              text-[0.68rem]
+              text-[0.65rem]
               font-semibold
               uppercase
               tracking-[0.16em]
@@ -55,12 +58,13 @@ function Weather({
 
           <h2
             className="
-              mt-1
-              text-xl
+              mt-0.5
+              truncate
+              text-lg
               font-semibold
               tracking-tight
               text-[var(--text)]
-              sm:text-2xl
+              sm:text-xl
             "
           >
             {city}
@@ -70,151 +74,150 @@ function Weather({
         <div
           className="
             flex
-            h-12
-            w-12
+            h-10
+            w-10
             shrink-0
             items-center
             justify-center
-            rounded-2xl
+            rounded-xl
             bg-[var(--surface-soft)]
             text-[var(--text)]
           "
         >
           <WeatherIcon
-            type={today.weatherType}
-            size={30}
+            type={selectedDay.weatherType}
+            size={24}
           />
         </div>
       </div>
 
-      {/* Current weather */}
+      {/* Selected day */}
       <div
         className="
-          mb-8
+          mb-5
           rounded-2xl
           border
           border-[var(--border)]
           bg-[var(--surface-soft)]
-          p-5
-          sm:p-6
+          px-5
+          py-5
         "
       >
+        <div className="text-center">
+          <span
+            className="
+              text-[0.65rem]
+              font-semibold
+              uppercase
+              tracking-[0.16em]
+              text-[var(--text-muted)]
+            "
+          >
+            {selectedDay.dayName}
+          </span>
+
+          <div
+            className="
+              mt-2
+              flex
+              justify-center
+              text-[var(--text)]
+            "
+          >
+            <WeatherIcon
+              type={selectedDay.weatherType}
+              size={48}
+            />
+          </div>
+
+          <div
+            className="
+              mt-2
+              text-5xl
+              font-semibold
+              leading-none
+              tracking-[-0.04em]
+              text-[var(--text)]
+              sm:text-6xl
+            "
+          >
+            {selectedDay.temperatureMax}°
+          </div>
+
+          <p
+            className="
+              mt-2
+              text-xs
+              text-[var(--text-muted)]
+            "
+          >
+            Lägst {selectedDay.temperatureMin}°
+          </p>
+        </div>
+
+        {/* Selected day details */}
         <div
           className="
-            flex
-            flex-col
-            gap-6
+            mt-5
+            grid
+            grid-cols-2
+            gap-4
+            border-t
+            border-[var(--border)]
+            pt-4
           "
         >
-          {/* Temperature */}
-          <div>
+          <div className="text-center">
             <span
               className="
-                text-[0.68rem]
-                font-semibold
-                uppercase
-                tracking-[0.14em]
+                text-[0.7rem]
                 text-[var(--text-muted)]
               "
             >
-              Idag
+              Nederbörd
             </span>
-
-            <div
-              className="
-                mt-2
-                flex
-                items-start
-              "
-            >
-              <span
-                className="
-                  text-6xl
-                  font-semibold
-                  leading-none
-                  tracking-[-0.04em]
-                  text-[var(--text)]
-                  sm:text-7xl
-                "
-              >
-                {today.temperatureMax}°
-              </span>
-            </div>
 
             <p
               className="
-                mt-2
-                text-sm
-                text-[var(--text-muted)]
+                mt-0.5
+                text-base
+                font-medium
+                text-[var(--text)]
               "
             >
-              Lägst {today.temperatureMin}°
+              {selectedDay.precipitationMm} mm
             </p>
           </div>
 
-          {/* Weather details */}
-          <div
-            className="
-              grid
-              grid-cols-2
-              gap-4
-              border-t
-              border-[var(--border)]
-              pt-4
-            "
-          >
-            <div>
-              <span
-                className="
-                  text-xs
-                  text-[var(--text-muted)]
-                "
-              >
-                Nederbörd
-              </span>
+          <div className="text-center">
+            <span
+              className="
+                text-[0.7rem]
+                text-[var(--text-muted)]
+              "
+            >
+              Vind
+            </span>
 
-              <p
-                className="
-                  mt-1
-                  text-lg
-                  font-medium
-                  text-[var(--text)]
-                "
-              >
-                {today.precipitationMm} mm
-              </p>
-            </div>
-
-            <div>
-              <span
-                className="
-                  text-xs
-                  text-[var(--text-muted)]
-                "
-              >
-                Vind
-              </span>
-
-              <p
-                className="
-                  mt-1
-                  text-lg
-                  font-medium
-                  text-[var(--text)]
-                "
-              >
-                {today.windSpeedKmh} km/h
-              </p>
-            </div>
+            <p
+              className="
+                mt-0.5
+                text-base
+                font-medium
+                text-[var(--text)]
+              "
+            >
+              {selectedDay.windSpeedKmh} km/h
+            </p>
           </div>
         </div>
       </div>
 
-      {/* Forecast */}
+      {/* Weekly forecast */}
       <div>
         <div
           className="
-            mb-3
+            mb-2
             flex
             items-center
             justify-between
@@ -222,31 +225,48 @@ function Weather({
         >
           <span
             className="
-              text-[0.68rem]
+              text-[0.65rem]
               font-semibold
               uppercase
               tracking-[0.16em]
               text-[var(--text-muted)]
             "
           >
-            Prognos
+            Veckans väder
           </span>
         </div>
 
+        {/* Horizontal forecast */}
         <div
           className="
-            grid
-            grid-cols-2
-            gap-3
-            sm:grid-cols-3
+            flex
+            gap-2
+            overflow-x-auto
+            pb-1
+            scrollbar-thin
+            scrollbar-track-transparent
+            scrollbar-thumb-[var(--border)]
+            snap-x
+            snap-mandatory
           "
         >
-          {forecast.map((day, index) => (
-            <WeatherCard
+          {forecast.map((day) => (
+            <div
               key={day.date}
-              day={day}
-              isToday={index === 0}
-            />
+              className="
+                w-[125px]
+                shrink-0
+                snap-start
+                sm:w-[135px]
+              "
+            >
+              <WeatherCard
+                day={day}
+                isToday={day.date === today.date}
+                isSelected={day.date === selectedDay.date}
+                onClick={() => setSelectedDay(day)}
+              />
+            </div>
           ))}
         </div>
       </div>
