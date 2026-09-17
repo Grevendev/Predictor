@@ -1,10 +1,10 @@
+from typing import List
 from fastapi import APIRouter, HTTPException, Query
 from pydantic import BaseModel
 import requests
-from typing import Any, Dict
 
-from app.api.v1.endpoints.predictions import run_prediction
-from app.ml.features import get_features_for_zone
+# Importerar dynamisk data för UI/Frontend (från den första filen)
+from app.ml.features import get_dynamic_forecast
 
 router = APIRouter()
 
@@ -14,23 +14,42 @@ class ZoneInfo(BaseModel):
     name: str
     description: str
 
-class PredictionResult(BaseModel):
-    predicted_price_eur_mwh: float
-    is_optimal_hour: bool
-    cluster: Any
+
+# Återskapad: Behövs för grafen
+class HourlyPricePoint(BaseModel):
+    timestamp: str
+    raw_timestamp: str
+    predictedPrice: float
+    isHistorical: bool
+    isCurrentHour: bool
+    isOptimal: bool
+    day: str  # "today" eller "tomorrow"
 
 
+# Återskapad: Den fullständiga responsmodellen med all data för Hero-kort och grafer
 class LocationZoneResponse(BaseModel):
+    # Geografisk data
     name: str
+    city: str
     country: str
     country_code: str
     latitude: float
     longitude: float
+    energyArea: str
     zone: ZoneInfo
-    prediction: PredictionResult
+
+    # Sammanfattning för Hero-kortet
+    unit: str
+    has_tomorrow_data: bool
+    current_price: float
+    is_now_optimal: bool
+    lowest_price: float
+    lowest_price_time: str
+
+    # Dynamisk tidsserie för grafen
+    predictions: List[HourlyPricePoint]
 
 
-# Gemensam uppslagsdata för zonerna
 ZONE_METADATA: dict[str, dict[str, str]] = {
     "SE1": {
         "code": "SE1",
@@ -55,8 +74,31 @@ ZONE_METADATA: dict[str, dict[str, str]] = {
 }
 
 
+# Från fil 2: Snabbspärr för uppenbara lands- och regionnamn
+COUNTRIES_BLACKLIST = {
+    "england",
+    "storbritannien",
+    "uk",
+    "united kingdom",
+    "usa",
+    "united states",
+    "tyskland",
+    "germany",
+    "danmark",
+    "denmark",
+    "norge",
+    "norway",
+    "finland",
+    "frankrike",
+    "france",
+    "spanien",
+    "spain",
+    "italien",
+    "italy",
+}
+
+
 def get_zone_from_coordinates(lat: float, lon: float) -> dict[str, str]:
-    # Kontrollera att koordinaterna befinner sig inom Sveriges territorium
     if not (55.0 <= lat <= 69.5 and 10.5 <= lon <= 24.5):
         raise ValueError("Koordinaterna ligger utanför Sveriges gränser.")
 
@@ -74,20 +116,25 @@ def get_zone_from_coordinates(lat: float, lon: float) -> dict[str, str]:
 
 @router.get("/spot-check", response_model=LocationZoneResponse)
 def lookup_zone(
-    # Begränsa söktexten innan den skickas vidare till den externa tjänsten.
     location: str = Query(
-        ...,
-        max_length=200,
-        description="Ortsnamn, t.ex. 'Malmö' eller 'Lund'",
-    )
+        ..., description="Svensk stad eller tätort, t.ex. 'Malmö' eller 'Lund'"
+    ),
 ):
+    query_clean = location.strip().lower()
+
+    # Smartare validering från fil 2
+    if query_clean in COUNTRIES_BLACKLIST:
+        raise HTTPException(
+            status_code=400,
+            detail=f"'{location.strip()}' är ett land eller en region. Ange en svensk stad eller tätort (t.ex. Malmö, Sundsvall).",
+        )
+
     geo_url = "https://geocoding-api.open-meteo.com/v1/search"
     params = {
-        "name": location,
-        "count": 5,
+        "name": location.strip(),
+        "count": 10,
         "language": "sv",
         "format": "json",
-        "country_code": "SE",
     }
 
     try:
@@ -98,48 +145,65 @@ def lookup_zone(
         # Externa fel ska inte läcka tokens, URL:er eller intern felinformation.
         raise HTTPException(status_code=502, detail="Geocoding service unavailable.") from error
 
-    # Kontrollera svarsformatet innan resultatfält används.
-    if not isinstance(data, dict) or not isinstance(data.get("results", []), list):
-        raise HTTPException(status_code=502, detail="Invalid geocoding response.")
-
-    results = data["results"]
-    se_matches = [r for r in results if r.get("country_code", "").upper() == "SE"]
-
-    if not se_matches:
+    results = data.get("results", [])
+    if not results:
         raise HTTPException(
             status_code=404,
-            detail="No Swedish location found.",
+            detail=f"Kunde inte hitta någon stad eller ort med namnet '{location}'.",
         )
 
-    best_match = se_matches[0]
-    try:
-        lat = best_match["latitude"]
-        lon = best_match["longitude"]
-    except (KeyError, TypeError) as error:
-        # Saknade koordinater i upstream-svaret ska ge ett kontrollerat fel.
-        raise HTTPException(status_code=502, detail="Invalid geocoding response.") from error
-    official_name = best_match.get("name", location)
-    country = best_match.get("country", "Sverige")
-    country_code = best_match.get("country_code", "SE").upper()
+    # Från fil 2: Filtrera på tätorter/städer (feature_code PPL*)
+    city_results = [
+        r
+        for r in results
+        if r.get("feature_code", "").startswith("PPL") or not r.get("feature_code")
+    ] or results
+
+    top_hit = city_results[0]
+    country_code = top_hit.get("country_code", "").upper()
+
+    # Från fil 2: Tydligt felmeddelande om staden inte ligger i Sverige
+    if country_code != "SE":
+        country_name = top_hit.get("country") or country_code
+        admin = top_hit.get("admin1")
+        place_info = (
+            f"{admin}, {country_name}"
+            if admin and admin != country_name
+            else country_name
+        )
+        raise HTTPException(
+            status_code=400,
+            detail=f"Staden '{top_hit.get('name')}' ligger i {place_info}. Tjänsten stödjer endast svenska städer.",
+        )
+
+    lat = top_hit["latitude"]
+    lon = top_hit["longitude"]
+    official_name = top_hit.get("name", location)
+    country = top_hit.get("country", "Sverige")
 
     try:
         zone_data = get_zone_from_coordinates(lat, lon)
     except ValueError as err:
         raise HTTPException(status_code=400, detail=str(err))
 
-    # Hämta riktiga features från datasetet för zonen
-    features = get_features_for_zone(zone_data["code"])
+    # Från fil 1: Hämta dynamisk prognos för att bygga grafer & hero-kort
+    forecast_data = get_dynamic_forecast(zone_data["code"])
 
-    # Kör inferensen mot era tränade modeller
-    prediction_result = run_prediction(features)
-
-    # Skicka tillbaka ort, zon OCH prediktion i ett och samma svar
+    # Från fil 1: Returnera synkat svar där nycklarna mappar mot den fullständiga LocationZoneResponse
     return LocationZoneResponse(
         name=official_name,
+        city=official_name,
         country=country,
-        country_code=country_code,
+        country_code="SE",
         latitude=lat,
         longitude=lon,
+        energyArea=zone_data["code"],
         zone=ZoneInfo(**zone_data),
-        prediction=PredictionResult(**prediction_result),
+        unit=forecast_data["unit"],
+        has_tomorrow_data=forecast_data["has_tomorrow_data"],
+        current_price=forecast_data["current_price"],
+        is_now_optimal=forecast_data["is_now_optimal"],
+        lowest_price=forecast_data["lowest_future_price"],
+        lowest_price_time=forecast_data["lowest_future_time"],
+        predictions=forecast_data["predictions"],
     )

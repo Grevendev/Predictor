@@ -41,6 +41,13 @@ app.include_router(
 )
 
 
+# Registrera zonuppslagets router så att /spot-check blir åtkomlig.
+app.include_router(
+    main_endpoint.router,
+    prefix="/api/v1",
+)
+
+
 @app.get("/")
 def read_root():
     return {"message": "Välkommen till FastAPI-backenden för din ML-applikation!"}
