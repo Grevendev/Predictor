@@ -1,11 +1,16 @@
+
+import { useEffect, useState } from "react";
+
 import type { Prediction } from "../types/Prediction";
+import type { WeatherDay } from "../types/Weather";
+
 import { getEnergyArea } from "../utils/energyAreaUtils";
 import EnergyAreaInfo from "./EnergyAreaInfo";
 import PriceChart from "./PriceChart";
 import CostSavingTips from "./CostSavingTips";
 import Weather from "../components/Weather/Weather";
 import { useLanguage } from "../context/LanguageContext";
-import { mockWeather } from "../dat/mockWeather";
+import { getWeather } from "../services/weatherService";
 
 interface SearchResultsProps {
   prediction: Prediction;
@@ -14,6 +19,51 @@ interface SearchResultsProps {
 function SearchResults({ prediction }: SearchResultsProps) {
   const energyArea = getEnergyArea(prediction.energyArea);
   const { translations: t } = useLanguage();
+
+  const [weatherForecast, setWeatherForecast] = useState<WeatherDay[]>(
+    [],
+  );
+  const [weatherLoading, setWeatherLoading] = useState(true);
+  const [weatherError, setWeatherError] = useState<string | null>(
+    null,
+  );
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadWeather() {
+      setWeatherLoading(true);
+      setWeatherError(null);
+
+      try {
+        const forecast = await getWeather(prediction.energyArea);
+
+        if (!cancelled) {
+          setWeatherForecast(forecast);
+        }
+      } catch (error) {
+        if (!cancelled) {
+          setWeatherForecast([]);
+
+          setWeatherError(
+            error instanceof Error
+              ? error.message
+              : "Kunde inte hämta väderdata.",
+          );
+        }
+      } finally {
+        if (!cancelled) {
+          setWeatherLoading(false);
+        }
+      }
+    }
+
+    loadWeather();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [prediction.energyArea]);
 
   return (
     <section
@@ -174,6 +224,7 @@ function SearchResults({ prediction }: SearchResultsProps) {
           weather-card
           mt-4
           min-w-0
+          overflow-hidden
           rounded-[20px]
           border
           border-[var(--border)]
@@ -184,13 +235,36 @@ function SearchResults({ prediction }: SearchResultsProps) {
           ease-in-out
           hover:-translate-y-0.5
           hover:shadow-[0_18px_40px_rgba(15,23,42,0.07),0_3px_10px_rgba(15,23,42,0.03)]
-          overflow-hidden
         "
       >
-        <Weather
-          city={prediction.city}
-          forecast={mockWeather}
-        />
+        {weatherLoading && (
+          <div className="p-6 text-sm text-[var(--text-muted)]">
+            Hämtar väderdata...
+          </div>
+        )}
+
+        {!weatherLoading && weatherError && (
+          <div className="p-6 text-sm text-[var(--text-muted)]">
+            {weatherError}
+          </div>
+        )}
+
+        {!weatherLoading &&
+          !weatherError &&
+          weatherForecast.length > 0 && (
+            <Weather
+              city={prediction.city}
+              forecast={weatherForecast}
+            />
+          )}
+
+        {!weatherLoading &&
+          !weatherError &&
+          weatherForecast.length === 0 && (
+            <div className="p-6 text-sm text-[var(--text-muted)]">
+              Ingen väderdata tillgänglig.
+            </div>
+          )}
       </div>
 
       {/* Cost saving tips - full width */}
@@ -221,3 +295,4 @@ function SearchResults({ prediction }: SearchResultsProps) {
 }
 
 export default SearchResults;
+;
