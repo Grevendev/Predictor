@@ -5,23 +5,18 @@ interface HourlyForecastProps {
   forecast: WeatherHour[];
 }
 
-function HourlyForecast({
-  forecast,
-}: HourlyForecastProps) {
+function HourlyForecast({ forecast }: HourlyForecastProps) {
   if (forecast.length === 0) {
     return null;
   }
 
   const rainyHours = forecast.filter(
-    (hour) =>
-      hour.precipitationProbability > 0 ||
-      hour.precipitationMm > 0,
+    (hour) => hour.precipitationMm > 0,
   );
 
-  const highestRainProbability = forecast.reduce(
+  const highestRainfall = forecast.reduce(
     (highest, hour) =>
-      hour.precipitationProbability >
-        highest.precipitationProbability
+      hour.precipitationMm > highest.precipitationMm
         ? hour
         : highest,
     forecast[0],
@@ -72,38 +67,18 @@ function HourlyForecast({
               gap-y-1
             "
           >
-            <p
-              className="
-                text-xs
-                text-[var(--text-muted)]
-              "
-            >
+            <p className="text-xs text-[var(--text-muted)]">
               Regn{" "}
-              <span
-                className="
-                  font-medium
-                  text-[var(--text)]
-                "
-              >
+              <span className="font-medium text-[var(--text)]">
                 {firstRainHour.time}–{lastRainHour.time}
               </span>
             </p>
 
-            <p
-              className="
-                text-xs
-                text-[var(--text-muted)]
-              "
-            >
-              Störst risk{" "}
-              <span
-                className="
-                  font-medium
-                  text-[var(--text)]
-                "
-              >
-                {highestRainProbability.time} ·{" "}
-                {highestRainProbability.precipitationProbability}%
+            <p className="text-xs text-[var(--text-muted)]">
+              Mest nederbörd{" "}
+              <span className="font-medium text-[var(--text)]">
+                {highestRainfall.time} ·{" "}
+                {highestRainfall.precipitationMm} mm
               </span>
             </p>
           </div>
@@ -120,12 +95,7 @@ function HourlyForecast({
             py-2.5
           "
         >
-          <p
-            className="
-              text-xs
-              text-[var(--text-muted)]
-            "
-          >
+          <p className="text-xs text-[var(--text-muted)]">
             Ingen nederbörd väntas
           </p>
         </div>
@@ -146,9 +116,7 @@ function HourlyForecast({
         "
       >
         {forecast.map((hour) => {
-          const hourHasRain =
-            hour.precipitationProbability > 0 ||
-            hour.precipitationMm > 0;
+          const hourHasRain = hour.precipitationMm > 0;
 
           return (
             <div
@@ -203,38 +171,18 @@ function HourlyForecast({
                 {hour.temperature}°
               </p>
 
-              {/* Rain probability */}
+              {/* Precipitation */}
               <p
                 className={
                   hourHasRain
-                    ? `
-                      mt-1
-                      text-[0.65rem]
-                      font-semibold
-                      text-[var(--text)]
-                    `
-                    : `
-                      mt-1
-                      text-[0.65rem]
-                      text-[var(--text-muted)]
-                    `
+                    ? "mt-1 text-[0.65rem] font-semibold text-[var(--text)]"
+                    : "mt-1 text-[0.65rem] text-[var(--text-muted)]"
                 }
               >
-                {hour.precipitationProbability}%
+                {hourHasRain
+                  ? String(hour.precipitationMm) + " mm"
+                  : "0 mm"}
               </p>
-
-              {/* Precipitation amount */}
-              {hour.precipitationMm > 0 && (
-                <p
-                  className="
-                    mt-0.5
-                    text-[0.6rem]
-                    text-[var(--text-muted)]
-                  "
-                >
-                  {hour.precipitationMm} mm
-                </p>
-              )}
             </div>
           );
         })}
@@ -244,3 +192,4 @@ function HourlyForecast({
 }
 
 export default HourlyForecast;
+;
