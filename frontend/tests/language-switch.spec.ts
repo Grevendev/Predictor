@@ -180,4 +180,75 @@ test.describe("Language switch", () => {
       })
     ).not.toBeVisible();
   });
+  test("should translate the About page", async ({ page }) => {
+    await page.goto("/about");
+
+    // Swedish by default
+    await expect(
+      page.getByText("OM PREDICTOR", {
+        exact: true
+      })
+    ).toBeVisible();
+
+    await expect(
+      page.getByRole("heading", {
+        name: "Förstå elpriset."
+      })
+    ).toBeVisible();
+
+    await expect(
+      page.getByText("ELOMRÅDEN", {
+        exact: true
+      })
+    ).toBeVisible();
+
+    await expect(
+      page.getByRole("heading", {
+        name: "Sverige är indelat i fyra elområden"
+      })
+    ).toBeVisible();
+
+    // Switch to English
+    await page.getByRole("button", {
+      name: /English|engelska/i
+    }).click();
+
+    // English
+    await expect(
+      page.getByText("ABOUT PREDICTOR", {
+        exact: true
+      })
+    ).toBeVisible();
+
+    await expect(
+      page.getByRole("heading", {
+        name: "Understand electricity prices."
+      })
+    ).toBeVisible();
+
+    await expect(
+      page.getByText("ELECTRICITY AREAS", {
+        exact: true
+      })
+    ).toBeVisible();
+
+    await expect(
+      page.getByRole("heading", {
+        name: "Sweden is divided into four electricity areas"
+      })
+    ).toBeVisible();
+
+    // Swedish content should no longer be visible
+    await expect(
+      page.getByText("OM PREDICTOR", {
+        exact: true
+      })
+    ).not.toBeVisible();
+
+    await expect(
+      page.getByText("ELOMRÅDEN", {
+        exact: true
+      })
+    ).not.toBeVisible();
+  });
 });
