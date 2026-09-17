@@ -137,10 +137,11 @@ jobs:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/deploy'
     steps:
+      # 1. Checka ut repot så filerna finns lokalt för SCP!
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # 1. Hämta hemligheter från Vault
+      # 2. Hämta hemligheter från Vault
       - name: Import Secrets from Vault
         uses: hashicorp/vault-action@v3
         with:
@@ -157,7 +158,7 @@ jobs:
             kv/data/server-deploy DOCKER_PASSWORD | DOCKER_PASSWORD ;
             kv/data/server-deploy ENTSOE_API_KEY | ENTSOE_API_KEY
 
-      # 2. Skapa målmappen på servern om den saknas
+      # 3. Säkerställ att mappen finns på servern
       - name: Prepare directory on VPS
         uses: appleboy/ssh-action@master
         with:
@@ -168,7 +169,7 @@ jobs:
           script: |
             mkdir -p /home/repos/predictor/backend
 
-      # 3. Kopiera compose-filen till VPS:en (precis som i Showtime)
+      # 4. Kopiera produktionsfilen (nu finns den på disken)
       - name: Copy docker-compose files to VPS
         uses: appleboy/scp-action@master
         with:
@@ -179,7 +180,7 @@ jobs:
           source: "docker-compose.prod.yml"
           target: "/home/repos/predictor"
 
-      # 4. Skriv .env och starta containrarna
+      # 5. Kör deploy-kommandona
       - name: Execute Deploy Commands
         uses: appleboy/ssh-action@master
         with:
@@ -191,20 +192,13 @@ jobs:
           script: |
             cd /home/repos/predictor
 
-            # Skapa .env i backend-mappen
             echo "ENTSOE_API_KEY=${ENTSOE_API_KEY}" > backend/.env
             echo "FASTAPI_ENV=production" >> backend/.env
             echo "PYTHONPATH=/app" >> backend/.env
-
-            # Exportera DOCKER_USERNAME för compose-filen
             echo "DOCKER_USERNAME=${DOCKER_USERNAME}" > .env
 
-            # Logga in mot Docker Hub
             echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 
-            # Dra hem nya images och starta om
             docker compose -f docker-compose.prod.yml pull
             docker compose -f docker-compose.prod.yml up -d --force-recreate
-              # 4. Rensa gamla oanvända images
             docker image prune -f
-            echo "Deploy slutförd framgångsrikt!"
