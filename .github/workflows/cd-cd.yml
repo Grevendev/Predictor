@@ -62,7 +62,13 @@ jobs:
 
       - name: Type check and build
         working-directory: ./frontend
+        env:
+          VITE_BASE_PATH: /predictor/
         run: npm run build
+
+  # ---------------------------------------------------------------------------
+  # 2. BYGG OCH PUSHA TILL DOCKER HUB
+  # ---------------------------------------------------------------------------
 
   build-and-push:
     name: Build & Push Images to Docker Hub
@@ -72,17 +78,17 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
         with:
-          lfs: true # Krävs för att dra ned faktiska modellfiler och inte bara the pointers
+          lfs: true # Krävs för att dra ned faktiska modellfiler och inte bara pointer-filer
 
-      # Generera en snygg tidsstämpel (ÅÅÅÅMMDD-TTMM) och kort SHA
+      # Generera en tidsstämpel (ÅÅÅÅMMDD-TTMM) och kort SHA
       - name: Generate timestamp and short sha
         id: meta
         run: |
           echo "TIMESTAMP=$(date +'%Y%m%d-%H%M')" >> $GITHUB_OUTPUT
           echo "SHORT_SHA=$(echo ${{ github.sha }} | cut -c1-7)" >> $GITHUB_OUTPUT
 
-      # Hämta docker hub inloggningnarna från hashicorp Vault
-      - name: Import Secrwets from Vault
+      # Hämta Docker Hub-inloggningen från Vault
+      - name: Import Secrets from Vault
         uses: hashicorp/vault-action@v3
         with:
           url: https://vault.jarllindquist.com
@@ -97,14 +103,14 @@ jobs:
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
         with:
-          username: ${{env.DOCKER_USERNAME}}
-          password: ${{env.DOCKER_PASSWORD}}
+          username: ${{ env.DOCKER_USERNAME }}
+          password: ${{ env.DOCKER_PASSWORD }}
 
-      # Kofigurera Docker Buildx för snabbare byggen och lager-caching
+      # Konfigurera Docker Buildx för snabbare byggen och lager-caching
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      # Bygga och pusha backend
+      # Bygg och pusha backend
       - name: Build & Push backend Image
         uses: docker/build-push-action@v5
         with:
@@ -118,6 +124,7 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
+      # Bygg och pusha frontend
       - name: Build & Push Frontend Image
         uses: docker/build-push-action@v5
         with:
@@ -131,13 +138,17 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
+  # ---------------------------------------------------------------------------
+  # 3. DEPLOY TILL VPS
+  # ---------------------------------------------------------------------------
+
   deploy:
     name: Deploy to VPS
     needs: build-and-push
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/deploy'
     steps:
-      # 1. Checka ut repot så filerna finns lokalt för SCP!
+      # 1. Checka ut repot så filerna finns lokalt för SCP
       - name: Checkout code
         uses: actions/checkout@v4
 
@@ -158,8 +169,8 @@ jobs:
             kv/data/server-deploy DOCKER_PASSWORD | DOCKER_PASSWORD ;
             kv/data/server-deploy ENTSOE_API_KEY | ENTSOE_API_KEY
 
-      # 3. Säkerställ att mappen finns på servern
-      - name: Prepare directory on VPS
+      # 3. Säkerställ att mappar för bind mounts finns på servern
+      - name: Prepare directories on VPS
         uses: appleboy/ssh-action@master
         with:
           host: ${{ env.SERVER_HOST }}
@@ -168,8 +179,10 @@ jobs:
           port: ${{ env.SERVER_PORT }}
           script: |
             mkdir -p /home/repos/predictor/backend
+            mkdir -p /home/repos/predictor/models_bin
+            mkdir -p /home/repos/predictor/dataset
 
-      # 4. Kopiera produktionsfilen (nu finns den på disken)
+      # 4. Kopiera produktions-compose till VPS
       - name: Copy docker-compose files to VPS
         uses: appleboy/scp-action@master
         with:
@@ -180,7 +193,7 @@ jobs:
           source: "compose.prod.yml"
           target: "/home/repos/predictor"
 
-      # 5. Kör deploy-kommandona
+      # 5. Kör deploy-kommandona på VPS
       - name: Execute Deploy Commands
         uses: appleboy/ssh-action@master
         with:

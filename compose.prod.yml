@@ -13,8 +13,8 @@ services:
       - FASTAPI_ENV=production
       - PYTHONPATH=/app
     volumes:
-      - ./models_bin:/app/models_bin:ro
-      - shared-data:/app/dataset
+      - ./models_bin:/models_bin:ro
+      - ./dataset:/app/dataset
     networks:
       - internal-net
       - traefik-net
@@ -45,7 +45,7 @@ services:
       - PYTHONUNBUFFERED=1
       - PYTHONPATH=/app
     volumes:
-      - shared-data:/app/dataset
+      - ./dataset:/app/dataset
     networks:
       - internal-net
 
@@ -64,15 +64,12 @@ services:
       - traefik-net
     labels:
       - "traefik.enable=true"
+      - "traefik.docker.network=traefik-net"
       - "traefik.http.routers.predictor-ui.rule=Host(`jarllindquist.com`) && PathPrefix(`/predictor`)"
       - "traefik.http.routers.predictor-ui.entrypoints=websecure"
       - "traefik.http.routers.predictor-ui.tls.certresolver=myresolver"
       - "traefik.http.routers.predictor-ui.priority=1000"
-
-      # Strippa /predictor så Nginx tar emot anrop direkt mot /
-      - "traefik.http.routers.predictor-ui.middlewares=predictor-ui-strip"
-      - "traefik.http.middlewares.predictor-ui-strip.stripprefix.prefixes=/predictor"
-
+      # Inga stripprefix-middlewares här! Nginx vill ha /predictor/
       - "traefik.http.services.predictor-ui.loadbalancer.server.port=80"
 
 volumes:
