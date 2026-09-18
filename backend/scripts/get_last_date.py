@@ -51,7 +51,7 @@ def get_next_start_date(master_path: Path, default_start: str = "2025-01-01") ->
         last_date = last_ts.date().isoformat()
         print(f"Sista registrerade tidsstämpel i filen: {last_date}")
 
-        next_start = (last_ts + timedelta(hours=1)).date().isoformat()
+        next_start = (last_ts.date() + timedelta(days=1)).isoformat()
         print(f"Datum att anropa nästa gång (START_DATE): {next_start}")
         return next_start
 
