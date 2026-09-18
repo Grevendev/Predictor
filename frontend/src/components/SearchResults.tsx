@@ -17,12 +17,13 @@ interface SearchResultsProps {
 function SearchResults({ prediction }: SearchResultsProps) {
   const energyArea = getEnergyArea(prediction.energyArea);
   const { translations: t } = useLanguage();
-  const resultsRef = useRef<HTMLElement | null>(null);
+  const resultsRef = useRef<HTMLDivElement | null>(null);
+
   const [weatherForecast, setWeatherForecast] = useState<WeatherDay[]>([]);
   const [weatherLoading, setWeatherLoading] = useState(true);
   const [weatherError, setWeatherError] = useState<string | null>(null);
 
-  // Scrolla mjukt ner så fort ett nytt resultat renderas
+  // Scrolla mjukt ner så fort ett nytt resultat erhålls
   useEffect(() => {
     const timer = setTimeout(() => {
       resultsRef.current?.scrollIntoView({
@@ -73,28 +74,30 @@ function SearchResults({ prediction }: SearchResultsProps) {
 
   return (
     <section
-      ref={resultsRef}
       className="
         search-results
         mx-auto
         mt-[72px]
-        scroll-mt-8
         w-[min(960px,100%)]
         max-[800px]:mt-[52px]
         max-[480px]:mt-[44px]
       "
       aria-label={t.results.title}
     >
+      {/* Header med stadsnamn, etikett och badge – scrollen stannar ca 140px ovanför */}
       <div
+        ref={resultsRef}
         className="
           results-header
           mb-8
           flex
+          scroll-mt-[140px]
           items-end
           justify-between
           gap-6
           max-[700px]:items-start
           max-[700px]:flex-col
+          max-[700px]:scroll-mt-[100px]
         "
       >
         <div>
