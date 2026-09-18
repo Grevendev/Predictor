@@ -5,19 +5,26 @@ import pandas as pd
 from fastapi import APIRouter, HTTPException, Query
 from pydantic import BaseModel
 
-
 router = APIRouter(
     tags=["weather"],
 )
 
 
-BASE_DIR = Path(__file__).resolve().parents[5]
+# Robust identifiering av dataset i Docker eller lokalt
+def resolve_dataset_path() -> Path:
+    candidates = [
+        Path("/app/dataset/all_zones_complete.csv"),
+        Path("/dataset/all_zones_complete.csv"),
+        Path(__file__).resolve().parents[4] / "dataset" / "all_zones_complete.csv",
+        Path.cwd() / "dataset" / "all_zones_complete.csv",
+    ]
+    for p in candidates:
+        if p.is_file():
+            return p
+    return candidates[0]
 
-if Path("/app/dataset").exists():
-    DATASET_PATH = Path("/app/dataset/all_zones_complete.csv")
-else:
-    DATASET_PATH = BASE_DIR / "dataset" / "all_zones_complete.csv"
 
+DATASET_PATH = resolve_dataset_path()
 
 ZONE_COORDINATES = {
     "SE1": (65.58, 22.15),
@@ -57,13 +64,10 @@ def get_weather_type(
 ) -> str:
     if precipitation_mm >= 8:
         return "heavyRain"
-
     if precipitation_mm > 0.5:
         return "rain"
-
     if wind_speed_kmh >= 35:
         return "cloudy"
-
     return "clear"
 
 
@@ -77,7 +81,6 @@ def get_day_name(date: pd.Timestamp) -> str:
         5: "Lör",
         6: "Sön",
     }
-
     return day_names[date.dayofweek]
 
 
@@ -97,20 +100,20 @@ def get_weather(
             detail="Invalid electricity area. Use SE1, SE2, SE3 or SE4.",
         )
 
-    if not DATASET_PATH.is_file():
+    # Leta upp filen dynamiskt om den nyss skapats av schedulern
+    dataset_file = resolve_dataset_path()
+    if not dataset_file.is_file():
         raise HTTPException(
             status_code=404,
-            detail="Weather dataset not found.",
+            detail=f"Weather dataset not found at {dataset_file}.",
         )
 
     try:
-        df = pd.read_csv(DATASET_PATH)
-
+        df = pd.read_csv(dataset_file)
         df["timestamp"] = pd.to_datetime(
             df["timestamp"],
             utc=True,
         )
-
     except Exception as error:
         raise HTTPException(
             status_code=500,
@@ -129,9 +132,7 @@ def get_weather(
     ]
 
     missing_columns = [
-        column
-        for column in required_columns
-        if column not in df.columns
+        column for column in required_columns if column not in df.columns
     ]
 
     if missing_columns:
@@ -164,12 +165,9 @@ def get_weather(
         )
 
     today = pd.Timestamp.now(tz="UTC").normalize()
-
     weather["date"] = weather["timestamp"].dt.normalize()
 
-    future_weather = weather[
-        weather["date"] >= today
-    ].copy()
+    future_weather = weather[weather["date"] >= today].copy()
 
     if future_weather.empty:
         raise HTTPException(
@@ -178,8 +176,7 @@ def get_weather(
         )
 
     daily = (
-        future_weather
-        .groupby("date")
+        future_weather.groupby("date")
         .agg(
             temperature_max=(temp_col, "max"),
             temperature_min=(temp_col, "min"),
@@ -195,9 +192,7 @@ def get_weather(
     for _, row in daily.iterrows():
         date = row["date"]
 
-        day_weather = future_weather[
-            future_weather["date"] == date
-        ].sort_values("timestamp")
+        day_weather = future_weather[future_weather["date"] == date].sort_values("timestamp")
 
         precipitation = max(
             0.0,
