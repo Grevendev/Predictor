@@ -99,22 +99,38 @@ function WeeklyForecastChart({ forecast }: WeeklyForecastChartProps) {
       aria-label={t.results.weeklyForecast.label}
     >
       <div className="mb-5">
-        <div>
-          <span className="card-eyebrow text-[0.68rem] font-bold tracking-[0.14em] text-[var(--text-subtle)]">
-            {t.results.weeklyForecast.label}
-          </span>
-          <h3
-            className="
-              m-0
-              mt-2
-              text-[1.15rem]
-              font-semibold
-              tracking-[-0.02em]
-              text-[var(--text)]
-            "
-          >
-            {t.results.weeklyForecast.title}
-          </h3>
+        <div className="flex items-center justify-between gap-3 max-[600px]:items-start max-[600px]:flex-col">
+          <div>
+            <span className="card-eyebrow text-[0.68rem] font-bold tracking-[0.14em] text-[var(--text-subtle)]">
+              {t.results.weeklyForecast.label}
+            </span>
+            <h3
+              className="
+                m-0
+                mt-2
+                text-[1.15rem]
+                font-semibold
+                tracking-[-0.02em]
+                text-[var(--text)]
+              "
+            >
+              {t.results.weeklyForecast.title}
+            </h3>
+          </div>
+          <div className="flex flex-wrap items-center justify-end gap-3 text-[0.68rem] text-[var(--text-muted)] max-[600px]:justify-start">
+            <span className="flex items-center gap-1.5">
+              <span className="inline-block h-2.5 w-2.5 rounded-full bg-[#22c55e]" />
+              {t.results.weeklyForecast.low}
+            </span>
+            <span className="flex items-center gap-1.5">
+              <span className="inline-block h-2.5 w-2.5 rounded-full bg-[#facc15]" />
+              {t.results.weeklyForecast.medium}
+            </span>
+            <span className="flex items-center gap-1.5">
+              <span className="inline-block h-2.5 w-2.5 rounded-full bg-[#ef4444]" />
+              {t.results.weeklyForecast.high}
+            </span>
+          </div>
         </div>
       </div>
 
@@ -159,11 +175,6 @@ function WeeklyForecastChart({ forecast }: WeeklyForecastChartProps) {
 
       <div className="mt-5 rounded-xl border border-[var(--border)] bg-[var(--surface-soft)] p-4 text-sm text-[var(--text)]">
         <h4 className="m-0 font-semibold">{t.results.weeklyForecast.priceLevels}</h4>
-        <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-[var(--text-muted)]">
-          <span>🟢 {t.results.weeklyForecast.low}</span>
-          <span>🟡 {t.results.weeklyForecast.medium}</span>
-          <span>🔴 {t.results.weeklyForecast.high}</span>
-        </div>
         <p className="mb-0 mt-2 leading-6">{t.results.weeklyForecast.levelExplanation}</p>
       </div>
 
