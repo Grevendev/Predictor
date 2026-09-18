@@ -46,6 +46,14 @@ export const translations = {
       highestPrice: "Högsta pris",
       averagePrice: "Genomsnittligt pris",
       forecast: "Prognos",
+      weeklyForecast: {
+        label: "8-dagarsprognos",
+        title: "Prognos för kommande 8 dagar",
+        low: "Låg",
+        medium: "Medel",
+        high: "Hög",
+        bestDays: "Bästa dagarna",
+      },
 
       priceChart: {
         optimalTime: "Optimal tid",
@@ -495,6 +503,14 @@ export const translations = {
       highestPrice: "Highest price",
       averagePrice: "Average price",
       forecast: "Forecast",
+      weeklyForecast: {
+        label: "8-day forecast",
+        title: "Forecast for the next 8 days",
+        low: "Low",
+        medium: "Medium",
+        high: "High",
+        bestDays: "Best upcoming days",
+      },
 
       priceChart: {
         optimalTime: "Optimal time",

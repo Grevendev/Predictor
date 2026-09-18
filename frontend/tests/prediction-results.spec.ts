@@ -1,11 +1,12 @@
 import { test, expect } from "@playwright/test";
-import { mockSpotCheck } from "./helpers/mockApi";
+import { mockSpotCheck, mockWeeklyForecast } from "./helpers/mockApi";
 
 test.describe("Prediction results", () => {
   test("should display prediction results after searching for Malmö", async ({
     page
   }) => {
     await mockSpotCheck(page);
+    await mockWeeklyForecast(page);
 
     await page.goto("/");
 
@@ -85,6 +86,41 @@ test.describe("Prediction results", () => {
           exact: false
         }
       )
+    ).toBeVisible();
+  });
+
+  test("should render a weekly electricity forecast and recommendation", async ({
+    page
+  }) => {
+    await mockSpotCheck(page);
+    await mockWeeklyForecast(page);
+
+    await page.goto("/");
+
+    await page.getByRole("textbox", {
+      name: "Stad"
+    }).fill("Malmö");
+
+    await page.getByRole("button", {
+      name: "Sök"
+    }).click();
+
+    await expect(
+      page.getByText("Prognos för kommande 8 dagar", {
+        exact: true
+      })
+    ).toBeVisible();
+
+    await expect(
+      page.getByText("Bästa dagarna", {
+        exact: true
+      })
+    ).toBeVisible();
+
+    await expect(
+      page.getByText("Prognosen visar att torsdag är den bästa kommande dagen för flexibel elanvändning.", {
+        exact: false
+      })
     ).toBeVisible();
   });
 });

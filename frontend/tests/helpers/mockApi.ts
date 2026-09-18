@@ -61,6 +61,67 @@ export async function mockSpotCheck(page: Page): Promise<void> {
   );
 }
 
+export async function mockWeeklyForecast(page: Page): Promise<void> {
+  await page.route(
+    "**/api/v1/predictions/weekly-forecast?zone=SE4",
+    async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({
+          zone: "SE4",
+          days: [
+            {
+              date: "2026-09-17",
+              day_name: "Torsdag",
+              predicted_price: 28,
+              classification: "low",
+              recommended: true,
+              weather: {
+                temperature_c: 16,
+                wind_speed_kmh: 24,
+                rain_mm: 2,
+              },
+              energy_area: "SE4"
+            },
+            {
+              date: "2026-09-18",
+              day_name: "Fredag",
+              predicted_price: 36,
+              classification: "medium",
+              recommended: false,
+              weather: {
+                temperature_c: 17,
+                wind_speed_kmh: 18,
+                rain_mm: 5,
+              },
+              energy_area: "SE4"
+            },
+            {
+              date: "2026-09-19",
+              day_name: "Lördag",
+              predicted_price: 42,
+              classification: "high",
+              recommended: false,
+              weather: {
+                temperature_c: 15,
+                wind_speed_kmh: 14,
+                rain_mm: 1,
+              },
+              energy_area: "SE4"
+            }
+          ],
+          recommendation: {
+            title: "Bästa dagarna",
+            text: "Prognosen visar att torsdag är den bästa kommande dagen för flexibel elanvändning.",
+            best_days: ["Torsdag"]
+          }
+        })
+      });
+    }
+  );
+}
+
 export async function mockEnergyAreas(page: Page): Promise<void> {
   await page.route(
     "**/api/v1/energy-areas",
