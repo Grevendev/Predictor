@@ -148,11 +148,11 @@ jobs:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/deploy'
     steps:
-      # 1. Checka ut repot så filerna finns lokalt för SCP
-      - name: Checkout code
+      # Nödvändigt så att löparen har compose.prod.yml innan den scp:as över
+      - name: Check out repository
         uses: actions/checkout@v4
 
-      # 2. Hämta hemligheter från Vault
+      # Hämta hemligheter från Vault
       - name: Import Secrets from Vault
         uses: hashicorp/vault-action@v3
         with:
@@ -169,48 +169,41 @@ jobs:
             kv/data/server-deploy DOCKER_PASSWORD | DOCKER_PASSWORD ;
             kv/data/server-deploy ENTSOE_API_KEY | ENTSOE_API_KEY
 
-      # 3. Säkerställ att mappar för bind mounts finns på servern
-      - name: Prepare directories on VPS
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ env.SERVER_HOST }}
-          username: ${{ env.SERVER_USER }}
-          key: ${{ env.SERVER_PRIVATE_KEY }}
-          port: ${{ env.SERVER_PORT }}
-          script: |
-            mkdir -p /home/repos/predictor/backend
-            mkdir -p /home/repos/predictor/models_bin
-            mkdir -p /home/repos/predictor/dataset
-
-      # 4. Kopiera produktions-compose till VPS
-      - name: Copy docker-compose files to VPS
+      # Kopiera över uppdaterad compose-fil till VPS
+      - name: Copy compose.prod.yml to VPS
         uses: appleboy/scp-action@master
         with:
           host: ${{ env.SERVER_HOST }}
           username: ${{ env.SERVER_USER }}
+          port: ${{ env.SERVER_PORT || 22 }}
           key: ${{ env.SERVER_PRIVATE_KEY }}
-          port: ${{ env.SERVER_PORT }}
           source: "compose.prod.yml"
           target: "/home/repos/predictor"
 
-      # 5. Kör deploy-kommandona på VPS
-      - name: Execute Deploy Commands
+      # Kör utrullning på VPS
+      - name: Deploy on VPS
         uses: appleboy/ssh-action@master
+        env:
+          ENTSOE_API_KEY: ${{ env.ENTSOE_API_KEY }}
+          FASTAPI_ENV: "production"
+          DOCKER_USERNAME: ${{ env.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ env.DOCKER_PASSWORD }}
         with:
           host: ${{ env.SERVER_HOST }}
           username: ${{ env.SERVER_USER }}
+          port: ${{ env.SERVER_PORT || 22 }}
           key: ${{ env.SERVER_PRIVATE_KEY }}
-          port: ${{ env.SERVER_PORT }}
-          envs: DOCKER_USERNAME,DOCKER_PASSWORD,ENTSOE_API_KEY
+          envs: ENTSOE_API_KEY,FASTAPI_ENV,DOCKER_USERNAME,DOCKER_PASSWORD
           script: |
             cd /home/repos/predictor
 
+            mkdir -p backend
             echo "ENTSOE_API_KEY=${ENTSOE_API_KEY}" > backend/.env
-            echo "FASTAPI_ENV=production" >> backend/.env
+            echo "FASTAPI_ENV=${FASTAPI_ENV}" >> backend/.env
             echo "PYTHONPATH=/app" >> backend/.env
             echo "DOCKER_USERNAME=${DOCKER_USERNAME}" > .env
 
-            echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+            echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin
 
             docker compose -f compose.prod.yml pull
             docker compose -f compose.prod.yml up -d --force-recreate

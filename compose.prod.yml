@@ -38,7 +38,7 @@ services:
     image: ${DOCKER_USERNAME}/predictor-backend:latest
     container_name: predictor_scheduler_prod
     restart: unless-stopped
-    command: python scripts/scheduler_sync.py
+    command: python scripts/get_last_date.py
     env_file:
       - ./backend/.env
     environment:
