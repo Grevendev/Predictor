@@ -1,4 +1,4 @@
-
+import { api } from "./api";
 import type { WeatherDay, WeatherType } from "../types/Weather";
 
 interface BackendWeatherHour {
@@ -24,9 +24,6 @@ interface BackendWeatherResponse {
   zone: string;
   forecast: BackendWeatherDay[];
 }
-
-const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8000";
 
 function mapWeatherType(value: string): WeatherType {
   const validTypes: WeatherType[] = [
@@ -66,27 +63,10 @@ function mapWeatherDay(day: BackendWeatherDay): WeatherDay {
   };
 }
 
-export async function getWeather(
-  zone: string,
-): Promise<WeatherDay[]> {
-  const url =
-    API_BASE_URL +
-    "/api/v1/weather?zone=" +
-    encodeURIComponent(zone);
-
-  const response = await fetch(url);
-
-  if (!response.ok) {
-    throw new Error(
-      "Kunde inte hämta väderdata (" +
-      response.status +
-      ").",
-    );
-  }
-
-  const data =
-    (await response.json()) as BackendWeatherResponse;
+export async function getWeather(zone: string): Promise<WeatherDay[]> {
+  const data = await api.get<BackendWeatherResponse>(
+    `/weather?zone=${encodeURIComponent(zone)}`
+  );
 
   return data.forecast.map(mapWeatherDay);
 }
-;

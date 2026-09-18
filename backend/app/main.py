@@ -1,16 +1,14 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
-from app.api.v1.endpoints import predictions
-from app.api.v1.endpoints import energy_areas
-from app.api.v1.endpoints import main_endpoint
-from app.api.v1.endpoints import weather
+from app.api.v1.endpoints import predictions, energy_areas, main_endpoint, weather
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
     version=settings.VERSION,
-    docs_url="/docs",
-    redoc_url="/redoc",
+    docs_url="/api/docs",
+    redoc_url="/api/redoc",
+    openapi_url="/api/openapi.json",
 )
 
 # Konfigurera CORS för frontend
@@ -24,6 +22,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Registrera API v1 routes (dessa låg redan under /api/v1)
 app.include_router(
     predictions.router,
     prefix="/api/v1/predictions",
@@ -35,30 +34,25 @@ app.include_router(
     prefix="/api/v1",
 )
 
-# Registrera zonuppslagets router så att /spot-check blir åtkomlig.
+# Registrera zonuppslagets router så att /spot-check blir åtkomlig
 app.include_router(
     main_endpoint.router,
     prefix="/api/v1",
 )
 
-
-# Registrera zonuppslagets router så att /spot-check blir åtkomlig.
-app.include_router(
-    main_endpoint.router,
-    prefix="/api/v1",
-)
-
+# Registrera väderroutern
 app.include_router(
     weather.router,
     prefix="/api/v1",
 )
 
 
-@app.get("/")
+# Flytta grundläggande endpoints under /api
+@app.get("/api")
 def read_root():
     return {"message": "Välkommen till FastAPI-backenden för din ML-applikation!"}
 
 
-@app.get("/health")
+@app.get("/api/health")
 def health_check():
     return {"status": "healthy"}
