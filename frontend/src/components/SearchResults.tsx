@@ -1,6 +1,4 @@
-
-import { useEffect, useState } from "react";
-
+import { useEffect, useState, useRef } from "react";
 import type { Prediction } from "../types/Prediction";
 import type { WeatherDay } from "../types/Weather";
 
@@ -19,14 +17,22 @@ interface SearchResultsProps {
 function SearchResults({ prediction }: SearchResultsProps) {
   const energyArea = getEnergyArea(prediction.energyArea);
   const { translations: t } = useLanguage();
-
-  const [weatherForecast, setWeatherForecast] = useState<WeatherDay[]>(
-    [],
-  );
+  const resultsRef = useRef<HTMLElement | null>(null);
+  const [weatherForecast, setWeatherForecast] = useState<WeatherDay[]>([]);
   const [weatherLoading, setWeatherLoading] = useState(true);
-  const [weatherError, setWeatherError] = useState<string | null>(
-    null,
-  );
+  const [weatherError, setWeatherError] = useState<string | null>(null);
+
+  // Scrolla mjukt ner så fort ett nytt resultat renderas
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      resultsRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }, 50);
+
+    return () => clearTimeout(timer);
+  }, [prediction]);
 
   useEffect(() => {
     let cancelled = false;
@@ -48,7 +54,7 @@ function SearchResults({ prediction }: SearchResultsProps) {
           setWeatherError(
             error instanceof Error
               ? error.message
-              : "Kunde inte hämta väderdata.",
+              : "Kunde inte hämta väderdata."
           );
         }
       } finally {
@@ -67,10 +73,12 @@ function SearchResults({ prediction }: SearchResultsProps) {
 
   return (
     <section
+      ref={resultsRef}
       className="
         search-results
         mx-auto
         mt-[72px]
+        scroll-mt-8
         w-[min(960px,100%)]
         max-[800px]:mt-[52px]
         max-[480px]:mt-[44px]
@@ -295,4 +303,3 @@ function SearchResults({ prediction }: SearchResultsProps) {
 }
 
 export default SearchResults;
-;
