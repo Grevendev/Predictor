@@ -12,6 +12,42 @@ const levelColors = {
   high: "#ef4444",
 } as const;
 
+function parseLocalDate(dateString: string): Date {
+  const [year, month, day] = dateString.split("-").map(Number);
+  return new Date(year, month - 1, day);
+}
+
+function getLocalDateKey(date: Date): string {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
+}
+
+function formatWeekdayLabel(date: Date, language: "sv" | "en"): string {
+  const formatted = new Intl.DateTimeFormat(
+    language === "en" ? "en-US" : "sv-SE",
+    {
+      weekday: "long",
+    },
+  ).format(date);
+
+  return formatted.charAt(0).toUpperCase() + formatted.slice(1);
+}
+
+function formatDayList(days: string[], conjunction: string): string {
+  if (days.length < 2) {
+    return days[0] ?? "";
+  }
+
+  if (days.length === 2) {
+    return `${days[0]} ${conjunction} ${days[1]}`;
+  }
+
+  return `${days.slice(0, -1).join(", ")}${conjunction === "och" ? " och " : ", and "}${days.at(-1)}`;
+}
+
 function WeeklyForecastChart({ forecast }: WeeklyForecastChartProps) {
   const { language, translations: t } = useLanguage();
 
@@ -20,9 +56,32 @@ function WeeklyForecastChart({ forecast }: WeeklyForecastChartProps) {
   }
 
   const prices = forecast.days.map((day) => day.predicted_price);
-  const minPrice = Math.min(...prices);
   const maxPrice = Math.max(...prices);
-  const chartMax = Math.max(maxPrice, minPrice + 10);
+  const chartMax = Math.max(maxPrice, 1);
+
+  const bestDays = forecast.recommendation.best_days
+    .map((bestDay) =>
+      forecast.days.find((day) => {
+        const forecastDate = parseLocalDate(day.date);
+        const localizedWeekday = formatWeekdayLabel(forecastDate, language);
+        return (
+          day.day_name.toLocaleLowerCase() === bestDay.toLocaleLowerCase() ||
+          localizedWeekday.toLocaleLowerCase() === bestDay.toLocaleLowerCase()
+        );
+      }),
+    )
+    .filter((day): day is (typeof forecast.days)[number] => day !== undefined);
+  const recommendedWeekdays = bestDays.map((day) =>
+    formatWeekdayLabel(parseLocalDate(day.date), language),
+  );
+  const recommendationTemplate =
+    recommendedWeekdays.length === 1
+      ? t.results.weeklyForecast.recommendationSingle
+      : t.results.weeklyForecast.recommendation;
+  const recommendationText = recommendationTemplate.replace(
+    "{days}",
+    formatDayList(recommendedWeekdays, t.results.weeklyForecast.and),
+  );
 
   return (
     <div
@@ -37,19 +96,11 @@ function WeeklyForecastChart({ forecast }: WeeklyForecastChartProps) {
         shadow-[var(--shadow)]
         max-[600px]:p-5
       "
-      aria-label="8-day forecast"
+      aria-label={t.results.weeklyForecast.label}
     >
-      <div className="mb-5 flex items-center justify-between gap-3">
+      <div className="mb-5">
         <div>
-          <span
-            className="
-              card-eyebrow
-              text-[0.68rem]
-              font-bold
-              tracking-[0.14em]
-              text-[var(--text-subtle)]
-            "
-          >
+          <span className="card-eyebrow text-[0.68rem] font-bold tracking-[0.14em] text-[var(--text-subtle)]">
             {t.results.weeklyForecast.label}
           </span>
           <h3
@@ -65,33 +116,21 @@ function WeeklyForecastChart({ forecast }: WeeklyForecastChartProps) {
             {t.results.weeklyForecast.title}
           </h3>
         </div>
-
-        <div className="flex items-center gap-3 text-[0.68rem] text-[var(--text-muted)]">
-          <span className="flex items-center gap-1.5">
-            <span className="inline-block h-2.5 w-2.5 rounded-full bg-[#22c55e]" />
-            {t.results.weeklyForecast.low}
-          </span>
-          <span className="flex items-center gap-1.5">
-            <span className="inline-block h-2.5 w-2.5 rounded-full bg-[#facc15]" />
-            {t.results.weeklyForecast.medium}
-          </span>
-          <span className="flex items-center gap-1.5">
-            <span className="inline-block h-2.5 w-2.5 rounded-full bg-[#ef4444]" />
-            {t.results.weeklyForecast.high}
-          </span>
-        </div>
       </div>
+
+      <p className="mb-4 text-sm font-medium text-[var(--text-muted)]">
+        {t.results.weeklyForecast.dailyAveragePrice}
+      </p>
 
       <div className="overflow-x-auto">
         <div className="flex min-w-[640px] items-end gap-3">
           {forecast.days.map((day) => {
-            const percentage =
-              ((day.predicted_price - minPrice) /
-                (chartMax - minPrice || 1)) *
-              100;
-            const label = new Intl.DateTimeFormat(language === "en" ? "en-US" : "sv-SE", {
-              weekday: "short",
-            }).format(new Date(`${day.date}T12:00:00`));
+            const percentage = (day.predicted_price / chartMax) * 100;
+            const forecastDate = parseLocalDate(day.date);
+            const isToday =
+              getLocalDateKey(forecastDate) === getLocalDateKey(new Date());
+            const weekdayLabel = formatWeekdayLabel(forecastDate, language);
+            const label = isToday ? t.results.today : weekdayLabel;
 
             return (
               <div key={day.date} className="flex min-w-[65px] flex-1 flex-col items-center gap-2">
@@ -102,14 +141,15 @@ function WeeklyForecastChart({ forecast }: WeeklyForecastChartProps) {
                   <div
                     className="w-full rounded-t-md border border-black/5"
                     style={{
-                      height: `${Math.max(percentage, 8)}%`,
+                      height: `${percentage}%`,
                       backgroundColor: levelColors[day.classification],
                     }}
-                    title={`${label}: ${day.predicted_price.toFixed(1)} ${forecast.zone}`}
+                    title={`${label}: ${day.predicted_price} ${t.results.weeklyForecast.priceUnit}`}
                   />
                 </div>
                 <span className="text-[0.7rem] font-medium text-[var(--text-muted)]">
-                  {day.predicted_price.toFixed(0)}
+                  {day.predicted_price}{" "}
+                  {t.results.weeklyForecast.priceUnit}
                 </span>
               </div>
             );
@@ -117,14 +157,28 @@ function WeeklyForecastChart({ forecast }: WeeklyForecastChartProps) {
         </div>
       </div>
 
+      <div className="mt-5 rounded-xl border border-[var(--border)] bg-[var(--surface-soft)] p-4 text-sm text-[var(--text)]">
+        <h4 className="m-0 font-semibold">{t.results.weeklyForecast.priceLevels}</h4>
+        <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-[var(--text-muted)]">
+          <span>🟢 {t.results.weeklyForecast.low}</span>
+          <span>🟡 {t.results.weeklyForecast.medium}</span>
+          <span>🔴 {t.results.weeklyForecast.high}</span>
+        </div>
+        <p className="mb-0 mt-2 leading-6">{t.results.weeklyForecast.levelExplanation}</p>
+      </div>
+
       <div className="mt-5 rounded-xl border border-[var(--border)] bg-[var(--surface-soft)] p-4 text-sm leading-6 text-[var(--text)]">
         <strong className="font-semibold">
           {t.results.weeklyForecast.bestDays}
         </strong>
         <p className="mt-2 mb-0 text-[var(--text-muted)]">
-          {forecast.recommendation.text}
+          {recommendationText}
         </p>
       </div>
+
+      <p className="mt-4 text-xs leading-5 text-[var(--text-muted)]">
+        {t.results.weeklyForecast.forecastDisclaimer}
+      </p>
     </div>
   );
 }

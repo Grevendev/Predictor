@@ -106,21 +106,130 @@ test.describe("Prediction results", () => {
     }).click();
 
     await expect(
-      page.getByText("Prognos för kommande 8 dagar", {
+      page.getByRole("heading", {
+        name: "Veckoprognos",
         exact: true
       })
     ).toBeVisible();
 
     await expect(
       page.getByText("Bästa dagarna", {
-        exact: true
+        exact: false
       })
     ).toBeVisible();
 
     await expect(
-      page.getByText("Prognosen visar att torsdag är den bästa kommande dagen för flexibel elanvändning.", {
+      page.getByText("Fredag ser ut att vara en bra dag för flexibel elanvändning baserat på den kommande prognosen.", {
         exact: false
       })
+    ).toBeVisible();
+
+    await expect(page.getByText("Prognostiserat dagsmedelpris", { exact: true })).toBeVisible();
+    await expect(page.getByText("28 öre/kWh", { exact: true })).toBeVisible();
+    await expect(page.getByText("Prisnivåer", { exact: true })).toBeVisible();
+    await expect(page.getByText("Priserna är prognostiserade dagsmedelvärden", { exact: false })).toBeVisible();
+  });
+
+  test("should label today from the actual local date in Swedish", async ({
+    page
+  }) => {
+    await page.addInitScript(() => {
+      localStorage.setItem("predictor-language", "sv");
+
+      const RealDate = Date;
+
+      class FakeDate extends RealDate {
+        constructor(...args: any[]) {
+          if (args.length === 0) {
+            return new RealDate("2026-09-18T12:00:00+02:00") as any;
+          }
+
+          return new RealDate(...args) as any;
+        }
+
+        static now() {
+          return new RealDate("2026-09-18T12:00:00+02:00").getTime();
+        }
+      }
+
+      // @ts-expect-error test override
+      globalThis.Date = FakeDate;
+    });
+
+    await mockSpotCheck(page);
+    await mockWeeklyForecast(page);
+
+    await page.goto("/");
+
+    await page.getByRole("textbox", {
+      name: "Stad"
+    }).fill("Malmö");
+
+    await page.getByRole("button", {
+      name: "Sök"
+    }).click();
+
+    const weeklyCard = page.getByLabel("Veckoprognos");
+
+    await expect(weeklyCard.getByText("Idag", { exact: true })).toBeVisible();
+    await expect(weeklyCard.getByText("Lördag", { exact: true })).toBeVisible();
+    await expect(weeklyCard.getByText("Söndag", { exact: true })).toBeVisible();
+    await expect(weeklyCard.getByText("Måndag", { exact: true })).toBeVisible();
+  });
+
+  test("should label today from the actual local date in English", async ({
+    page
+  }) => {
+    await page.addInitScript(() => {
+      localStorage.setItem("predictor-language", "en");
+
+      const RealDate = Date;
+
+      class FakeDate extends RealDate {
+        constructor(...args: any[]) {
+          if (args.length === 0) {
+            return new RealDate("2026-09-18T12:00:00+02:00") as any;
+          }
+
+          return new RealDate(...args) as any;
+        }
+
+        static now() {
+          return new RealDate("2026-09-18T12:00:00+02:00").getTime();
+        }
+      }
+
+      // @ts-expect-error test override
+      globalThis.Date = FakeDate;
+    });
+
+    await mockSpotCheck(page);
+    await mockWeeklyForecast(page);
+
+    await page.goto("/");
+
+    await page.getByRole("textbox", {
+      name: "City"
+    }).fill("Malmö");
+
+    await page.getByRole("button", {
+      name: "Search"
+    }).click();
+
+    const weeklyCard = page.getByLabel("Weekly Forecast");
+
+    await expect(weeklyCard.getByText("Today", { exact: true })).toBeVisible();
+    await expect(weeklyCard.getByText("Saturday", { exact: true })).toBeVisible();
+    await expect(weeklyCard.getByText("Sunday", { exact: true })).toBeVisible();
+    await expect(weeklyCard.getByText("Monday", { exact: true })).toBeVisible();
+    await expect(
+      weeklyCard.getByText("Forecast daily average price", { exact: true })
+    ).toBeVisible();
+    await expect(
+      weeklyCard.getByText("Price levels", { exact: true })
+    ).toBeVisible();
+    await expect(
+      weeklyCard.getByText("Prices are forecast daily averages", { exact: false })
     ).toBeVisible();
   });
 });

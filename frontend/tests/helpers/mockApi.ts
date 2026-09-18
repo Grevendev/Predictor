@@ -72,8 +72,8 @@ export async function mockWeeklyForecast(page: Page): Promise<void> {
           zone: "SE4",
           days: [
             {
-              date: "2026-09-17",
-              day_name: "Torsdag",
+              date: "2026-09-18",
+              day_name: "Fredag",
               predicted_price: 28,
               classification: "low",
               recommended: true,
@@ -85,8 +85,8 @@ export async function mockWeeklyForecast(page: Page): Promise<void> {
               energy_area: "SE4"
             },
             {
-              date: "2026-09-18",
-              day_name: "Fredag",
+              date: "2026-09-19",
+              day_name: "Lördag",
               predicted_price: 36,
               classification: "medium",
               recommended: false,
@@ -98,8 +98,8 @@ export async function mockWeeklyForecast(page: Page): Promise<void> {
               energy_area: "SE4"
             },
             {
-              date: "2026-09-19",
-              day_name: "Lördag",
+              date: "2026-09-20",
+              day_name: "Söndag",
               predicted_price: 42,
               classification: "high",
               recommended: false,
@@ -109,12 +109,64 @@ export async function mockWeeklyForecast(page: Page): Promise<void> {
                 rain_mm: 1,
               },
               energy_area: "SE4"
+            },
+            {
+              date: "2026-09-21",
+              day_name: "Måndag",
+              predicted_price: 34,
+              classification: "medium",
+              recommended: false,
+              weather: {
+                temperature_c: 14,
+                wind_speed_kmh: 12,
+                rain_mm: 0,
+              },
+              energy_area: "SE4"
+            },
+            {
+              date: "2026-09-22",
+              day_name: "Tisdag",
+              predicted_price: 39,
+              classification: "medium",
+              recommended: false,
+              weather: {
+                temperature_c: 13,
+                wind_speed_kmh: 16,
+                rain_mm: 1,
+              },
+              energy_area: "SE4"
+            },
+            {
+              date: "2026-09-23",
+              day_name: "Onsdag",
+              predicted_price: 31,
+              classification: "low",
+              recommended: true,
+              weather: {
+                temperature_c: 15,
+                wind_speed_kmh: 20,
+                rain_mm: 3,
+              },
+              energy_area: "SE4"
+            },
+            {
+              date: "2026-09-24",
+              day_name: "Torsdag",
+              predicted_price: 33,
+              classification: "medium",
+              recommended: false,
+              weather: {
+                temperature_c: 18,
+                wind_speed_kmh: 15,
+                rain_mm: 2,
+              },
+              energy_area: "SE4"
             }
           ],
           recommendation: {
             title: "Bästa dagarna",
-            text: "Prognosen visar att torsdag är den bästa kommande dagen för flexibel elanvändning.",
-            best_days: ["Torsdag"]
+            text: "Prognosen visar att fredag är den bästa kommande dagen för flexibel elanvändning.",
+            best_days: ["Fredag"]
           }
         })
       });

@@ -15,7 +15,7 @@ export async function getWeeklyForecast(
   );
 
   if (!response.ok) {
-    throw new Error("Kunde inte hämta 8-dagarsprognosen.");
+    throw new Error("Kunde inte hämta veckoprognosen.");
   }
 
   return (await response.json()) as WeeklyForecastResponse;
