@@ -1,5 +1,5 @@
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 import type {
   Prediction,
@@ -24,16 +24,27 @@ interface SearchResultsProps {
 function SearchResults({ prediction }: SearchResultsProps) {
   const energyArea = getEnergyArea(prediction.energyArea);
   const { translations: t } = useLanguage();
+  const resultsRef = useRef<HTMLDivElement | null>(null);
 
-  const [weatherForecast, setWeatherForecast] = useState<WeatherDay[]>(
-    [],
-  );
+  const [weatherForecast, setWeatherForecast] = useState<WeatherDay[]>([]);
   const [weatherLoading, setWeatherLoading] = useState(true);
   const [weatherError, setWeatherError] = useState<string | null>(
     null,
   );
   const [weeklyForecast, setWeeklyForecast] =
     useState<WeeklyForecastResponse | null>(null);
+
+  // Scrolla mjukt ner så fort ett nytt resultat erhålls
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      resultsRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }, 50);
+
+    return () => clearTimeout(timer);
+  }, [prediction]);
 
   useEffect(() => {
     let cancelled = false;
@@ -55,7 +66,7 @@ function SearchResults({ prediction }: SearchResultsProps) {
           setWeatherError(
             error instanceof Error
               ? error.message
-              : "Kunde inte hämta väderdata.",
+              : "Kunde inte hämta väderdata."
           );
         }
       } finally {
@@ -98,16 +109,20 @@ function SearchResults({ prediction }: SearchResultsProps) {
       "
       aria-label={t.results.title}
     >
+      {/* Header med stadsnamn, etikett och badge – scrollen stannar ca 140px ovanför */}
       <div
+        ref={resultsRef}
         className="
           results-header
           mb-8
           flex
+          scroll-mt-[140px]
           items-end
           justify-between
           gap-6
           max-[700px]:items-start
           max-[700px]:flex-col
+          max-[700px]:scroll-mt-[100px]
         "
       >
         <div>
@@ -320,4 +335,3 @@ function SearchResults({ prediction }: SearchResultsProps) {
 }
 
 export default SearchResults;
-;

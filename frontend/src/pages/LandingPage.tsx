@@ -4,7 +4,7 @@ import SearchResults from "../components/SearchResults";
 import Footer from "../components/Footer";
 import useCitySearch from "../hooks/useCitySearch";
 import { useLanguage } from "../context/LanguageContext";
-
+import ScrollToTopButton from "../components/ScrollToTopButton";
 function LandingPage() {
   const {
     prediction,
@@ -178,6 +178,9 @@ function LandingPage() {
           )}
         </section>
       </main>
+
+      {/* Flytande knapp som syns när man scrollat ner */}
+      <ScrollToTopButton />
 
       <Footer />
     </>
