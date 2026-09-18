@@ -265,27 +265,13 @@ def build_weekly_forecast(zone_code: str, days_count: int = 7) -> dict[str, Any]
         ),
     )[:3]
 
-    recommendation_text = (
-        "The forecast indicates that "
-        + ", ".join(day["day_name"] for day in best_days)
-        + " are the best upcoming days for flexible electricity use."
-    )
 
-    weather_context = any(
-        day["weather"]["wind_speed_kmh"] >= 20
-        for day in forecast_days
-    )
-    if weather_context:
-        recommendation_text += (
-            " Higher expected wind speeds are part of the forecast for this area."
-        )
 
     return {
         "zone": zone,
         "days": forecast_days,
         "recommendation": {
             "title": "Best upcoming days",
-            "text": recommendation_text,
             "best_days": [day["day_name"] for day in best_days],
         },
     }
