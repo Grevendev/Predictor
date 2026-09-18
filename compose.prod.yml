@@ -1,72 +1,83 @@
 services:
+  # ---------------------------------------------------------------------------
+  # BACKEND (FastAPI API)
+  # Anrop mot: https://jarllindquist.com/predictor/api/...
+  # ---------------------------------------------------------------------------
   backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
+    image: ${DOCKER_USERNAME}/predictor-backend:latest
     container_name: predictor_api_prod
     restart: always
+    env_file:
+      - ./backend/.env
     environment:
       - FASTAPI_ENV=production
       - PYTHONPATH=/app
     volumes:
       - ./models_bin:/models_bin:ro
-      - shared-data:/app/dataset # Monterad så API:et läser samma data
+      - ./dataset:/app/dataset
     networks:
       - internal-net
+      - traefik-net
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.predictor-api.rule=Host(`jarllindquist.com`) && PathPrefix(`/predictor/api`)"
+      - "traefik.http.routers.predictor-api.entrypoints=websecure"
+      - "traefik.http.routers.predictor-api.tls.certresolver=myresolver"
+      - "traefik.http.routers.predictor-api.priority=1001" # Högre prioritet än frontend
 
+      # Strippa /predictor så FastAPI tar emot /api/...
+      - "traefik.http.routers.predictor-api.middlewares=predictor-api-strip"
+      - "traefik.http.middlewares.predictor-api-strip.stripprefix.prefixes=/predictor"
+
+      - "traefik.http.services.predictor-api.loadbalancer.server.port=8000"
+
+  # ---------------------------------------------------------------------------
+  # DATA SCHEDULER
+  # ---------------------------------------------------------------------------
   data-scheduler:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-    container_name: predictor-scheduler
+    image: ${DOCKER_USERNAME}/predictor-backend:latest
+    container_name: predictor_scheduler_prod
     restart: unless-stopped
-    command: python app/scheduler_sync.py
+    command: python scripts/get_last_date.py
+    env_file:
+      - ./backend/.env
     environment:
       - PYTHONUNBUFFERED=1
       - PYTHONPATH=/app
     volumes:
-      - shared-data:/app/dataset # Delad volym dit schedulern skriver
+      - ./dataset:/app/dataset
     networks:
       - internal-net
 
+  # ---------------------------------------------------------------------------
+  # FRONTEND (React / Nginx)
+  # Anrop mot: https://jarllindquist.com/predictor
+  # ---------------------------------------------------------------------------
   frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-      args:
-        - VITE_BASE_PATH=/predictor/
+    image: ${DOCKER_USERNAME}/predictor-frontend:latest
     container_name: predictor_ui_prod
     restart: always
-    expose:
-      - "80"
-    labels:
-      - "traefik.enable=true"
-
-      # --- HTTP Router (Redirect till HTTPS) ---
-      - "traefik.http.routers.predictor-http.rule=Host(`din-doman.se`) && PathPrefix(`/predictor`)"
-      - "traefik.http.routers.predictor-http.entrypoints=web"
-      - "traefik.http.routers.predictor-http.middlewares=redirect-to-https"
-
-      # --- HTTPS Router ---
-      - "traefik.http.routers.predictor-https.rule=Host(`din-doman.se`) && PathPrefix(`/predictor`)"
-      - "traefik.http.routers.predictor-https.entrypoints=websecure"
-      - "traefik.http.routers.predictor-https.tls=true"
-      - "traefik.http.routers.predictor-https.tls.certresolver=letsencrypt"
-
-      # --- Koppling till Nginx inuti containern ---
-      - "traefik.http.services.predictor.loadbalancer.server.port=80"
     depends_on:
       - backend
     networks:
       - internal-net
       - traefik-net
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik-net"
+      - "traefik.http.routers.predictor-ui.rule=Host(`jarllindquist.com`) && PathPrefix(`/predictor`)"
+      - "traefik.http.routers.predictor-ui.entrypoints=websecure"
+      - "traefik.http.routers.predictor-ui.tls.certresolver=myresolver"
+      - "traefik.http.routers.predictor-ui.priority=1000"
+      # Inga stripprefix-middlewares här! Nginx vill ha /predictor/
+      - "traefik.http.services.predictor-ui.loadbalancer.server.port=80"
+
+volumes:
+  shared-data:
+    driver: local
 
 networks:
   internal-net:
     driver: bridge
   traefik-net:
     external: true
-
-volumes:
-  shared-data:
-    driver: local

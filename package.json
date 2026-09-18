@@ -6,6 +6,7 @@
         "dev:backend": "bash run.sh dev-backend",
         "dev:frontend": "bash run.sh dev-frontend",
         "dev:local": "bash run.sh dev-local",
+        "dev:up": "bash run.sh dev-up",
         "dev:down": "bash run.sh dev-down",
         "dev:logs": "bash run.sh dev-logs",
         "get-data": "bash run.sh get-data",

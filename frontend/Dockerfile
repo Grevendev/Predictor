@@ -9,6 +9,7 @@ RUN npm install
 # Kopiera källkoden
 COPY . .
 
+
 EXPOSE 5173
 
 CMD ["npm", "run", "dev", "--", "--host"]
