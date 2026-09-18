@@ -7,7 +7,6 @@ from pydantic import BaseModel
 
 
 router = APIRouter(
-    prefix="/weather",
     tags=["weather"],
 )
 
@@ -82,7 +81,8 @@ def get_day_name(date: pd.Timestamp) -> str:
     return day_names[date.dayofweek]
 
 
-@router.get("", response_model=WeatherResponse)
+@router.get("/weather", response_model=WeatherResponse)
+@router.get("/weather/", response_model=WeatherResponse, include_in_schema=False)
 def get_weather(
     zone: str = Query(
         ...,
