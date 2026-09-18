@@ -56,7 +56,7 @@ export const translations = {
         medium: "Medel",
         high: "Hög",
         levelExplanation:
-          "Stapelhöjden visar det prognostiserade dagsmedelpriset. Färgen visar om modellen klassificerar prisnivån som låg, medel eller hög.",
+          "Stapelhöjden visar det prognostiserade dagsmedelpriset. Färgen visar om modellen klassificerar prisnivån som låg, medel eller hög för det valda området.",
         bestDays: "Bästa dagarna för elanvändning",
         recommendationSingle:
           "{days} ser ut att vara en bra dag för flexibel elanvändning baserat på den kommande prognosen.",
@@ -525,7 +525,7 @@ export const translations = {
         medium: "Medium",
         high: "High",
         levelExplanation:
-          "Bar height shows the forecast daily average price. The colour shows whether the model classifies the price level as low, medium or high.",
+          "Bar height shows the forecast daily average price. The colour shows whether the model classifies the price level as low, medium or high for the chosen specific area.",
         bestDays: "Best days for electricity use",
         recommendationSingle:
           "{days} looks like a good day for flexible electricity use based on the upcoming forecast.",

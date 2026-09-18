@@ -49,6 +49,7 @@
 from datetime import timedelta
 from pathlib import Path
 from typing import Any, Dict, Union
+from zoneinfo import ZoneInfo
 
 import pandas as pd
 from fastapi import APIRouter, HTTPException, Query
@@ -64,6 +65,7 @@ router = APIRouter()
 
 BASE_DIR = Path(__file__).resolve().parents[5]
 DATASET_PATH = BASE_DIR / "dataset" / "all_zones_complete.csv"
+LOCAL_TIMEZONE = ZoneInfo("Europe/Stockholm")
 CLUSTER_MAP = {
     0: "low",
     2: "medium",
@@ -124,19 +126,30 @@ def _map_cluster_to_level(cluster_value: int) -> str:
     return CLUSTER_MAP.get(int(cluster_value), "medium")
 
 
+def _resolve_forecast_dates(today: pd.Timestamp, days_count: int) -> list[pd.Timestamp]:
+    return [today + pd.Timedelta(days=offset) for offset in range(days_count)]
+
+
 def _get_daily_weather_summary(zone_code: str, target_day: pd.Timestamp, df: pd.DataFrame) -> dict[str, float]:
     zone = zone_code.lower()
     temp_col = f"temp_{zone}_c"
     wind_col = f"wind_{zone}_kmh"
     rain_col = f"rain_{zone}_mm"
 
+    available_days = pd.DatetimeIndex(sorted(pd.unique(df["timestamp"].dt.normalize())))
+    if available_days.empty:
+        raise HTTPException(
+            status_code=404,
+            detail="No forecast data available for the selected zone.",
+        )
+
     day_rows = df[df["timestamp"].dt.normalize() == target_day].copy()
     if day_rows.empty:
-        return {
-            "temperature_c": float(df.loc[df["timestamp"].dt.normalize().idxmax(), temp_col]),
-            "wind_speed_kmh": float(df.loc[df["timestamp"].dt.normalize().idxmax(), wind_col]),
-            "rain_mm": float(df.loc[df["timestamp"].dt.normalize().idxmax(), rain_col]),
-        }
+        nearest_day = min(
+            available_days,
+            key=lambda day: abs((day - target_day).total_seconds()),
+        )
+        day_rows = df[df["timestamp"].dt.normalize() == nearest_day].copy()
 
     return {
         "temperature_c": float(day_rows[temp_col].mean()),
@@ -195,7 +208,7 @@ def _get_feature_row(zone_code: str, target_hour: pd.Timestamp, df: pd.DataFrame
     }
 
 
-def build_weekly_forecast(zone_code: str, days_count: int = 9) -> dict[str, Any]:
+def build_weekly_forecast(zone_code: str, days_count: int = 7) -> dict[str, Any]:
     zone = zone_code.strip().upper()
     if zone not in {"SE1", "SE2", "SE3", "SE4"}:
         raise HTTPException(
@@ -204,11 +217,11 @@ def build_weekly_forecast(zone_code: str, days_count: int = 9) -> dict[str, Any]
         )
 
     df = _load_zone_dataset()
-    today = pd.Timestamp.now(tz="UTC").normalize()
+    today = pd.Timestamp.now(tz=LOCAL_TIMEZONE).normalize()
+    forecast_dates = _resolve_forecast_dates(today, days_count)
     forecast_days: list[dict[str, Any]] = []
 
-    for offset in range(days_count):
-        target_day = today + pd.Timedelta(days=offset)
+    for target_day in forecast_dates:
         day_weather = _get_daily_weather_summary(zone, target_day, df)
         day_timestamp = target_day + pd.Timedelta(hours=12)
         feature_row = _get_feature_row(zone, day_timestamp, df)

@@ -173,11 +173,6 @@ function WeeklyForecastChart({ forecast }: WeeklyForecastChartProps) {
         </div>
       </div>
 
-      <div className="mt-5 rounded-xl border border-[var(--border)] bg-[var(--surface-soft)] p-4 text-sm text-[var(--text)]">
-        <h4 className="m-0 font-semibold">{t.results.weeklyForecast.priceLevels}</h4>
-        <p className="mb-0 mt-2 leading-6">{t.results.weeklyForecast.levelExplanation}</p>
-      </div>
-
       <div className="mt-5 rounded-xl border border-[var(--border)] bg-[var(--surface-soft)] p-4 text-sm leading-6 text-[var(--text)]">
         <strong className="font-semibold">
           {t.results.weeklyForecast.bestDays}
@@ -185,6 +180,11 @@ function WeeklyForecastChart({ forecast }: WeeklyForecastChartProps) {
         <p className="mt-2 mb-0 text-[var(--text-muted)]">
           {recommendationText}
         </p>
+      </div>
+
+      <div className="mt-5 rounded-xl border border-[var(--border)] bg-[var(--surface-soft)] p-4 text-sm text-[var(--text)]">
+        <h4 className="m-0 font-semibold">{t.results.weeklyForecast.priceLevels}</h4>
+        <p className="mb-0 mt-2 leading-6">{t.results.weeklyForecast.levelExplanation}</p>
       </div>
 
       <p className="mt-4 text-xs leading-5 text-[var(--text-muted)]">
