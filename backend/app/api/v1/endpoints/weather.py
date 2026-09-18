@@ -6,25 +6,26 @@ from fastapi import APIRouter, HTTPException, Query
 from pydantic import BaseModel
 
 router = APIRouter(
+    prefix="/weather",
     tags=["weather"],
 )
 
 
-# Robust identifiering av dataset i Docker eller lokalt
-def resolve_dataset_path() -> Path:
-    candidates = [
-        Path("/app/dataset/all_zones_complete.csv"),
-        Path("/dataset/all_zones_complete.csv"),
-        Path(__file__).resolve().parents[4] / "dataset" / "all_zones_complete.csv",
-        Path.cwd() / "dataset" / "all_zones_complete.csv",
-    ]
-    for p in candidates:
-        if p.is_file():
-            return p
-    return candidates[0]
+CURRENT_FILE = Path(__file__).resolve()
+# Säkerställ dynamisk rot: /app i container eller Predictor-roten lokalt
+CONTAINER_PATH = Path("/app/dataset/all_zones_complete.csv")
+LOCAL_ROOT_PATH = CURRENT_FILE.parents[5] / "dataset" / "all_zones_complete.csv"
+FALLBACK_PARENT_PATH = CURRENT_FILE.parents[4] / "dataset" / "all_zones_complete.csv"
 
+if CONTAINER_PATH.is_file():
+    DATASET_PATH = CONTAINER_PATH
+elif LOCAL_ROOT_PATH.is_file():
+    DATASET_PATH = LOCAL_ROOT_PATH
+elif FALLBACK_PARENT_PATH.is_file():
+    DATASET_PATH = FALLBACK_PARENT_PATH
+else:
+    DATASET_PATH = Path("dataset/all_zones_complete.csv").resolve()
 
-DATASET_PATH = resolve_dataset_path()
 
 ZONE_COORDINATES = {
     "SE1": (65.58, 22.15),
@@ -64,10 +65,13 @@ def get_weather_type(
 ) -> str:
     if precipitation_mm >= 8:
         return "heavyRain"
+
     if precipitation_mm > 0.5:
         return "rain"
+
     if wind_speed_kmh >= 35:
         return "cloudy"
+
     return "clear"
 
 
@@ -81,11 +85,11 @@ def get_day_name(date: pd.Timestamp) -> str:
         5: "Lör",
         6: "Sön",
     }
+
     return day_names[date.dayofweek]
 
 
-@router.get("/weather", response_model=WeatherResponse)
-@router.get("/weather/", response_model=WeatherResponse, include_in_schema=False)
+@router.get("", response_model=WeatherResponse)
 def get_weather(
     zone: str = Query(
         ...,
@@ -100,20 +104,20 @@ def get_weather(
             detail="Invalid electricity area. Use SE1, SE2, SE3 or SE4.",
         )
 
-    # Leta upp filen dynamiskt om den nyss skapats av schedulern
-    dataset_file = resolve_dataset_path()
-    if not dataset_file.is_file():
+    if not DATASET_PATH.is_file():
         raise HTTPException(
             status_code=404,
-            detail=f"Weather dataset not found at {dataset_file}.",
+            detail=f"Weather dataset not found at {DATASET_PATH}.",
         )
 
     try:
-        df = pd.read_csv(dataset_file)
+        df = pd.read_csv(DATASET_PATH)
+
         df["timestamp"] = pd.to_datetime(
             df["timestamp"],
             utc=True,
         )
+
     except Exception as error:
         raise HTTPException(
             status_code=500,
@@ -165,9 +169,16 @@ def get_weather(
         )
 
     today = pd.Timestamp.now(tz="UTC").normalize()
+
     weather["date"] = weather["timestamp"].dt.normalize()
 
     future_weather = weather[weather["date"] >= today].copy()
+
+    # Fallback om framtida datum saknas (lokalt eller vid fördröjd synk)
+    if future_weather.empty:
+        max_date = weather["date"].max()
+        start_date = max_date - pd.Timedelta(days=6)
+        future_weather = weather[weather["date"] >= start_date].copy()
 
     if future_weather.empty:
         raise HTTPException(
@@ -192,7 +203,9 @@ def get_weather(
     for _, row in daily.iterrows():
         date = row["date"]
 
-        day_weather = future_weather[future_weather["date"] == date].sort_values("timestamp")
+        day_weather = future_weather[future_weather["date"] == date].sort_values(
+            "timestamp"
+        )
 
         precipitation = max(
             0.0,
