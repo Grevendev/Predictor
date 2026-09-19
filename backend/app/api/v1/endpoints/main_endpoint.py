@@ -2,7 +2,8 @@ from typing import List
 from fastapi import APIRouter, HTTPException, Query
 from pydantic import BaseModel
 import requests
-
+from app.core.config import settings
+from app.core.limiter import limiter
 # Importerar dynamisk data för UI/Frontend (från den första filen)
 from app.ml.features import get_dynamic_forecast
 
@@ -115,6 +116,7 @@ def get_zone_from_coordinates(lat: float, lon: float) -> dict[str, str]:
 
 
 @router.get("/spot-check", response_model=LocationZoneResponse)
+@limiter.limit(settings.RATE_LIMIT_EXTRA
 def lookup_zone(
     location: str = Query(
         ..., description="Svensk stad eller tätort, t.ex. 'Malmö' eller 'Lund'"

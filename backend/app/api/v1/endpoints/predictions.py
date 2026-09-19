@@ -49,7 +49,8 @@
 from fastapi import APIRouter
 from pydantic import BaseModel
 from typing import Union, Dict, Any
-
+from app.core.config import settings
+from app.core.limiter import limiter
 from app.ml.inference import (
     predict_price,
     predict_optimal_hour,
@@ -103,5 +104,6 @@ def prediction_health():
 
 
 @router.post("/predict")
+@limiter.limit(settings.RATE_LIMIT_EXTRA)
 def predict(request: PredictionRequest):
     return run_prediction(request)

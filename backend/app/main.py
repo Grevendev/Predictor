@@ -1,6 +1,10 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
+from app.core.limiter import limiter
+from fastapi.responses import JSONResponse
+from slowapi.errors import RateLimitExceeded
+
 from app.api.v1.endpoints import predictions, energy_areas, main_endpoint, weather
 
 app = FastAPI(
@@ -10,6 +14,25 @@ app = FastAPI(
     redoc_url="/api/redoc",
     openapi_url="/api/openapi.json",
 )
+
+# Registrera limiter i app-state
+app.state.limiter = limiter
+
+
+@app.exception_handler(RateLimitExceeded)
+async def rate_limit_handler(request: Request, exc: RateLimitExceeded):
+    response = JSONResponse(
+        status_code=429,
+        content={
+            "error": "Too Many Requests",
+            "message": "Du har gjort för många anrop på kort tid. Försök igen om en stund. / You have made to many request on short time",
+            "detail": str(exc.detail),
+        },
+    )
+    if hasattr(exc, "retry_after") and exc.retry_after:
+        response.headers["Retry-After"] = str(exc.retry_after)
+    return response
+
 
 # Konfigurera CORS för frontend
 origins = [origin.strip() for origin in settings.CORS_ORIGINS.split(",")]

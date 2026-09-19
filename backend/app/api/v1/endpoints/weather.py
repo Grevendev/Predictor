@@ -4,6 +4,8 @@ from typing import List
 import pandas as pd
 from fastapi import APIRouter, HTTPException, Query
 from pydantic import BaseModel
+from app.core.config import settings
+from app.core.limiter import limiter
 
 router = APIRouter(
     prefix="/weather",
@@ -90,6 +92,7 @@ def get_day_name(date: pd.Timestamp) -> str:
 
 
 @router.get("", response_model=WeatherResponse)
+@limiter.limit(settings.RATE_LIMIT_WEATHER)
 def get_weather(
     zone: str = Query(
         ...,
