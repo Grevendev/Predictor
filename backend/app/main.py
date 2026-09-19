@@ -3,6 +3,17 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
 from app.api.v1.endpoints import predictions, energy_areas, main_endpoint, weather
 
+from app.core.logging import(
+    setup_logging,
+    setup_monitoring,
+    StructuredLoggingMiddleware
+)
+
+
+# Initiera JSON-loggning
+setup_logging()
+
+
 app = FastAPI(
     title=settings.PROJECT_NAME,
     version=settings.VERSION,
@@ -10,6 +21,12 @@ app = FastAPI(
     redoc_url="/api/redoc",
     openapi_url="/api/openapi.json",
 )
+
+# Koppla på middleware för Request ID och loggning
+app.add_middleware(StructuredLoggingMiddleware)
+
+# Aktivera Prometheus /metrics endpoint
+setup_monitoring(app)
 
 # Konfigurera CORS för frontend
 origins = [origin.strip() for origin in settings.CORS_ORIGINS.split(",")]
@@ -48,11 +65,13 @@ app.include_router(
 
 
 # Flytta grundläggande endpoints under /api
+@app.get("/")
 @app.get("/api")
 def read_root():
     return {"message": "Välkommen till FastAPI-backenden för din ML-applikation!"}
 
 
+@app.get("/health")
 @app.get("/api/health")
 def health_check():
     return {"status": "healthy"}
