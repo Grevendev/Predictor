@@ -12,9 +12,15 @@ services:
     environment:
       - FASTAPI_ENV=production
       - PYTHONPATH=/app
+      - ENABLE_METRICS=true
     volumes:
       - ./models_bin:/models_bin:ro
       - ./dataset:/app/dataset
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
     networks:
       - internal-net
       - traefik-net
