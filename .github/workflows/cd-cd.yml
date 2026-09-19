@@ -201,6 +201,9 @@ jobs:
             echo "ENTSOE_API_KEY=${ENTSOE_API_KEY}" > backend/.env
             echo "FASTAPI_ENV=${FASTAPI_ENV}" >> backend/.env
             echo "PYTHONPATH=/app" >> backend/.env
+            echo "ENABLE_METRICS=true" >> backend/.env
+
+            # Rot-env för compose / Docker Hub
             echo "DOCKER_USERNAME=${DOCKER_USERNAME}" > .env
 
             echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin
