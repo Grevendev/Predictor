@@ -1,0 +1,6 @@
+models_bin/*.pkl filter=lfs diff=lfs merge=lfs -text
+models_bin/*.onnx filter=lfs diff=lfs merge=lfs -text
+models_bin/*.pt filter=lfs diff=lfs merge=lfs -text
+models_bin/*.h5 filter=lfs diff=lfs merge=lfs -text
+models_bin/*.bin filter=lfs diff=lfs merge=lfs -text
+models_bin/*.joblib filter=lfs diff=lfs merge=lfs -text

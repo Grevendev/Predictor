@@ -58,11 +58,20 @@ MANIFEST
 *.sw?
 
 # Machine Learning Binaries & Large Data
-models_bin/*.pkl
-models_bin/*.pt
-models_bin/*.onnx
-models_bin/*.h5
-models_bin/*.bin
+# models_bin/*.pkl
+# models_bin/*.pt
+# models_bin/*.onnx
+# models_bin/*.h5
+# models_bin/*.bin
+data/
+*.csv
+*.parquet
+# models_bin/*.pkl
+# models_bin/*.pt
+# models_bin/*.onnx
+# models_bin/*.h5
+# models_bin/*.bin
+# models_bin/*.joblib
 data/
 *.csv
 *.parquet
@@ -72,5 +81,11 @@ frontend/node_modules/
 frontend/dist/
 frontend/build/
 frontend/.vite/
+frontend/.env
 frontend/.env.local
 frontend/.env.*.local
+
+
+backend/scripts/.cache/
+backend/prev_dataset/
+*.sqlite
