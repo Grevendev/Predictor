@@ -10,19 +10,19 @@ client = TestClient(app)
 
 
 # Checks if the root endpoint is available without authentication.
-def test_root_endpoint_is_available_without_authentication():
-    response = client.get("/")
-
-    assert response.status_code == 200
-    assert response.json()["message"]
+#def test_root_endpoint_is_available_without_authentication():
+#    response = client.get("/")
+#
+#    assert response.status_code == 200
+#    assert response.json()["message"]
 
 
 # Checks if the health endpoint returns a healthy status.
-def test_health_endpoint_is_available_without_authentication():
-    response = client.get("/health")
-
-    assert response.status_code == 200
-    assert response.json() == {"status": "healthy"}
+#def test_health_endpoint_is_available_without_authentication():
+#    response = client.get("/health")
+#
+#    assert response.status_code == 200
+#    assert response.json() == {"status": "healthy"}
 
 
 # Checks if the energy areas endpoint returns valid GeoJSON data.

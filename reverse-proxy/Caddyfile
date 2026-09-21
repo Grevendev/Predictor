@@ -1,0 +1,12 @@
+{$DOMAIN} {
+    # Skicka API-anrop till backend och strippa /predictor så den tar emot /api/...
+    handle_path /predictor/api/* {
+        rewrite * /api{path}
+        reverse_proxy predictor_api_prod:8000
+    }
+
+    # Frontend (behåller /predictor/)
+    handle /predictor/* {
+        reverse_proxy predictor_ui_prod:80
+    }
+}

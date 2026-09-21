@@ -46,6 +46,26 @@ export const translations = {
       highestPrice: "Högsta pris",
       averagePrice: "Genomsnittligt pris",
       forecast: "Prognos",
+      weeklyForecast: {
+        label: "Veckoprognos",
+        title: "Veckoprognos",
+        dailyAveragePrice: "Prognostiserat dagsmedelpris",
+        priceUnit: "öre/kWh",
+        priceLevels: "Prisnivåer",
+        low: "Låg",
+        medium: "Medel",
+        high: "Hög",
+        levelExplanation:
+          "Stapelhöjden visar det prognostiserade dagsmedelpriset. Färgen visar om modellen klassificerar prisnivån som låg, medel eller hög för det valda området.",
+        bestDays: "Bästa dagarna för elanvändning",
+        recommendationSingle:
+          "{days} ser ut att vara en bra dag för flexibel elanvändning baserat på den kommande prognosen.",
+        recommendation:
+          "{days} ser ut att vara bra dagar för flexibel elanvändning baserat på den kommande prognosen.",
+        and: "och",
+        forecastDisclaimer:
+          "Priserna är prognostiserade dagsmedelvärden och kan förändras när nya pris- och väderdata blir tillgängliga.",
+      },
 
       priceChart: {
         optimalTime: "Optimal tid",
@@ -495,6 +515,26 @@ export const translations = {
       highestPrice: "Highest price",
       averagePrice: "Average price",
       forecast: "Forecast",
+      weeklyForecast: {
+        label: "Weekly Forecast",
+        title: "Weekly Forecast",
+        dailyAveragePrice: "Forecast daily average price",
+        priceUnit: "öre/kWh",
+        priceLevels: "Price levels",
+        low: "Low",
+        medium: "Medium",
+        high: "High",
+        levelExplanation:
+          "Bar height shows the forecast daily average price. The colour shows whether the model classifies the price level as low, medium or high for the chosen specific area.",
+        bestDays: "Best days for electricity use",
+        recommendationSingle:
+          "{days} looks like a good day for flexible electricity use based on the upcoming forecast.",
+        recommendation:
+          "{days} look like good days for flexible electricity use based on the upcoming forecast.",
+        and: "and",
+        forecastDisclaimer:
+          "Prices are forecast daily averages and may change as new price and weather data becomes available.",
+      },
 
       priceChart: {
         optimalTime: "Optimal time",

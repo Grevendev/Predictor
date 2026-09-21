@@ -14,6 +14,32 @@ export interface PricePrediction {
   day: "today" | "tomorrow";
 }
 
+export type ForecastClassification = "low" | "medium" | "high";
+
+export interface WeeklyForecastDay {
+  date: string;
+  day_name: string;
+  predicted_price: number;
+  classification: ForecastClassification;
+  recommended: boolean;
+  weather: {
+    temperature_c: number;
+    wind_speed_kmh: number;
+    rain_mm: number;
+  };
+  energy_area: "SE1" | "SE2" | "SE3" | "SE4";
+}
+
+export interface WeeklyForecastResponse {
+  zone: "SE1" | "SE2" | "SE3" | "SE4";
+  days: WeeklyForecastDay[];
+  recommendation: {
+    title: string;
+    text: string;
+    best_days: string[];
+  };
+}
+
 export interface Prediction {
   name: string;
   city: string;

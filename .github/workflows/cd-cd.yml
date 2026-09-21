@@ -78,16 +78,14 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
         with:
-          lfs: true # Krävs för att dra ned faktiska modellfiler och inte bara pointer-filer
+          lfs: true
 
-      # Generera en tidsstämpel (ÅÅÅÅMMDD-TTMM) och kort SHA
       - name: Generate timestamp and short sha
         id: meta
         run: |
           echo "TIMESTAMP=$(date +'%Y%m%d-%H%M')" >> $GITHUB_OUTPUT
           echo "SHORT_SHA=$(echo ${{ github.sha }} | cut -c1-7)" >> $GITHUB_OUTPUT
 
-      # Hämta Docker Hub-inloggningen från Vault
       - name: Import Secrets from Vault
         uses: hashicorp/vault-action@v3
         with:
@@ -99,18 +97,15 @@ jobs:
             kv/data/server-deploy DOCKER_USERNAME | DOCKER_USERNAME ;
             kv/data/server-deploy DOCKER_PASSWORD | DOCKER_PASSWORD
 
-      # Logga in mot Docker Hub
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ env.DOCKER_USERNAME }}
           password: ${{ env.DOCKER_PASSWORD }}
 
-      # Konfigurera Docker Buildx för snabbare byggen och lager-caching
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      # Bygg och pusha backend
       - name: Build & Push backend Image
         uses: docker/build-push-action@v5
         with:
@@ -124,7 +119,6 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      # Bygg och pusha frontend
       - name: Build & Push Frontend Image
         uses: docker/build-push-action@v5
         with:
@@ -148,11 +142,9 @@ jobs:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/deploy'
     steps:
-      # Nödvändigt så att löparen har compose.prod.yml innan den scp:as över
       - name: Check out repository
         uses: actions/checkout@v4
 
-      # Hämta hemligheter från Vault
       - name: Import Secrets from Vault
         uses: hashicorp/vault-action@v3
         with:
@@ -169,18 +161,16 @@ jobs:
             kv/data/server-deploy DOCKER_PASSWORD | DOCKER_PASSWORD ;
             kv/data/server-deploy ENTSOE_API_KEY | ENTSOE_API_KEY
 
-      # Kopiera över uppdaterad compose-fil till VPS
-      - name: Copy compose.prod.yml to VPS
+      - name: Copy Compose and Proxy files to VPS
         uses: appleboy/scp-action@master
         with:
           host: ${{ env.SERVER_HOST }}
           username: ${{ env.SERVER_USER }}
           port: ${{ env.SERVER_PORT || 22 }}
           key: ${{ env.SERVER_PRIVATE_KEY }}
-          source: "compose.prod.yml"
+          source: "docker-compose.prod.yml,reverse-proxy/**"
           target: "/home/repos/predictor"
 
-      # Kör utrullning på VPS
       - name: Deploy on VPS
         uses: appleboy/ssh-action@master
         env:
@@ -188,12 +178,16 @@ jobs:
           FASTAPI_ENV: "production"
           DOCKER_USERNAME: ${{ env.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ env.DOCKER_PASSWORD }}
+          DOMAIN: "jarllindquist.com"
+          CERT_RESOLVER: "myresolver"
+          PROXY_NETWORK: "traefik-net"
+          PROXY_TYPE: ${{ vars.REVERSE_PROXY_TYPE || 'traefik' }}
         with:
           host: ${{ env.SERVER_HOST }}
           username: ${{ env.SERVER_USER }}
           port: ${{ env.SERVER_PORT || 22 }}
           key: ${{ env.SERVER_PRIVATE_KEY }}
-          envs: ENTSOE_API_KEY,FASTAPI_ENV,DOCKER_USERNAME,DOCKER_PASSWORD
+          envs: ENTSOE_API_KEY,FASTAPI_ENV,DOCKER_USERNAME,DOCKER_PASSWORD,DOMAIN,CERT_RESOLVER,PROXY_NETWORK,PROXY_TYPE
           script: |
             cd /home/repos/predictor
 
@@ -203,11 +197,25 @@ jobs:
             echo "PYTHONPATH=/app" >> backend/.env
             echo "ENABLE_METRICS=true" >> backend/.env
 
-            # Rot-env för compose / Docker Hub
-            echo "DOCKER_USERNAME=${DOCKER_USERNAME}" > .env
+            cat <<EOF > .env
+            DOCKER_USERNAME=${DOCKER_USERNAME}
+            DOMAIN=${DOMAIN}
+            CERT_RESOLVER=${CERT_RESOLVER}
+            PROXY_NETWORK=${PROXY_NETWORK}
+            EOF
 
             echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin
 
-            docker compose -f compose.prod.yml pull
-            docker compose -f compose.prod.yml up -d --force-recreate
+            PROXY_CHOICE="${PROXY_TYPE:-traefik}"
+            OVERLAY_FILE="reverse-proxy/docker-compose.${PROXY_CHOICE}.yml"
+
+            if [ ! -f "$OVERLAY_FILE" ]; then
+              echo "Varning: Hittade inte overlay-filen $OVERLAY_FILE, faller tillbaka på traefik."
+              OVERLAY_FILE="reverse-proxy/docker-compose.traefik.yml"
+            fi
+
+            echo "Startar stack med: docker-compose.prod.yml + $OVERLAY_FILE"
+
+            docker compose -f docker-compose.prod.yml -f "$OVERLAY_FILE" pull
+            docker compose -f docker-compose.prod.yml -f "$OVERLAY_FILE" up -d --force-recreate
             docker image prune -f
