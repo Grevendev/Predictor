@@ -17,13 +17,20 @@ from app.ml.inference import (
 
 router = APIRouter()
 
-# Robust sökväg till datasetet (letar i /app/dataset först för Docker, därefter relativt för lokal dev)
-DOCKER_DATASET = Path("/app/dataset/all_zones_complete.csv")
-LOCAL_DATASET = (
-    Path(__file__).resolve().parents[4] / "dataset" / "all_zones_complete.csv"
-)
 
-DATASET_PATH = DOCKER_DATASET if DOCKER_DATASET.is_file() else LOCAL_DATASET
+# Leta efter datasetet på kända platser i prioritetsordning:
+POSSIBLE_PATHS = [
+    Path("/app/dataset/all_zones_complete.csv"),  # Docker container
+    Path(__file__).resolve().parents[5]
+    / "dataset"
+    / "all_zones_complete.csv",  # Lokal dev: repo-rot/dataset
+    Path(__file__).resolve().parents[4]
+    / "dataset"
+    / "all_zones_complete.csv",  # Lokal dev: backend/dataset
+    Path("dataset/all_zones_complete.csv").resolve(),  # Från arbetskatalogen
+]
+
+DATASET_PATH = next((p for p in POSSIBLE_PATHS if p.is_file()), POSSIBLE_PATHS[1])
 
 LOCAL_TIMEZONE = ZoneInfo("Europe/Stockholm")
 CLUSTER_MAP = {
