@@ -1,6 +1,7 @@
 // 1. Om en specifik URL anges i .env (t.ex. vid lokal Docker utan proxy), använd den.
 // 2. Annars är basen alltid "/api/v1" – Vites proxy tar det lokalt, Traefik tar det i prod.
-const BASE_URL = import.meta.env.VITE_API_BASE_URL || "/api/v1";
+const computedBase = `${import.meta.env.BASE_URL.replace(/\/$/, "")}/api/v1`;
+const BASE_URL = import.meta.env.VITE_API_BASE_URL || computedBase;
 
 export const api = {
   async get<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
