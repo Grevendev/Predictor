@@ -1,0 +1,22 @@
+services:
+  backend:
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=${PROXY_NETWORK:-traefik-net}"
+      - "traefik.http.routers.predictor-api.rule=Host(`${DOMAIN}`) && PathPrefix(`/predictor/api`)"
+      - "traefik.http.routers.predictor-api.entrypoints=websecure"
+      - "traefik.http.routers.predictor-api.tls.certresolver=${CERT_RESOLVER:-myresolver}"
+      - "traefik.http.routers.predictor-api.priority=1001"
+      - "traefik.http.routers.predictor-api.middlewares=predictor-api-strip"
+      - "traefik.http.middlewares.predictor-api-strip.stripprefix.prefixes=/predictor"
+      - "traefik.http.services.predictor-api.loadbalancer.server.port=8000"
+
+  frontend:
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=${PROXY_NETWORK:-traefik-net}"
+      - "traefik.http.routers.predictor-ui.rule=Host(`${DOMAIN}`) && PathPrefix(`/predictor`)"
+      - "traefik.http.routers.predictor-ui.entrypoints=websecure"
+      - "traefik.http.routers.predictor-ui.tls.certresolver=${CERT_RESOLVER:-myresolver}"
+      - "traefik.http.routers.predictor-ui.priority=1000"
+      - "traefik.http.services.predictor-ui.loadbalancer.server.port=80"
