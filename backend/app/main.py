@@ -19,8 +19,8 @@ app = FastAPI(
     title=settings.PROJECT_NAME,
     version=settings.VERSION,
     root_path=settings.ROOT_PATH,
-    docs_url="/docs",
-    openapi_url="/openapi.json",
+    docs_url="/api/docs",
+    openapi_url="/api/openapi.json",
 )
 
 # Koppla på middleware för Request ID och strukturerad loggning
