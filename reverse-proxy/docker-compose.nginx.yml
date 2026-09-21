@@ -1,0 +1,18 @@
+services:
+  nginx:
+    image: nginx:alpine
+    container_name: predictor_nginx_prod
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      - DOMAIN=${DOMAIN}
+    volumes:
+      - ./reverse-proxy/nginx.conf:/etc/nginx/templates/default.conf.template:ro
+      - certs:/etc/letsencrypt:ro
+    networks:
+      - proxy-net
+
+volumes:
+  certs:

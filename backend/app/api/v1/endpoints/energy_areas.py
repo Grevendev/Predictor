@@ -1,8 +1,9 @@
 import json
 from pathlib import Path
 
-from fastapi import APIRouter, HTTPException
-
+from fastapi import APIRouter, HTTPException, Request, Response
+from app.core.config import settings
+from app.core.limiter import limiter
 
 router = APIRouter(
     prefix="/energy-areas",
@@ -21,7 +22,8 @@ GEOJSON_FILE = (
 
 
 @router.get("")
-def get_energy_areas():
+@limiter.limit(settings.RATE_LIMIT_ENERGY_AREAS)
+def get_energy_areas(request: Request, response: Response):
     if not GEOJSON_FILE.exists():
         raise HTTPException(
             status_code=404,
