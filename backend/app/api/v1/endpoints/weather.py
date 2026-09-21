@@ -5,19 +5,26 @@ import pandas as pd
 from fastapi import APIRouter, HTTPException, Query
 from pydantic import BaseModel
 
-
 router = APIRouter(
     prefix="/weather",
     tags=["weather"],
 )
 
 
-BASE_DIR = Path(__file__).resolve().parents[5]
+CURRENT_FILE = Path(__file__).resolve()
+# Säkerställ dynamisk rot: /app i container eller Predictor-roten lokalt
+CONTAINER_PATH = Path("/app/dataset/all_zones_complete.csv")
+LOCAL_ROOT_PATH = CURRENT_FILE.parents[5] / "dataset" / "all_zones_complete.csv"
+FALLBACK_PARENT_PATH = CURRENT_FILE.parents[4] / "dataset" / "all_zones_complete.csv"
 
-if Path("/app/dataset").exists():
-    DATASET_PATH = Path("/app/dataset/all_zones_complete.csv")
+if CONTAINER_PATH.is_file():
+    DATASET_PATH = CONTAINER_PATH
+elif LOCAL_ROOT_PATH.is_file():
+    DATASET_PATH = LOCAL_ROOT_PATH
+elif FALLBACK_PARENT_PATH.is_file():
+    DATASET_PATH = FALLBACK_PARENT_PATH
 else:
-    DATASET_PATH = BASE_DIR / "dataset" / "all_zones_complete.csv"
+    DATASET_PATH = Path("dataset/all_zones_complete.csv").resolve()
 
 
 ZONE_COORDINATES = {
@@ -100,7 +107,7 @@ def get_weather(
     if not DATASET_PATH.is_file():
         raise HTTPException(
             status_code=404,
-            detail="Weather dataset not found.",
+            detail=f"Weather dataset not found at {DATASET_PATH}.",
         )
 
     try:
@@ -129,9 +136,7 @@ def get_weather(
     ]
 
     missing_columns = [
-        column
-        for column in required_columns
-        if column not in df.columns
+        column for column in required_columns if column not in df.columns
     ]
 
     if missing_columns:
@@ -167,9 +172,13 @@ def get_weather(
 
     weather["date"] = weather["timestamp"].dt.normalize()
 
-    future_weather = weather[
-        weather["date"] >= today
-    ].copy()
+    future_weather = weather[weather["date"] >= today].copy()
+
+    # Fallback om framtida datum saknas (lokalt eller vid fördröjd synk)
+    if future_weather.empty:
+        max_date = weather["date"].max()
+        start_date = max_date - pd.Timedelta(days=6)
+        future_weather = weather[weather["date"] >= start_date].copy()
 
     if future_weather.empty:
         raise HTTPException(
@@ -178,8 +187,7 @@ def get_weather(
         )
 
     daily = (
-        future_weather
-        .groupby("date")
+        future_weather.groupby("date")
         .agg(
             temperature_max=(temp_col, "max"),
             temperature_min=(temp_col, "min"),
@@ -195,9 +203,9 @@ def get_weather(
     for _, row in daily.iterrows():
         date = row["date"]
 
-        day_weather = future_weather[
-            future_weather["date"] == date
-        ].sort_values("timestamp")
+        day_weather = future_weather[future_weather["date"] == date].sort_values(
+            "timestamp"
+        )
 
         precipitation = max(
             0.0,

@@ -1,5 +1,4 @@
 import { useState } from "react";
-
 import { useLanguage } from "../context/LanguageContext";
 
 interface SearchFormProps {
@@ -10,7 +9,7 @@ function SearchForm({ onSearch }: SearchFormProps) {
   const [city, setCity] = useState("");
   const { translations: t } = useLanguage();
 
-  function handleSubmit(event: React.SubmitEvent<HTMLFormElement>) {
+  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     const trimmedCity = city.trim();
@@ -20,7 +19,7 @@ function SearchForm({ onSearch }: SearchFormProps) {
     }
 
     onSearch(trimmedCity);
-    setCity("")
+    setCity("");
   }
 
   return (
@@ -30,7 +29,7 @@ function SearchForm({ onSearch }: SearchFormProps) {
         flex
         w-full
         max-w-[680px]
-        items-end
+        items-center
         gap-3
         rounded-[18px]
         border
@@ -66,6 +65,7 @@ function SearchForm({ onSearch }: SearchFormProps) {
 
       <input
         className="
+          h-14
           min-w-0
           flex-1
           rounded-xl
@@ -97,6 +97,7 @@ function SearchForm({ onSearch }: SearchFormProps) {
       <button
         className="
           h-14
+          shrink-0
           rounded-xl
           border-0
           bg-[var(--button)]
