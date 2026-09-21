@@ -52,9 +52,11 @@ from typing import Any, Dict, Union
 from zoneinfo import ZoneInfo
 
 import pandas as pd
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, HTTPException, Query, Request
 from pydantic import BaseModel
-
+from typing import Union, Dict, Any
+from app.core.config import settings
+from app.core.limiter import limiter
 from app.ml.inference import (
     predict_cluster,
     predict_optimal_hour,
@@ -285,7 +287,9 @@ def prediction_health():
 
 @router.get("/forecast")
 @router.get("/weekly-forecast")
+@limiter.limit(settings.RATE_LIMIT_EXTRA)
 def weekly_forecast(
+    request: Request,
     zone: str = Query(
         default="SE3",
         description="Electricity area to forecast, e.g. SE1, SE2, SE3 or SE4.",
@@ -295,5 +299,6 @@ def weekly_forecast(
 
 
 @router.post("/predict")
-def predict(request: PredictionRequest):
-    return run_prediction(request)
+@limiter.limit(settings.RATE_LIMIT_EXTRA)
+def predict(request: Request, payload: PredictionRequest):
+    return run_prediction(payload)
