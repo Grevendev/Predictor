@@ -1,0 +1,67 @@
+services:
+  # ---------------------------------------------------------------------------
+  # BACKEND (FastAPI API)
+  # ---------------------------------------------------------------------------
+  backend:
+    image: ${DOCKER_USERNAME}/predictor-backend:latest
+    container_name: predictor_api_prod
+    restart: always
+    env_file:
+      - ./backend/.env
+    environment:
+      - FASTAPI_ENV=production
+      - PYTHONPATH=/app
+      - ENABLE_METRICS=true
+    volumes:
+      - ./models_bin:/models_bin:ro
+      - ./dataset:/app/dataset
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    networks:
+      - internal-net
+      - proxy-net
+
+  # ---------------------------------------------------------------------------
+  # DATA SCHEDULER
+  # ---------------------------------------------------------------------------
+  data-scheduler:
+    image: ${DOCKER_USERNAME}/predictor-backend:latest
+    container_name: predictor_scheduler_prod
+    restart: unless-stopped
+    command: python scripts/get_last_date.py
+    env_file:
+      - ./backend/.env
+    environment:
+      - PYTHONUNBUFFERED=1
+      - PYTHONPATH=/app
+    volumes:
+      - ./dataset:/app/dataset
+    networks:
+      - internal-net
+
+  # ---------------------------------------------------------------------------
+  # FRONTEND (React / Nginx)
+  # ---------------------------------------------------------------------------
+  frontend:
+    image: ${DOCKER_USERNAME}/predictor-frontend:latest
+    container_name: predictor_ui_prod
+    restart: always
+    depends_on:
+      - backend
+    networks:
+      - internal-net
+      - proxy-net
+
+volumes:
+  shared-data:
+    driver: local
+
+networks:
+  internal-net:
+    driver: bridge
+  proxy-net:
+    name: ${PROXY_NETWORK:-traefik-net}
+    external: true
