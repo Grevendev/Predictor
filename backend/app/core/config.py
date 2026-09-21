@@ -5,11 +5,15 @@ class Settings(BaseSettings):
     VERSION: str = "1.0.0"
     DEBUG: bool = True
     ENVIRONMENT: str = "development"
-    
+
     HOST: str = "0.0.0.0"
     PORT: int = 8000
     CORS_ORIGINS: str = "http://localhost:5173"
 
+    RATE_LIMIT_DEFAULT: str = "100/minute"
+    RATE_LIMIT_EXTRA: str = "20/minute"
+    RATE_LIMIT_WEATHER: str = "30/minute"
+    RATE_LIMIT_ENERGY_AREAS: str = "60/minute"
     DATABASE_URL: str = ""
     SECRET_KEY: str = ""
     ALGORITHM: str = "HS256"
