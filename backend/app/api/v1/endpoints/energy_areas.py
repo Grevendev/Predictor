@@ -10,7 +10,7 @@ router = APIRouter(
 )
 
 
-BASE_DIR = Path(__file__).resolve().parents[3]
+BASE_DIR = Path(__file__).resolve().parents[4]
 
 GEOJSON_FILE = (
     BASE_DIR
