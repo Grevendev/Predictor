@@ -83,11 +83,7 @@ MANIFEST
 !/data/geography/
 !/data/geography/**
 
-# Ignore ZIP files everywhere else
-*.zip
 
-# Ignore Shapefiles
-*.shp
 
 
 *.csv
