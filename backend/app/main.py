@@ -18,9 +18,9 @@ setup_logging()
 app = FastAPI(
     title=settings.PROJECT_NAME,
     version=settings.VERSION,
-    docs_url="/api/docs",
-    redoc_url="/api/redoc",
-    openapi_url="/api/openapi.json",
+    root_path=settings.ROOT_PATH,
+    docs_url="/docs",
+    openapi_url="/openapi.json",
 )
 
 # Koppla på middleware för Request ID och strukturerad loggning
