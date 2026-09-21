@@ -200,7 +200,7 @@ jobs:
             echo "FASTAPI_ENV=${FASTAPI_ENV}" >> backend/.env
             echo "PYTHONPATH=/app" >> backend/.env
             echo "ENABLE_METRICS=true" >> backend/.env
-            echo "ROOT_PATH=/predictor/api" >> backend/.env  
+            echo "ROOT_PATH=/predictor" >> backend/.env
 
             cat <<EOF > .env
             DOCKER_USERNAME=${DOCKER_USERNAME}
