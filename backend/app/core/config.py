@@ -11,7 +11,7 @@ class Settings(BaseSettings):
     CORS_ORIGINS: str = "http://localhost:5173"
 
     RATE_LIMIT_DEFAULT: str = "100/minute"
-    RATE_LIMIT_EXTRA = str = "20/minute"
+    RATE_LIMIT_EXTRA: str = "20/minute"
     RATE_LIMIT_WEATHER: str = "30/minute"
     RATE_LIMIT_ENERGY_AREAS: str = "60/minute"
     DATABASE_URL: str = ""
