@@ -8,12 +8,25 @@ function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const { translations: t } = useLanguage();
 
+  const basePath = import.meta.env.BASE_URL.replace(/\/$/, "");
+
   function toggleMenu() {
     setMenuOpen((current) => !current);
   }
 
   function closeMenu() {
     setMenuOpen(false);
+  }
+
+  function handleNavigate(path: string) {
+    return (event: React.MouseEvent<HTMLAnchorElement>) => {
+      event.preventDefault();
+      closeMenu();
+
+      const targetUrl = `${basePath}${path}` || "/";
+      window.history.pushState({}, "", targetUrl);
+      window.dispatchEvent(new PopStateEvent("popstate"));
+    };
   }
 
   return (
@@ -52,8 +65,8 @@ function Header() {
             transition-colors
             duration-250
           "
-          href="/"
-          onClick={closeMenu}
+          href={`${basePath}/`}
+          onClick={handleNavigate("/")}
         >
           PREDICTOR
         </a>
@@ -125,8 +138,8 @@ function Header() {
               max-[700px]:py-[15px]
               max-[700px]:hover:bg-[var(--surface-soft)]
             "
-            href="/"
-            onClick={closeMenu}
+            href={`${basePath}/`}
+            onClick={handleNavigate("/")}
           >
             {t.navigation.home}
           </a>
@@ -146,8 +159,8 @@ function Header() {
               max-[700px]:py-[15px]
               max-[700px]:hover:bg-[var(--surface-soft)]
             "
-            href="/about"
-            onClick={closeMenu}
+            href={`${basePath}/about`}
+            onClick={handleNavigate("/about")}
           >
             {t.navigation.about}
           </a>
@@ -167,8 +180,8 @@ function Header() {
               max-[700px]:py-[15px]
               max-[700px]:hover:bg-[var(--surface-soft)]
             "
-            href="/how-it-works"
-            onClick={closeMenu}
+            href={`${basePath}/how-it-works`}
+            onClick={handleNavigate("/how-it-works")}
           >
             {t.navigation.howItWorks}
           </a>
