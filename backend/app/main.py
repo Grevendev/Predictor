@@ -1,11 +1,19 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from app.core.config import settings
-from app.core.limiter import limiter
 from fastapi.responses import JSONResponse
 from slowapi.errors import RateLimitExceeded
 
+from app.core.config import settings
+from app.core.limiter import limiter
 from app.api.v1.endpoints import predictions, energy_areas, main_endpoint, weather
+from app.core.logging import (
+    setup_logging,
+    setup_monitoring,
+    StructuredLoggingMiddleware,
+)
+
+# Initiera JSON-loggning
+setup_logging()
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
@@ -15,7 +23,13 @@ app = FastAPI(
     openapi_url="/api/openapi.json",
 )
 
-# Registrera limiter i app-state
+# Koppla på middleware för Request ID och strukturerad loggning
+app.add_middleware(StructuredLoggingMiddleware)
+
+# Aktivera Prometheus /metrics endpoint
+setup_monitoring(app)
+
+# Registrera SlowAPI limiter i app-state
 app.state.limiter = limiter
 
 
@@ -25,7 +39,7 @@ async def rate_limit_handler(request: Request, exc: RateLimitExceeded):
         status_code=429,
         content={
             "error": "Too Many Requests",
-            "message": "Du har gjort för många anrop på kort tid. Försök igen om en stund. / You have made to many request on short time",
+            "message": "Du har gjort för många anrop på kort tid. Försök igen om en stund. / You have made too many requests in a short time",
             "detail": str(exc.detail),
         },
     )
@@ -45,7 +59,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Registrera API v1 routes (dessa låg redan under /api/v1)
+# Registrera API v1 routes
 app.include_router(
     predictions.router,
     prefix="/api/v1/predictions",
@@ -70,12 +84,14 @@ app.include_router(
 )
 
 
-# Flytta grundläggande endpoints under /api
+# Grundläggande endpoints under /api
+@app.get("/")
 @app.get("/api")
 def read_root():
     return {"message": "Välkommen till FastAPI-backenden för din ML-applikation!"}
 
 
+@app.get("/health")
 @app.get("/api/health")
 def health_check():
     return {"status": "healthy"}

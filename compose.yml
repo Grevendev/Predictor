@@ -10,6 +10,12 @@ services:
     environment:
       - FASTAPI_ENV=development
       - PYTHONPATH=/app
+      - ENABLE_METRICS=true
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
     volumes:
       - ./backend/app:/app/app:ro
       - ./models_bin:/models_bin:ro
