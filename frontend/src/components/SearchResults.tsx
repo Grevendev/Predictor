@@ -1,14 +1,21 @@
+
 import { useEffect, useState, useRef } from "react";
-import type { Prediction } from "../types/Prediction";
+
+import type {
+  Prediction,
+  WeeklyForecastResponse,
+} from "../types/Prediction";
 import type { WeatherDay } from "../types/Weather";
 
 import { getEnergyArea } from "../utils/energyAreaUtils";
 import EnergyAreaInfo from "./EnergyAreaInfo";
 import PriceChart from "./PriceChart";
+import WeeklyForecastChart from "./WeeklyForecastChart";
 import CostSavingTips from "./CostSavingTips";
 import Weather from "../components/Weather/Weather";
 import { useLanguage } from "../context/LanguageContext";
 import { getWeather } from "../services/weatherService";
+import { getWeeklyForecast } from "../services/weeklyForecastService";
 
 interface SearchResultsProps {
   prediction: Prediction;
@@ -21,7 +28,11 @@ function SearchResults({ prediction }: SearchResultsProps) {
 
   const [weatherForecast, setWeatherForecast] = useState<WeatherDay[]>([]);
   const [weatherLoading, setWeatherLoading] = useState(true);
-  const [weatherError, setWeatherError] = useState<string | null>(null);
+  const [weatherError, setWeatherError] = useState<string | null>(
+    null,
+  );
+  const [weeklyForecast, setWeeklyForecast] =
+    useState<WeeklyForecastResponse | null>(null);
 
   // Scrolla mjukt ner så fort ett nytt resultat erhålls
   useEffect(() => {
@@ -65,7 +76,21 @@ function SearchResults({ prediction }: SearchResultsProps) {
       }
     }
 
+    async function loadWeeklyForecast() {
+      try {
+        const forecast = await getWeeklyForecast(prediction.energyArea);
+        if (!cancelled) {
+          setWeeklyForecast(forecast);
+        }
+      } catch {
+        if (!cancelled) {
+          setWeeklyForecast(null);
+        }
+      }
+    }
+
     loadWeather();
+    loadWeeklyForecast();
 
     return () => {
       cancelled = true;
@@ -227,6 +252,10 @@ function SearchResults({ prediction }: SearchResultsProps) {
           <PriceChart predictions={prediction.predictions} />
         </div>
       </div>
+
+      {weeklyForecast && (
+        <WeeklyForecastChart forecast={weeklyForecast} />
+      )}
 
       {/* Weather - full width */}
       <div
