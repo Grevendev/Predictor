@@ -1,5 +1,5 @@
 from typing import List
-from fastapi import APIRouter, HTTPException, Query, Request
+from fastapi import APIRouter, HTTPException, Query, Request, Response
 from pydantic import BaseModel
 import requests
 from app.core.config import settings
@@ -118,7 +118,8 @@ def get_zone_from_coordinates(lat: float, lon: float) -> dict[str, str]:
 @router.get("/spot-check", response_model=LocationZoneResponse)
 @limiter.limit(settings.RATE_LIMIT_EXTRA)
 def lookup_zone(
-    request: Request,
+    request: Request, 
+    response: Response,
     location: str = Query(
         ..., description="Svensk stad eller tätort, t.ex. 'Malmö' eller 'Lund'"
     ),

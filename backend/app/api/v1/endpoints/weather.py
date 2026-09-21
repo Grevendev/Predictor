@@ -2,7 +2,7 @@ from pathlib import Path
 from typing import List
 
 import pandas as pd
-from fastapi import APIRouter, HTTPException, Query, Request
+from fastapi import APIRouter, HTTPException, Query, Request, Response
 from pydantic import BaseModel
 from app.core.config import settings
 from app.core.limiter import limiter
@@ -94,7 +94,8 @@ def get_day_name(date: pd.Timestamp) -> str:
 @router.get("", response_model=WeatherResponse)
 @limiter.limit(settings.RATE_LIMIT_WEATHER)
 def get_weather(
-    request: Request,
+    request: Request, 
+    response: Response,
     zone: str = Query(
         ...,
         description="Swedish electricity area, e.g. SE1, SE2, SE3 or SE4",

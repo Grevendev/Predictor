@@ -52,7 +52,7 @@ from typing import Any, Dict, Union
 from zoneinfo import ZoneInfo
 
 import pandas as pd
-from fastapi import APIRouter, HTTPException, Query, Request
+from fastapi import APIRouter, HTTPException, Query, Request, Response
 from pydantic import BaseModel
 from typing import Union, Dict, Any
 from app.core.config import settings
@@ -300,5 +300,5 @@ def weekly_forecast(
 
 @router.post("/predict")
 @limiter.limit(settings.RATE_LIMIT_EXTRA)
-def predict(request: Request, payload: PredictionRequest):
+def predict(request: Request, response: Response, payload: PredictionRequest):
     return run_prediction(payload)
