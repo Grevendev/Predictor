@@ -1,3 +1,4 @@
+import pandas as pd
 from fastapi.testclient import TestClient
 
 from app.main import app
@@ -53,6 +54,57 @@ def test_predict_endpoint(monkeypatch):
         "is_optimal_hour": True,
         "cluster": 2,
     }
+
+
+def test_weekly_forecast_returns_seven_days_and_zone(monkeypatch):
+    monkeypatch.setattr(predictions, "predict_price", lambda data: 41.25)
+    monkeypatch.setattr(predictions, "predict_optimal_hour", lambda data: 1)
+    monkeypatch.setattr(predictions, "predict_cluster", lambda data: 0)
+
+    response = client.get("/api/v1/predictions/weekly-forecast?zone=SE3")
+
+    assert response.status_code == 200
+    data = response.json()
+    assert data["zone"] == "SE3"
+    assert len(data["days"]) == 7
+    assert data["days"][0]["classification"] == "low"
+    assert data["days"][0]["recommended"] is True
+    assert "recommendation" in data
+
+
+def test_weekly_forecast_starts_on_current_local_calendar_day(monkeypatch):
+    fixed_now = pd.Timestamp("2026-09-18 12:00:00", tz="Europe/Stockholm")
+    monkeypatch.setattr(
+        predictions.pd.Timestamp,
+        "now",
+        classmethod(lambda cls, tz=None: fixed_now),
+    )
+    monkeypatch.setattr(predictions, "predict_price", lambda data: 41.25)
+    monkeypatch.setattr(predictions, "predict_optimal_hour", lambda data: 1)
+    monkeypatch.setattr(predictions, "predict_cluster", lambda data: 0)
+
+    response = client.get("/api/v1/predictions/weekly-forecast?zone=SE3")
+
+    assert response.status_code == 200
+    dates = [day["date"] for day in response.json()["days"]]
+    assert dates == [
+        "2026-09-18",
+        "2026-09-19",
+        "2026-09-20",
+        "2026-09-21",
+        "2026-09-22",
+        "2026-09-23",
+        "2026-09-24",
+    ]
+    assert [day["day_name"] for day in response.json()["days"]] == [
+        "Friday",
+        "Saturday",
+        "Sunday",
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+    ]
 
 
 # Testar att felaktiga eller ofullständiga anrop stoppas.
