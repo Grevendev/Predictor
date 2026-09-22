@@ -58,8 +58,8 @@ class PredictionRequest(BaseModel):
 # --- Fristående funktion för inferens ---
 def run_prediction(data: Union[PredictionRequest, Dict[str, Any]]) -> Dict[str, Any]:
     """
-    Kör inferensen för pris, optimal timme och kluster.
-    Tar emot antingen en Pydantic-modell eller en vanlig Python-dict.
+    Runs inference for price, optimal hour, and cluster. 
+    Receives either a Pydantic-model or a standard Python dict.
     """
     if isinstance(data, BaseModel):
         input_data = data.model_dump()
