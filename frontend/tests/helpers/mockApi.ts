@@ -70,7 +70,7 @@ export async function mockSpotCheck(page: Page): Promise<void> {
 
 export async function mockWeeklyForecast(page: Page): Promise<void> {
   await page.route(
-    "**/api/v1/predictions/weekly-forecast?zone=SE4",
+    "**/weekly-forecast*",
     async (route) => {
       await route.fulfill({
         status: 200,
@@ -183,7 +183,7 @@ export async function mockWeeklyForecast(page: Page): Promise<void> {
 
 export async function mockEnergyAreas(page: Page): Promise<void> {
   await page.route(
-    "**/api/v1/energy-areas",
+    "**/energy-areas",
     async (route) => {
       await route.fulfill({
         status: 200,
