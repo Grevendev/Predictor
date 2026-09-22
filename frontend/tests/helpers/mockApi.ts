@@ -2,8 +2,15 @@ import type { Page } from "@playwright/test";
 
 export async function mockSpotCheck(page: Page): Promise<void> {
   await page.route(
-    "**/api/v1/spot-check?location=Malm%C3%B6",
+    "**/spot-check*",
     async (route) => {
+      const url = new URL(route.request().url());
+
+      if (url.searchParams.get("location") !== "Malmö") {
+        await route.continue();
+        return;
+      }
+
       await route.fulfill({
         status: 200,
         contentType: "application/json",
@@ -63,7 +70,7 @@ export async function mockSpotCheck(page: Page): Promise<void> {
 
 export async function mockWeeklyForecast(page: Page): Promise<void> {
   await page.route(
-    "**/api/v1/predictions/weekly-forecast?zone=SE4",
+    "**/weekly-forecast*",
     async (route) => {
       await route.fulfill({
         status: 200,
@@ -80,7 +87,7 @@ export async function mockWeeklyForecast(page: Page): Promise<void> {
               weather: {
                 temperature_c: 16,
                 wind_speed_kmh: 24,
-                rain_mm: 2,
+                rain_mm: 2
               },
               energy_area: "SE4"
             },
@@ -93,7 +100,7 @@ export async function mockWeeklyForecast(page: Page): Promise<void> {
               weather: {
                 temperature_c: 17,
                 wind_speed_kmh: 18,
-                rain_mm: 5,
+                rain_mm: 5
               },
               energy_area: "SE4"
             },
@@ -106,7 +113,7 @@ export async function mockWeeklyForecast(page: Page): Promise<void> {
               weather: {
                 temperature_c: 15,
                 wind_speed_kmh: 14,
-                rain_mm: 1,
+                rain_mm: 1
               },
               energy_area: "SE4"
             },
@@ -119,7 +126,7 @@ export async function mockWeeklyForecast(page: Page): Promise<void> {
               weather: {
                 temperature_c: 14,
                 wind_speed_kmh: 12,
-                rain_mm: 0,
+                rain_mm: 0
               },
               energy_area: "SE4"
             },
@@ -132,7 +139,7 @@ export async function mockWeeklyForecast(page: Page): Promise<void> {
               weather: {
                 temperature_c: 13,
                 wind_speed_kmh: 16,
-                rain_mm: 1,
+                rain_mm: 1
               },
               energy_area: "SE4"
             },
@@ -145,7 +152,7 @@ export async function mockWeeklyForecast(page: Page): Promise<void> {
               weather: {
                 temperature_c: 15,
                 wind_speed_kmh: 20,
-                rain_mm: 3,
+                rain_mm: 3
               },
               energy_area: "SE4"
             },
@@ -158,7 +165,7 @@ export async function mockWeeklyForecast(page: Page): Promise<void> {
               weather: {
                 temperature_c: 18,
                 wind_speed_kmh: 15,
-                rain_mm: 2,
+                rain_mm: 2
               },
               energy_area: "SE4"
             }
@@ -176,7 +183,7 @@ export async function mockWeeklyForecast(page: Page): Promise<void> {
 
 export async function mockEnergyAreas(page: Page): Promise<void> {
   await page.route(
-    "**/api/v1/energy-areas",
+    "**/energy-areas",
     async (route) => {
       await route.fulfill({
         status: 200,
@@ -254,3 +261,4 @@ export async function mockEnergyAreas(page: Page): Promise<void> {
     }
   );
 }
+;

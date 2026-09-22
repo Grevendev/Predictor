@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+
 import { mockEnergyAreas } from "./helpers/mockApi";
 
 test.describe("About page", () => {
@@ -128,7 +129,7 @@ test.describe("About page", () => {
     page
   }) => {
     await page.route(
-      "**/api/v1/energy-areas",
+      "**/energy-areas*",
       async (route) => {
         await route.fulfill({
           status: 500,
@@ -147,3 +148,4 @@ test.describe("About page", () => {
     ).toHaveText("Kartan kunde inte laddas.");
   });
 });
+;
