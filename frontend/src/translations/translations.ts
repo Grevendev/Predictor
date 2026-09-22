@@ -91,6 +91,19 @@ export const translations = {
       prediction: "Hämtar prognos...",
       information: "Hämtar information...",
     },
+    weather: {
+      title: "Väder",
+      forecastLabel: "Väderprognos",
+      hourlyForecast: "Timprognos",
+      weeklyForecast: "Veckans väder",
+      lowest: "Lägst",
+      precipitation: "Nederbörd",
+      wind: "Vind",
+      rain: "Regn",
+      highestRainfall: "Mest nederbörd",
+      noPrecipitation: "Ingen nederbörd väntas",
+      today: "Idag",
+    },
 
     about: {
       heroLabel: "OM PREDICTOR",
@@ -559,6 +572,20 @@ export const translations = {
       search: "Searching...",
       prediction: "Fetching forecast...",
       information: "Fetching information...",
+    },
+
+    weather: {
+      title: "Weather",
+      forecastLabel: "Weather forecast",
+      hourlyForecast: "Hourly forecast",
+      weeklyForecast: "Weekly weather",
+      lowest: "Low",
+      precipitation: "Precipitation",
+      wind: "Wind",
+      rain: "Rain",
+      highestRainfall: "Highest precipitation",
+      noPrecipitation: "No precipitation expected",
+      today: "Today",
     },
 
     about: {
