@@ -1,11 +1,14 @@
 import type { WeatherHour } from "../../types/Weather";
 import WeatherIcon from "./WeatherIcon";
+import { useLanguage } from "../../context/LanguageContext";
 
 interface HourlyForecastProps {
   forecast: WeatherHour[];
 }
 
 function HourlyForecast({ forecast }: HourlyForecastProps) {
+  const { translations } = useLanguage();
+
   if (forecast.length === 0) {
     return null;
   }
@@ -28,7 +31,7 @@ function HourlyForecast({ forecast }: HourlyForecastProps) {
   const hasRain = rainyHours.length > 0;
 
   return (
-    <section aria-label="Timprognos">
+    <section aria-label={translations.weather.hourlyForecast}>
       {/* Section title */}
       <div className="mb-2">
         <span
@@ -40,7 +43,7 @@ function HourlyForecast({ forecast }: HourlyForecastProps) {
             text-[var(--text-muted)]
           "
         >
-          Timprognos
+          {translations.weather.hourlyForecast}
         </span>
       </div>
 
@@ -68,14 +71,14 @@ function HourlyForecast({ forecast }: HourlyForecastProps) {
             "
           >
             <p className="text-xs text-[var(--text-muted)]">
-              Regn{" "}
+              {translations.weather.rain}{" "}
               <span className="font-medium text-[var(--text)]">
                 {firstRainHour.time}–{lastRainHour.time}
               </span>
             </p>
 
             <p className="text-xs text-[var(--text-muted)]">
-              Mest nederbörd{" "}
+              {translations.weather.highestRainfall}{" "}
               <span className="font-medium text-[var(--text)]">
                 {highestRainfall.time} ·{" "}
                 {highestRainfall.precipitationMm} mm
@@ -96,7 +99,7 @@ function HourlyForecast({ forecast }: HourlyForecastProps) {
           "
         >
           <p className="text-xs text-[var(--text-muted)]">
-            Ingen nederbörd väntas
+            {translations.weather.noPrecipitation}
           </p>
         </div>
       )}
@@ -180,7 +183,7 @@ function HourlyForecast({ forecast }: HourlyForecastProps) {
                 }
               >
                 {hourHasRain
-                  ? String(hour.precipitationMm) + " mm"
+                  ? `${hour.precipitationMm} mm`
                   : "0 mm"}
               </p>
             </div>
