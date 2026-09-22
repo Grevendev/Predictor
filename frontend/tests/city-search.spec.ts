@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+
 import { mockSpotCheck } from "./helpers/mockApi";
 
 test.describe("City search", () => {
@@ -41,9 +42,10 @@ test.describe("City search", () => {
     ).toBeVisible();
   });
 
+
   test("should display an error for an unknown city", async ({ page }) => {
     await page.route(
-      "**/api/v1/spot-check?location=Narnia",
+      "**/spot-check*",
       async (route) => {
         await route.fulfill({
           status: 404,
@@ -72,4 +74,7 @@ test.describe("City search", () => {
       "Kunde inte hitta någon svensk ort med namnet 'Narnia'."
     );
   });
+
+
 });
+;

@@ -1,5 +1,7 @@
+
 import type { WeatherDay } from "../../types/Weather";
 import WeatherIcon from "./WeatherIcon";
+import { useLanguage } from "../../context/LanguageContext";
 
 interface WeatherCardProps {
   day: WeatherDay;
@@ -14,28 +16,48 @@ function WeatherCard({
   isSelected = false,
   onClick,
 }: WeatherCardProps) {
+  const { translations } = useLanguage();
+
+  const cardClassName = isSelected
+    ? `;
+w - full;
+rounded - 2xl;
+border;
+p - 4;
+text - left;
+transition;
+duration - 200;
+focus: outline - none;
+focus: ring - 2;
+focus: ring - [var(--text)]
+focus: ring - offset - 2;
+focus: ring - offset - [var(--surface)]
+border - [var(--text)]
+bg - [var(--surface - soft)]
+`
+    : `;
+w - full;
+rounded - 2xl;
+border;
+p - 4;
+text - left;
+transition;
+duration - 200;
+focus: outline - none;
+focus: ring - 2;
+focus: ring - [var(--text)]
+focus: ring - offset - 2;
+focus: ring - offset - [var(--surface)]
+border - [var(--border)]
+bg - [var(--surface)]
+hover: bg - [var(--surface - soft)]
+`;
+
   return (
     <button
       type="button"
       onClick={onClick}
-      className={`
-        w-full
-        rounded-2xl
-        border
-        p-4
-        text-left
-        transition
-        duration-200
-        focus:outline-none
-        focus:ring-2
-        focus:ring-[var(--text)]
-        focus:ring-offset-2
-        focus:ring-offset-[var(--surface)]
-        ${isSelected
-          ? "border-[var(--text)] bg-[var(--surface-soft)]"
-          : "border-[var(--border)] bg-[var(--surface)] hover:bg-[var(--surface-soft)]"
-        }
-      `}
+      className={cardClassName}
       aria-pressed={isSelected}
     >
       {/* Day */}
@@ -68,7 +90,7 @@ function WeatherCard({
               text-[var(--surface)]
             "
           >
-            Idag
+            {translations.weather.today}
           </span>
         )}
       </div>
@@ -82,10 +104,7 @@ function WeatherCard({
           text-[var(--text)]
         "
       >
-        <WeatherIcon
-          type={day.weatherType}
-          size={40}
-        />
+        <WeatherIcon type={day.weatherType} size={40} />
       </div>
 
       {/* Temperature */}
@@ -108,7 +127,7 @@ function WeatherCard({
             text-[var(--text-muted)]
           "
         >
-          Lägst {day.temperatureMin}°
+          {translations.weather.lowest} {day.temperatureMin}°
         </div>
       </div>
 
@@ -137,7 +156,7 @@ function WeatherCard({
                 text-[var(--text-muted)]
               "
             >
-              Regn
+              {translations.weather.rain}
             </span>
 
             <span
@@ -159,7 +178,7 @@ function WeatherCard({
                 text-[var(--text-muted)]
               "
             >
-              Vind
+              {translations.weather.wind}
             </span>
 
             <span
@@ -180,3 +199,4 @@ function WeatherCard({
 }
 
 export default WeatherCard;
+;

@@ -3,11 +3,13 @@ import type { WeatherDay } from "../../types/Weather";
 import HourlyForecast from "./HourlyForecast";
 import WeatherCard from "./WeatherCard";
 import WeatherIcon from "./WeatherIcon";
+import { useLanguage } from "../../context/LanguageContext";
 
 interface WeatherProps {
   city: string;
   forecast: WeatherDay[];
 }
+
 
 function Weather({
   city,
@@ -19,10 +21,11 @@ function Weather({
     today,
   );
 
+
   if (!today) {
     return null;
   }
-
+  const { translations } = useLanguage();
   return (
     <section
       className="
@@ -31,7 +34,7 @@ function Weather({
         p-5
         sm:p-6
       "
-      aria-label="Väderprognos"
+      aria-label={translations.weather.forecastLabel}
     >
       {/* Header */}
       <div
@@ -53,7 +56,7 @@ function Weather({
               text-[var(--text-muted)]
             "
           >
-            Väder
+            {translations.weather.title}
           </span>
 
           <h2
@@ -161,7 +164,7 @@ function Weather({
                 text-[var(--text-muted)]
               "
             >
-              Lägst {selectedDay.temperatureMin}°
+              {translations.weather.lowest} {selectedDay.temperatureMin}°
             </p>
           </div>
         </div>
@@ -185,7 +188,7 @@ function Weather({
                 text-[var(--text-muted)]
               "
             >
-              Nederbörd
+              {translations.weather.precipitation}
             </span>
 
             <p
@@ -207,7 +210,7 @@ function Weather({
                 text-[var(--text-muted)]
               "
             >
-              Vind
+              {translations.weather.wind}
             </span>
 
             <p
@@ -243,7 +246,7 @@ function Weather({
               text-[var(--text-muted)]
             "
           >
-            Veckans väder
+            {translations.weather.weeklyForecast}
           </span>
         </div>
 
