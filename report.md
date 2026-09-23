@@ -44,3 +44,20 @@ Kompletteras gemensamt av gruppen - tisdag förslagsvis
 Det aktuella flödet visar en veckoprognos med exakt sju datapunkter: idag + sex kommande dagar i UI:t. Första dagen visas alltid som "Idag"/"Today" i användargränssnittet, medan den underliggande modellen fortfarande använder verkliga datapunkter från den laddade zonens dataset. Backendet räknar ut ett dagligt pris med den tränade Random Forest-modellen, klassificerar dagens prisnivå med KMeans-klustring och använder SVM för att avgöra om dagen rekommenderas för flexibel elanvändning. Klustringens raw-ID:n mappas enligt modellens ordning (lägst pris = låg, mellanliggande = medel, högst pris = hög) för att undvika felaktig tolkning av klusternummer.
 
 SE1–SE4 hanteras genom att välja rätt pris- och väderkolumner för aktuell zon innan modellen körs. Frontend visar staplar i rätt färg för låg/medel/hög nivå, samt en rekommendation som kommer från SVM-output, inte från klientlogik eller hårdkodade trösklar. I nuläget måste det lokaladatasetet uppdateras manuellt via scriptet get_last_date.py tanken är att scriptet ska köra sig själv i en live version.
+
+
+Retro: Vad har gått bra, vad hade vi kunnat göra bättre och vad har vi lärt oss och hur hade vi kunnat vidareutveckla projektet?
+
+Jag tycker att under väldigt kort tid har vi fått väldigt mycket gjort, mitt mål var att alla skulle sitta med ml och förstå. Vi limiterads en del av bortfall men skötte god kommunikation sinsemellan även om vi inte arbeta samma tider. Jag har lärt mig att läsa andras modeller och få större insikt i modellering. Jag hade uppskattat mindre nice to haves och robustare grund.
+
+Edvin tycker att det är bra att vi har en fullfärdad produkt som går att använda av alla, mindre bra är arbetsbelastningen i gruppen, ojämn i förhållande till vad produkten är nu. Jag har lärt mig att det kan va komplicerat att förstå vad andras tankar är med deras specifika modellträning. Vidareutveckling samarbetsförmågor, arbetsbelastnings utjämning och det hade kunnat utvecklats i app att det blir en tydlighet i vad användaren får. 
+
+Mer spridning över arbeter
+
+Jarl: jag tycker att vi har en tajt grupp, vi har haft lite problem med att vi har inte arbetat med samma modell. Strukturen såg ut på ett vis från början men vi kanske skulle haft samma bild av hur den skulle se ut. De förkom flera filer som gjorde samma arbete. Hur tänker vi hantera filerna på samma sätt. Absolut har jag lärt mig titta mer på alla modeller. Halvt helvete med alla jävla paths. Vill försöka få det så produktionslikt som möjligt. vidareutveckla bättre struktur inklusive deployment delen.
+
+Visualiseringen om vad det är vi bygger och vart/ hur vi ska använda de olika modellerna. Jag tror absolut att appen hade kunnat vidareutvecklas till en fullskalig app.
+
+Bättre kommunikation om vilka krav vi har, förväntningar, den mentala bilden. Vi har insett att vi inte haft någon tydlig kravspec från början kanske från vårat eget håll men även utbildningens om vad vi ska ha från början. Det har också känts som att projektet förändrats, bortfall av db och tillkomst av nya metoder 4 dagar innan projektslut. Spretigt
+
+Summa summarum, vi är väldigt nöjda över vårat slutresultat och vad vi har kunnat visa upp. Vi är nöjda med vår kunskapsdelning sinsemellan och trots stort arbete är vi nöjda.Det vi har skapat är bra utifrån de tre krav som presenterades känner vi att vi har gjort ett bra arbete. Luddig krav spec
