@@ -1,9 +1,14 @@
 import { useState } from "react";
 
 import DarkModeSwitch from "./DarkModeSwitch";
+import LanguageSwitch from "./LanguageSwitch";
+import { useLanguage } from "../context/LanguageContext";
 
 function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const { translations: t } = useLanguage();
+
+  const basePath = import.meta.env.BASE_URL.replace(/\/$/, "");
 
   function toggleMenu() {
     setMenuOpen((current) => !current);
@@ -11,6 +16,17 @@ function Header() {
 
   function closeMenu() {
     setMenuOpen(false);
+  }
+
+  function handleNavigate(path: string) {
+    return (event: React.MouseEvent<HTMLAnchorElement>) => {
+      event.preventDefault();
+      closeMenu();
+
+      const targetUrl = `${basePath}${path}` || "/";
+      window.history.pushState({}, "", targetUrl);
+      window.dispatchEvent(new PopStateEvent("popstate"));
+    };
   }
 
   return (
@@ -49,8 +65,8 @@ function Header() {
             transition-colors
             duration-250
           "
-          href="/"
-          onClick={closeMenu}
+          href={`${basePath}/`}
+          onClick={handleNavigate("/")}
         >
           PREDICTOR
         </a>
@@ -70,8 +86,8 @@ function Header() {
           type="button"
           aria-label={
             menuOpen
-              ? "Stäng meny"
-              : "Öppna meny"
+              ? t.navigation.closeMenu
+              : t.navigation.openMenu
           }
           aria-expanded={menuOpen}
           onClick={toggleMenu}
@@ -87,7 +103,6 @@ function Header() {
             flex
             items-center
             gap-8
-
             max-[700px]:absolute
             max-[700px]:left-0
             max-[700px]:right-0
@@ -102,10 +117,10 @@ function Header() {
             max-[700px]:pb-[18px]
             max-[700px]:pt-[10px]
             max-[700px]:shadow-[0_14px_30px_rgba(15,23,42,0.08)]
-
             ${menuOpen
               ? "max-[700px]:flex"
-              : "max-[700px]:hidden"}
+              : "max-[700px]:hidden"
+            }
           `}
         >
           <a
@@ -123,10 +138,10 @@ function Header() {
               max-[700px]:py-[15px]
               max-[700px]:hover:bg-[var(--surface-soft)]
             "
-            href="/"
-            onClick={closeMenu}
+            href={`${basePath}/`}
+            onClick={handleNavigate("/")}
           >
-            Hem
+            {t.navigation.home}
           </a>
 
           <a
@@ -144,10 +159,10 @@ function Header() {
               max-[700px]:py-[15px]
               max-[700px]:hover:bg-[var(--surface-soft)]
             "
-            href="/about"
-            onClick={closeMenu}
+            href={`${basePath}/about`}
+            onClick={handleNavigate("/about")}
           >
-            Om
+            {t.navigation.about}
           </a>
 
           <a
@@ -165,11 +180,13 @@ function Header() {
               max-[700px]:py-[15px]
               max-[700px]:hover:bg-[var(--surface-soft)]
             "
-            href="/how-it-works"
-            onClick={closeMenu}
+            href={`${basePath}/how-it-works`}
+            onClick={handleNavigate("/how-it-works")}
           >
-            Så fungerar det
+            {t.navigation.howItWorks}
           </a>
+
+          <LanguageSwitch />
 
           <DarkModeSwitch />
         </nav>

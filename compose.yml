@@ -1,30 +1,3 @@
-# services:
-#   backend:
-#     build:
-#       context: ./backend
-#       dockerfile: Dockerfile
-#     container_name: predictor_api
-#     restart: unless-stopped
-#     ports:
-#       - "8000:8000"
-#     environment:
-#       - FASTAPI_ENV=development
-#       - PYTHONPATH=/app
-#     volumes:
-#       # Montera models_bin från projektroten direkt till /models_bin i containern
-#       - ./models_bin:/models_bin:ro
-#     healthcheck:
-#       test:
-#         [
-#           "CMD",
-#           "python",
-#           "-c",
-#           "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')",
-#         ]
-#       interval: 15s
-#       timeout: 3s
-#       retries: 3
-
 services:
   backend:
     build:
@@ -37,9 +10,40 @@ services:
     environment:
       - FASTAPI_ENV=development
       - PYTHONPATH=/app
+      - ENABLE_METRICS=true
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
     volumes:
       - ./backend/app:/app/app:ro
       - ./models_bin:/models_bin:ro
+      - ./dataset:/app/dataset
+    networks:
+      - predictor-net
+
+  data-scheduler:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: predictor_scheduler
+    restart: unless-stopped
+    command: python scripts/get_last_date.py
+    environment:
+      - PYTHONUNBUFFERED=1
+      - PYTHONPATH=/app
+
+    volumes:
+      - ./backend/app:/app/app:ro
+      - ./backend/scripts:/app/scripts:ro
+      - ./dataset:/app/dataset
+    # volumes:
+    #   # Montera app-koden så att ändringar i schemaläggaren slår igenom utan rebuild
+    #   - ./backend/app:/app/app:ro
+    #   - ./backend/scripts:/app/scripts:ro
+    #   # Samma dataset-mapp så schedulern skriver direkt till din lokala mapp
+    #   - ./dataset:/app/dataset
     networks:
       - predictor-net
 
@@ -52,13 +56,10 @@ services:
     ports:
       - "5173:5173"
     environment:
-      # Här pekar vi på containern/servicen "backend" i Dockers interna DNS
       - VITE_BACKEND_URL=http://backend:8000
     volumes:
-      # Mounta frontend-koden för HMR (Hot Module Replacement)
       - ./frontend/src:/app/src
       - ./frontend/public:/app/public
-      # Skydda containerns node_modules från att skrivas över av hostens
       - /app/node_modules
     depends_on:
       - backend

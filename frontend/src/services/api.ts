@@ -1,10 +1,65 @@
-import axios from 'axios';
+// 1. Om en specifik URL anges i .env (t.ex. vid lokal Docker utan proxy), använd den.
+// 2. Annars är basen alltid "/api/v1" – Vites proxy tar det lokalt, Traefik tar det i prod.
+const computedBase = `${import.meta.env.BASE_URL.replace(/\/$/, "")}/api/v1`;
+const BASE_URL = import.meta.env.VITE_API_BASE_URL || computedBase;
 
-const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api/v1',
-  headers: {
-    'Content-Type': 'application/json',
+export const api = {
+  async get<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
+    const cleanEndpoint = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;
+    const url = endpoint.startsWith("http") ? endpoint : `${BASE_URL}${cleanEndpoint}`;
+
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        ...options.headers,
+      },
+      ...options,
+    });
+
+    if (!response.ok) {
+      let errorMessage = `API error: ${response.status} ${response.statusText}`;
+      try {
+        const errorJson = await response.json();
+        if (errorJson.detail) errorMessage = errorJson.detail;
+      } catch {
+        // Fallback
+      }
+      const error = new Error(errorMessage) as Error & { status?: number };
+      error.status = response.status;
+      throw error;
+    }
+
+    return response.json();
   },
-});
 
-export default api;
+  async post<T>(endpoint: string, data?: unknown, options: RequestInit = {}): Promise<T> {
+    const cleanEndpoint = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;
+    const url = endpoint.startsWith("http") ? endpoint : `${BASE_URL}${cleanEndpoint}`;
+
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        ...options.headers,
+      },
+      body: data !== undefined ? JSON.stringify(data) : undefined,
+      ...options,
+    });
+
+    if (!response.ok) {
+      let errorMessage = `API error: ${response.status} ${response.statusText}`;
+      try {
+        const errorJson = await response.json();
+        if (errorJson.detail) errorMessage = errorJson.detail;
+      } catch {
+        // Fallback
+      }
+      const error = new Error(errorMessage) as Error & { status?: number };
+      error.status = response.status;
+      throw error;
+    }
+
+    return response.json();
+  },
+};

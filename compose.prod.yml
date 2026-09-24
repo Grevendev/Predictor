@@ -1,53 +1,67 @@
 services:
+  # ---------------------------------------------------------------------------
+  # BACKEND (FastAPI API)
+  # ---------------------------------------------------------------------------
   backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
+    image: ${DOCKER_USERNAME}/predictor-backend:latest
     container_name: predictor_api_prod
     restart: always
+    env_file:
+      - ./backend/.env
     environment:
       - FASTAPI_ENV=production
       - PYTHONPATH=/app
+      - ENABLE_METRICS=true
     volumes:
       - ./models_bin:/models_bin:ro
+      - ./dataset:/app/dataset
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    networks:
+      - internal-net
+      - proxy-net
+
+  # ---------------------------------------------------------------------------
+  # DATA SCHEDULER
+  # ---------------------------------------------------------------------------
+  data-scheduler:
+    image: ${DOCKER_USERNAME}/predictor-backend:latest
+    container_name: predictor_scheduler_prod
+    restart: unless-stopped
+    command: python scripts/get_last_date.py
+    env_file:
+      - ./backend/.env
+    environment:
+      - PYTHONUNBUFFERED=1
+      - PYTHONPATH=/app
+    volumes:
+      - ./dataset:/app/dataset
     networks:
       - internal-net
 
+  # ---------------------------------------------------------------------------
+  # FRONTEND (React / Nginx)
+  # ---------------------------------------------------------------------------
   frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-      args:
-        - VITE_BASE_PATH=/predictor/
+    image: ${DOCKER_USERNAME}/predictor-frontend:latest
     container_name: predictor_ui_prod
     restart: always
-    # Ta bort publika port-mappningar (t.ex. 80:80) – Traefik sköter all extern trafik
-    expose:
-      - "80"
-    labels:
-      - "traefik.enable=true"
-
-      # --- HTTP Router (Redirect till HTTPS) ---
-      - "traefik.http.routers.predictor-http.rule=Host(`din-doman.se`) && PathPrefix(`/predictor`)"
-      - "traefik.http.routers.predictor-http.entrypoints=web"
-      - "traefik.http.routers.predictor-http.middlewares=redirect-to-https"
-
-      # --- HTTPS Router ---
-      - "traefik.http.routers.predictor-https.rule=Host(`din-doman.se`) && PathPrefix(`/predictor`)"
-      - "traefik.http.routers.predictor-https.entrypoints=websecure"
-      - "traefik.http.routers.predictor-https.tls=true"
-      - "traefik.http.routers.predictor-https.tls.certresolver=letsencrypt"
-
-      # --- Koppling till Nginx inuti containern ---
-      - "traefik.http.services.predictor.loadbalancer.server.port=80"
     depends_on:
       - backend
     networks:
       - internal-net
-      - traefik-net # Traefiks delade nätverk
+      - proxy-net
+
+volumes:
+  shared-data:
+    driver: local
 
 networks:
   internal-net:
     driver: bridge
-  traefik-net:
-    external: true # Förutsätter att  Traefik-nätverk redan existerar
+  proxy-net:
+    name: ${PROXY_NETWORK:-traefik-net}
+    external: true

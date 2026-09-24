@@ -2,6 +2,7 @@ import { useState } from "react";
 
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+
 import EnergyAreaMap from "../components/EnergyAreaMap";
 import EnergyAreaInfo from "../components/EnergyAreaInfo";
 
@@ -9,14 +10,118 @@ import { energyAreaInfo } from "../constants/energyAreaInfo";
 
 import type { EnergyArea } from "../types/EnergyArea";
 
+import { useLanguage } from "../context/LanguageContext";
+
 function AboutPage() {
+  const { translations: t } = useLanguage();
+
   const [selectedArea, setSelectedArea] =
     useState<EnergyArea["code"] | null>(null);
 
-  const selectedAreaInfo =
-    selectedArea
-      ? energyAreaInfo[selectedArea]
-      : null;
+  const selectedAreaInfo = selectedArea
+    ? {
+      code: selectedArea,
+      name: t.about.energyAreas.areas[selectedArea].name,
+      region: t.about.energyAreas.areas[selectedArea].region,
+      description:
+        t.about.energyAreas.areas[selectedArea].description,
+      balanceDescription:
+        t.about.energyAreas.areas[selectedArea]
+          .balanceDescription,
+      dominantSources:
+        energyAreaInfo[selectedArea].dominantSources.map(
+          (source) => {
+            const sourceKeyMap: Record<
+              string,
+              keyof typeof t.about.energyAreas.sources
+            > = {
+              Vattenkraft: "hydropower",
+              Vindkraft: "windPower",
+              Kärnkraft: "nuclearPower",
+              Solkraft: "solarPower",
+            };
+
+            const sourceKey = sourceKeyMap[source.name];
+
+            return {
+              name: sourceKey
+                ? t.about.energyAreas.sources[sourceKey]
+                : source.name,
+              installedCapacityMw:
+                source.installedCapacityMw,
+            };
+          }
+        ),
+    }
+    : null;
+
+  const priceFactors = [
+    {
+      number: "01",
+      title: t.about.price.factors.supply.title,
+      description:
+        t.about.price.factors.supply.description,
+    },
+    {
+      number: "02",
+      title: t.about.price.factors.demand.title,
+      description:
+        t.about.price.factors.demand.description,
+    },
+    {
+      number: "03",
+      title: t.about.price.factors.weather.title,
+      description:
+        t.about.price.factors.weather.description,
+    },
+    {
+      number: "04",
+      title:
+        t.about.price.factors.transmission.title,
+      description:
+        t.about.price.factors.transmission.description,
+    },
+  ];
+
+  const forecastSteps = [
+    {
+      number: "01",
+      title: t.about.forecasts.process.data,
+    },
+    {
+      number: "02",
+      title: t.about.forecasts.process.patterns,
+    },
+    {
+      number: "03",
+      title: t.about.forecasts.process.forecast,
+    },
+  ];
+
+  const benefits = [
+    {
+      number: "01",
+      title:
+        t.about.whyPredictor.benefits.plan.title,
+      description:
+        t.about.whyPredictor.benefits.plan.description,
+    },
+    {
+      number: "02",
+      title:
+        t.about.whyPredictor.benefits.understand.title,
+      description:
+        t.about.whyPredictor.benefits.understand
+          .description,
+    },
+    {
+      number: "03",
+      title:
+        t.about.whyPredictor.benefits.act.title,
+      description:
+        t.about.whyPredictor.benefits.act.description,
+    },
+  ];
 
   return (
     <>
@@ -28,6 +133,7 @@ function AboutPage() {
           w-full
         "
       >
+        {/* Hero */}
         <section
           className="
             about-hero
@@ -56,7 +162,7 @@ function AboutPage() {
               text-[var(--text-subtle)]
             "
           >
-            OM PREDICTOR
+            {t.about.heroLabel}
           </p>
 
           <h1
@@ -71,9 +177,9 @@ function AboutPage() {
               max-[600px]:text-[3.2rem]
             "
           >
-            Förstå elpriset.
+            {t.about.heroTitle}
             <br />
-            Använd elen smartare.
+            {t.about.heroTitleAccent}
           </h1>
 
           <p
@@ -88,12 +194,11 @@ function AboutPage() {
               max-[600px]:text-[1.05rem]
             "
           >
-            Predictor hjälper dig att förstå hur
-            elpriser kan utvecklas över tid och
-            vilket elområde du tillhör.
+            {t.about.heroDescription}
           </p>
         </section>
 
+        {/* Energy areas */}
         <section
           className="
             about-section
@@ -125,7 +230,7 @@ function AboutPage() {
                 text-[var(--text-subtle)]
               "
             >
-              ELOMRÅDEN
+              {t.about.energyAreas.label}
             </p>
 
             <h2
@@ -141,7 +246,7 @@ function AboutPage() {
                 max-[600px]:text-[2.5rem]
               "
             >
-              Sverige är indelat i fyra elområden
+              {t.about.energyAreas.title}
             </h2>
 
             <p
@@ -154,10 +259,7 @@ function AboutPage() {
                 text-[var(--text-muted)]
               "
             >
-              Elområdena SE1, SE2, SE3 och SE4
-              används för att hantera begränsningar
-              i överföringen av el mellan olika delar
-              av Sverige.
+              {t.about.energyAreas.description}
             </p>
 
             <div
@@ -222,7 +324,7 @@ function AboutPage() {
                         text-[var(--text-subtle)]
                       "
                     >
-                      VÄLJ ELOMRÅDE
+                      {t.about.energyAreas.selectArea}
                     </span>
 
                     <h3
@@ -236,8 +338,7 @@ function AboutPage() {
                         text-[var(--text-strong)]
                       "
                     >
-                      Utforska Sveriges
-                      elområden
+                      {t.about.energyAreas.placeholderTitle}
                     </h3>
 
                     <p
@@ -249,12 +350,10 @@ function AboutPage() {
                         text-[var(--text-muted)]
                       "
                     >
-                      Klicka på ett elområde
-                      på kartan för att se
-                      information om området
-                      och vilka kraftslag som
-                      har störst installerad
-                      effekt.
+                      {
+                        t.about.energyAreas
+                          .placeholderDescription
+                      }
                     </p>
                   </div>
                 )}
@@ -263,6 +362,7 @@ function AboutPage() {
           </div>
         </section>
 
+        {/* Electricity prices */}
         <section
           className="
             about-section
@@ -296,7 +396,7 @@ function AboutPage() {
                 text-[var(--text-subtle)]
               "
             >
-              ELPRISET
+              {t.about.price.label}
             </p>
 
             <h2
@@ -312,7 +412,7 @@ function AboutPage() {
                 max-[600px]:text-[2.5rem]
               "
             >
-              Varför förändras elpriset?
+              {t.about.price.title}
             </h2>
 
             <p
@@ -325,12 +425,7 @@ function AboutPage() {
                 text-[var(--text-muted)]
               "
             >
-              Elpriset påverkas av flera olika
-              faktorer. Tillgång och efterfrågan,
-              väderförhållanden, elproduktion och
-              överföringskapacitet mellan olika
-              delar av elsystemet kan alla påverka
-              priset.
+              {t.about.price.description}
             </p>
 
             <div
@@ -344,83 +439,69 @@ function AboutPage() {
                 max-[600px]:grid-cols-1
               "
             >
-              {[
-                [
-                  "01",
-                  "Tillgång",
-                  "När mycket el produceras kan tillgången öka och priserna pressas ned."
-                ],
-                [
-                  "02",
-                  "Efterfrågan",
-                  "Hög elanvändning ökar efterfrågan och kan bidra till högre priser."
-                ],
-                [
-                  "03",
-                  "Väder",
-                  "Temperatur, vind och nederbörd påverkar både elanvändning och produktion."
-                ],
-                [
-                  "04",
-                  "Överföring",
-                  "Begränsningar i elnätet påverkar hur mycket el som kan överföras mellan olika områden."
-                ]
-              ].map(([number, title, description]) => (
-                <article
-                  className="
-                    about-price-factor
-                    min-h-[220px]
-                    rounded-2xl
-                    border
-                    border-[var(--border)]
-                    bg-[var(--surface)]
-                    p-7
-                    max-[600px]:min-h-0
-                  "
-                  key={number}
-                >
-                  <span
+              {priceFactors.map(
+                ({
+                  number,
+                  title,
+                  description,
+                }) => (
+                  <article
                     className="
-                      mb-14
-                      block
-                      text-[0.68rem]
-                      font-bold
-                      tracking-[0.14em]
-                      text-[var(--text-subtle)]
-                      max-[600px]:mb-8
+                      about-price-factor
+                      min-h-[220px]
+                      rounded-2xl
+                      border
+                      border-[var(--border)]
+                      bg-[var(--surface)]
+                      p-7
+                      max-[600px]:min-h-0
                     "
+                    key={number}
                   >
-                    {number}
-                  </span>
+                    <span
+                      className="
+                        mb-14
+                        block
+                        text-[0.68rem]
+                        font-bold
+                        tracking-[0.14em]
+                        text-[var(--text-subtle)]
+                        max-[600px]:mb-8
+                      "
+                    >
+                      {number}
+                    </span>
 
-                  <h3
-                    className="
-                      m-0
-                      mb-3
-                      text-[1.6rem]
-                      tracking-[-0.025em]
-                      text-[var(--text-strong)]
-                    "
-                  >
-                    {title}
-                  </h3>
+                    <h3
+                      className="
+                        m-0
+                        mb-3
+                        text-[1.6rem]
+                        tracking-[-0.025em]
+                        text-[var(--text-strong)]
+                      "
+                    >
+                      {title}
+                    </h3>
 
-                  <p
-                    className="
-                      m-0
-                      text-[0.92rem]
-                      leading-[1.6]
-                      text-[var(--text-muted)]
-                    "
-                  >
-                    {description}
-                  </p>
-                </article>
-              ))}
+                    <p
+                      className="
+                        m-0
+                        text-[0.92rem]
+                        leading-[1.6]
+                        text-[var(--text-muted)]
+                      "
+                    >
+                      {description}
+                    </p>
+                  </article>
+                )
+              )}
             </div>
           </div>
         </section>
 
+        {/* Forecasts */}
         <section
           className="
             about-section
@@ -452,7 +533,7 @@ function AboutPage() {
                 text-[var(--text-subtle)]
               "
             >
-              PROGNOSER
+              {t.about.forecasts.label}
             </p>
 
             <h2
@@ -468,7 +549,7 @@ function AboutPage() {
                 max-[600px]:text-[2.5rem]
               "
             >
-              Vad är en elprisprognos?
+              {t.about.forecasts.title}
             </h2>
 
             <p
@@ -481,9 +562,7 @@ function AboutPage() {
                 text-[var(--text-muted)]
               "
             >
-              En elprisprognos är en uppskattning
-              av hur elpriset kan utvecklas under
-              kommande timmar eller perioder.
+              {t.about.forecasts.description}
             </p>
 
             <p
@@ -496,11 +575,7 @@ function AboutPage() {
                 text-[var(--text-muted)]
               "
             >
-              Predictor använder data och
-              maskininlärning för att identifiera
-              mönster i historiska och aktuella
-              data och skapa prognoser för framtida
-              elpriser.
+              {t.about.forecasts.modelDescription}
             </p>
 
             <div
@@ -516,80 +591,79 @@ function AboutPage() {
                 max-[900px]:mt-11
               "
             >
-              {[
-                ["01", "DATA"],
-                ["02", "MÖNSTER"],
-                ["03", "PROGNOS"]
-              ].map(([number, title], index) => (
-                <article
-                  className={`
-                    about-forecast-step
-                    relative
-                    min-h-[190px]
-                    px-8
-                    py-9
-                    max-[900px]:min-h-0
-                    max-[900px]:border-l-0
-                    max-[900px]:border-t
-                    max-[900px]:border-[var(--border)]
-                    max-[900px]:first:border-t-0
-                    max-[600px]:px-[22px]
-                    max-[600px]:py-7
-                    ${index > 0
-                      ? "border-l border-[var(--border)] max-[900px]:border-l-0"
-                      : ""
-                    }
-                  `}
-                  key={number}
-                >
-                  <span
-                    className="
-                      mb-12
-                      block
-                      text-[0.68rem]
-                      font-bold
-                      tracking-[0.14em]
-                      text-[var(--text-subtle)]
-                      max-[600px]:mb-7
-                    "
+              {forecastSteps.map(
+                ({ number, title }, index) => (
+                  <article
+                    key={number}
+                    className={`
+                      about-forecast-step
+                      relative
+                      min-h-[190px]
+                      px-8
+                      py-9
+                      max-[900px]:min-h-0
+                      max-[900px]:border-l-0
+                      max-[900px]:border-t
+                      max-[900px]:border-[var(--border)]
+                      max-[900px]:first:border-t-0
+                      max-[600px]:px-[22px]
+                      max-[600px]:py-7
+                      ${index > 0
+                        ? "border-l border-[var(--border)] max-[900px]:border-l-0"
+                        : ""
+                      }
+                    `}
                   >
-                    {number}
-                  </span>
-
-                  <h3
-                    className="
-                      m-0
-                      text-[2rem]
-                      tracking-[-0.035em]
-                      text-[var(--text-strong)]
-                    "
-                  >
-                    {title}
-                  </h3>
-
-                  {index < 2 && (
                     <span
                       className="
-                        absolute
-                        right-[-11px]
-                        top-1/2
-                        z-[2]
-                        -translate-y-1/2
-                        text-base
-                        text-[var(--text-muted)]
-                        max-[900px]:hidden
+                        mb-12
+                        block
+                        text-[0.68rem]
+                        font-bold
+                        tracking-[0.14em]
+                        text-[var(--text-subtle)]
+                        max-[600px]:mb-7
                       "
-                      aria-hidden="true"
                     >
-                      →
+                      {number}
                     </span>
-                  )}
-                </article>
-              ))}
+
+                    <h3
+                      className="
+                        m-0
+                        text-[2rem]
+                        tracking-[-0.035em]
+                        text-[var(--text-strong)]
+                      "
+                    >
+                      {title}
+                    </h3>
+
+                    {index < 2 && (
+                      <span
+                        className="
+                          absolute
+                          right-[-11px]
+                          top-1/2
+                          z-[2]
+                          -translate-y-1/2
+                          text-base
+                          text-[var(--text-muted)]
+                          max-[900px]:hidden
+                        "
+                        aria-hidden="true"
+                      >
+                        →
+                      </span>
+                    )}
+                  </article>
+                )
+              )}
             </div>
           </div>
         </section>
 
+        {/* Why Predictor */}
         <section
           className="
             about-section
@@ -623,7 +697,7 @@ function AboutPage() {
                 text-[var(--text-subtle)]
               "
             >
-              VARFÖR PREDICTOR?
+              {t.about.whyPredictor.label}
             </p>
 
             <h2
@@ -639,7 +713,7 @@ function AboutPage() {
                 max-[600px]:text-[2.5rem]
               "
             >
-              Från prognos till beslut
+              {t.about.whyPredictor.title}
             </h2>
 
             <p
@@ -652,10 +726,7 @@ function AboutPage() {
                 text-[var(--text-muted)]
               "
             >
-              Målet är inte bara att visa vad elen
-              kostar. Predictor ska göra det enklare
-              att förstå när det kan vara smartare
-              att använda mycket el.
+              {t.about.whyPredictor.description}
             </p>
 
             <div
@@ -669,75 +740,66 @@ function AboutPage() {
                 max-[600px]:mt-10
               "
             >
-              {[
-                [
-                  "01",
-                  "Planera",
-                  "Se när priserna förväntas vara lägre och planera elanvändningen därefter."
-                ],
-                [
-                  "02",
-                  "Förstå",
-                  "Få en tydligare bild av elpriset och vad som påverkar utvecklingen i ditt område."
-                ],
-                [
-                  "03",
-                  "Agera",
-                  "Anpassa elanvändningen när prognosen visar bättre förutsättningar."
-                ]
-              ].map(([number, title, description]) => (
-                <div
-                  className="
-                    flex
-                    min-h-[220px]
-                    flex-col
-                    gap-4
-                    rounded-2xl
-                    border
-                    border-[var(--border)]
-                    bg-[var(--surface)]
-                    p-7
-                    max-[600px]:min-h-0
-                    max-[600px]:px-[22px]
-                    max-[600px]:py-6
-                  "
-                  key={number}
-                >
-                  <span
+              {benefits.map(
+                ({
+                  number,
+                  title,
+                  description,
+                }) => (
+                  <div
                     className="
-                      text-[0.92rem]
-                      leading-[1.6]
-                      text-[var(--text-muted)]
+                      flex
+                      min-h-[220px]
+                      flex-col
+                      gap-4
+                      rounded-2xl
+                      border
+                      border-[var(--border)]
+                      bg-[var(--surface)]
+                      p-7
+                      max-[600px]:min-h-0
+                      max-[600px]:px-[22px]
+                      max-[600px]:py-6
                     "
+                    key={number}
                   >
-                    {number}
-                  </span>
+                    <span
+                      className="
+                        text-[0.92rem]
+                        leading-[1.6]
+                        text-[var(--text-muted)]
+                      "
+                    >
+                      {number}
+                    </span>
 
-                  <strong
-                    className="
-                      text-[1.5rem]
-                      tracking-[-0.025em]
-                      text-[var(--text-strong)]
-                    "
-                  >
-                    {title}
-                  </strong>
+                    <strong
+                      className="
+                        text-[1.5rem]
+                        tracking-[-0.025em]
+                        text-[var(--text-strong)]
+                      "
+                    >
+                      {title}
+                    </strong>
 
-                  <span
-                    className="
-                      text-[0.92rem]
-                      leading-[1.6]
-                      text-[var(--text-muted)]
-                    "
-                  >
-                    {description}
-                  </span>
-                </div>
-              ))}
+                    <span
+                      className="
+                        text-[0.92rem]
+                        leading-[1.6]
+                        text-[var(--text-muted)]
+                      "
+                    >
+                      {description}
+                    </span>
+                  </div>
+                )
+              )}
             </div>
           </div>
         </section>
 
+        {/* Disclaimer */}
         <section
           className="
             about-disclaimer
@@ -763,10 +825,7 @@ function AboutPage() {
               text-[var(--text-subtle)]
             "
           >
-            Prognoser är uppskattningar och kan
-            skilja sig från det faktiska elpriset.
-            Predictor är ett beslutsstöd och ingen
-            garanti för framtida priser.
+            {t.about.disclaimer}
           </p>
         </section>
       </main>

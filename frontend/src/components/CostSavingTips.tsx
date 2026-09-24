@@ -1,4 +1,8 @@
+import { useLanguage } from "../context/LanguageContext";
+
 function CostSavingTips() {
+  const { translations: t } = useLanguage();
+
   return (
     <div className="tips-content">
       <div
@@ -20,7 +24,7 @@ function CostSavingTips() {
               text-[var(--text-subtle)]
             "
           >
-            SMART ELANVÄNDNING
+            {t.costSavingTips.label}
           </span>
 
           <h3
@@ -32,7 +36,7 @@ function CostSavingTips() {
               text-[var(--text)]
             "
           >
-            Spara pengar
+            {t.costSavingTips.title}
           </h3>
         </div>
       </div>
@@ -83,9 +87,7 @@ function CostSavingTips() {
               text-[var(--text-muted)]
             "
           >
-            Kör tvättmaskin och diskmaskin
-            under timmar då elpriset förväntas
-            vara lägre.
+            {t.costSavingTips.tip1}
           </p>
         </div>
 
@@ -127,9 +129,7 @@ function CostSavingTips() {
               text-[var(--text-muted)]
             "
           >
-            Ladda elbilen under billigare
-            timmar istället för under
-            pristoppar.
+            {t.costSavingTips.tip2}
           </p>
         </div>
 
@@ -171,9 +171,7 @@ function CostSavingTips() {
               text-[var(--text-muted)]
             "
           >
-            Försök undvika flera stora
-            elförbrukare samtidigt när priset
-            är högt.
+            {t.costSavingTips.tip3}
           </p>
         </div>
       </div>
