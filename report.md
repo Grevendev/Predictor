@@ -22,17 +22,37 @@ Flera regressionsmetoder jämfördes mot en naiv 24-timmars baseline. Linear Reg
 
 Parallellt har gruppen arbetat med klustring för att identifiera återkommande mönster i data samt klassificering med SVM. De färdigtränade modellerna sparas som modellfiler och integreras i backend genom ett gemensamt loader- och inferenceflöde. Modellfilerna hanteras med Git LFS för att undvika att stora binära filer lagras direkt i det vanliga Git-repositoryt.
 
+SVM - modellen tränas och kör vår ML-pipeline, det som skiljer sig från de andra modellerna är att den letar efter den optimala timmen. Genom att använda GridSearchCV för att leta efter hyperparamterar `gamma` och `C`, den använder sig av StandardScaler för skalning av datan. Genom denna metod får vi ut total fitting på 18. Men för att förstå datan mer och om modellen var lämplig så användes olika måttenheter, såsom `Accuarcy`, `Precision`, `Recall`, `F1-score` och `ROC-AUC`. Med dessa måttenheterna så fick vi fram en klassifikations rapport som blev tyldig. Vi använde en `confusion matrix`för att få det ännu tydligare hur modellen presterade. När allt detta var gjort så sparades modellen med hjälp av `joblib`. För att kunna hantera modellen i git och GitHub användes `Git LFS`. Då modeller blir stora och det finns risk att de blir manipulerade om man försöker "ladda" upp de som om de vore en vanlig fil. 
+
 ### Teknisk specifikation
 
 Backend är utvecklad med FastAPI och ansvarar för att ladda de tränade modellerna, genomföra inference och exponera projektets funktionalitet genom API-endpoints. Backend testas med pytest och FastAPIs TestClient, med tester för bland annat endpoints, modellinläsning, inference, validering och felhantering.
 
-Frontend är utvecklad med React och Vite och kommunicerar med backend genom API-anrop. Frontend testas med Playwright för att testa webbapplikationen och dess användarflöden.
-
+Frontend är utvecklad med React och Vite och kommunicerar med backend genom API-anrop. Frontenden är byggd med fokus på användare upplevelsen och användare tillgängliget. Genom enkel navigering i menyer och med en responsiv design. Tydlighet i vad användare får ut för resultat genom visualiering av både modellens resultat på sökningen och genom väderdata. Spartips som kan vara värdefulla för användaren är med för att hjälpa användaren optimera sin elanvänding. Där finns ytterligare djupdykning användren kan läsa. Genom en intraktiv data som är byggd med *Svenska Kraftnäts-data* där användaren kan klicka på kartan och få ut mer information om ett visst elområde i Sverige. Vidare kan användaren läsa hur flödet fungerar och mer tekniks information för den intresserade läsaren. Hela frontenden testas med E2E tester som är gjorda med PlayWright. Detta för att både skydda tjänsten men även för att öka användare-upplevelsen.  
 ### Huvudresultat
 
 Projektet har resulterat i en webbapplikation där projektets databehandling och maskininlärningsmodeller kopplas samman med ett backend-API och ett användargränssnitt.
 
 För regressionsdelen gav den optimerade Random Forest-modellen bäst resultat av de utvärderade modellerna, med ett MAE på 20,99 EUR/MWh jämfört med 26,41 EUR/MWh för den naiva 24-timmars baselinen.
+
+För SVM-delen gav den resultat som motsvarade vad som önskades av modellen. När de olika måttenheterna kördes mot test-datan fick vi ut dessa resultaten. 
+````
+--- Evaluation on Testset ---
+Accuracy:  0.7853
+Precision: 0.5511
+Recall:    0.7968
+F1-score:  0.6516
+ROC-AUC:   0.8630
+````
+Jämfört mot resultaten från vår valideringsdata så var det resulatet bra. 
+````
+--- Evaluation on Validation ---
+Accuracy:  0.7825
+Precision: 0.5470
+Recall:    0.7928
+F1-score:  0.6474
+ROC-AUC:   0.8626
+````
 
 ### Utvärdering av gruppens arbete
 Kompletteras gemensamt av gruppen - tisdag förslagsvis
