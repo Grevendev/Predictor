@@ -80,7 +80,7 @@ Backend räknar ut ett dagligt pris med den tränade Random Forest-modellen. K-M
 
 SE1–SE4 hanteras genom att rätt pris- och väderkolumner väljs för det aktuella elområdet innan modellerna körs. Frontend presenterar därefter låg, medel eller hög prisnivå tillsammans med rekommendationen från SVM-modellen. Rekommendationen kommer därmed från modellens output och inte från hårdkodade tröskelvärden i klienten.
 
-I nuläget behöver det lokala datasetet uppdateras genom skriptet `get_last_date.py`. Tanken för en liveversion är att denna process ska automatiseras så att aktuell data kontinuerligt kan göras tillgänglig för modellerna.
+I nuläget sker uppdateringen av det lokala datasetet automatiskt via schemalagda bakgrundsjobb (**cron**). För en fullskalig driftmiljö är nästa steg att etablera en automatiserad träningspipeline (**MLOps**) som tränar om och validerar modellerna mot den nytillkomna datan, för att säkerställa att den bäst presterande modellen kontinuerligt används i produktion.
 
 ### Huvudresultat
 
